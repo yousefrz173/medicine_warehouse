@@ -1,0 +1,90 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.buildlog/
+.history
+.svn/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
+/android/app/src/debug/AndroidManifest.xml
+/android/app/src/main/kotlin/com/example/medicine_warehouse/MainActivity.kt
+/android/app/src/main/res/drawable/launch_background.xml
+/android/app/src/main/res/drawable-v21/launch_background.xml
+/android/app/src/main/res/mipmap-hdpi/ic_launcher.png
+/android/app/src/main/res/mipmap-mdpi/ic_launcher.png
+/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png
+/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+/android/app/src/main/res/values/styles.xml
+/android/app/src/main/res/values-night/styles.xml
+/android/app/src/main/AndroidManifest.xml
+/android/app/src/profile/AndroidManifest.xml
+/android/app/build.gradle
+/android/gradle/wrapper/gradle-wrapper.properties
+/android/.gitignore
+/android/build.gradle
+/android/gradle.properties
+/android/settings.gradle
+/web/icons/Icon-192.png
+/web/icons/Icon-512.png
+/web/icons/Icon-maskable-192.png
+/web/icons/Icon-maskable-512.png
+/web/favicon.png
+/web/index.html
+/web/manifest.json
+/windows/flutter/CMakeLists.txt
+/windows/flutter/generated_plugin_registrant.cc
+/windows/flutter/generated_plugin_registrant.h
+/windows/flutter/generated_plugins.cmake
+/windows/runner/resources/app_icon.ico
+/windows/runner/CMakeLists.txt
+/windows/runner/flutter_window.cpp
+/windows/runner/flutter_window.h
+/windows/runner/main.cpp
+/windows/runner/resource.h
+/windows/runner/runner.exe.manifest
+/windows/runner/Runner.rc
+/windows/runner/utils.cpp
+/windows/runner/utils.h
+/windows/runner/win32_window.cpp
+/windows/runner/win32_window.h
+/windows/.gitignore
+/windows/CMakeLists.txt
+/pubspec.lock
+/.metadata
+/analysis_options.yaml
