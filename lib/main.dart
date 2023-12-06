@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:medicine_warehouse/favorites.dart';
-import 'package:medicine_warehouse/intro_page.dart';
-import 'package:medicine_warehouse/loginpage.dart';
-import 'package:medicine_warehouse/user_info.dart';
-import 'package:medicine_warehouse/store.dart';
+import 'favorites.dart';
+import 'intro_page.dart';
+import 'loginpage.dart';
+import 'user_info.dart';
+import 'store.dart';
 import 'search.dart';
 import 'home.dart';
 

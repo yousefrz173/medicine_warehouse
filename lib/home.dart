@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:medicine_warehouse/search.dart';
-import 'package:medicine_warehouse/store.dart';
+import 'search.dart';
+import 'store.dart';
 import 'favorites.dart';
 import 'medicineList.dart';
 import 'my_stock.dart';

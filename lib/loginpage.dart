@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medicine_warehouse/home.dart';
+import 'home.dart';
 
 class Loginpage extends StatelessWidget {
   static final route = 'route_login';
