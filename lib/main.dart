@@ -21,6 +21,7 @@ class MedicineWhorehouseApp extends StatelessWidget {
       routes: {
         '/': (context) => HomePage(),
         Search.route: (context) => Search(),
+        Loginpage.route: (context) => Loginpage(),
         Store.route: (context) => Store(),
         UserInfo.route: (context) => UserInfo(),
         Favorites.route: (context) => Favorites(),

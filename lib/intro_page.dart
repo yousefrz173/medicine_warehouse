@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/home.dart';
 import 'loginpage.dart';
 
 class IntroPage extends StatelessWidget {
@@ -21,15 +22,15 @@ class _IntroPage extends StatelessWidget {
         children: <Widget>[
           const Padding(
             padding: EdgeInsets.fromLTRB(130, 130, 130, 20),
-            child: Image(color: Colors.white54,image: AssetImage('assets/icons/caduceus-symbol.png'),fit: BoxFit.contain),
+            child: Image(
+                color: Colors.white54,
+                image: AssetImage('assets/icons/caduceus-symbol.png'),
+                fit: BoxFit.contain),
           ),
           const Text(
             'Welcome',
             style: TextStyle(
-              fontFamily: 'Pacifico',
-              fontSize: 30,
-              color: Colors.white54
-            ),
+                fontFamily: 'Pacifico', fontSize: 30, color: Colors.white54),
           ),
           const Padding(
             padding: EdgeInsets.only(top: 20),

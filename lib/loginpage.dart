@@ -59,8 +59,9 @@ class _LoginPage extends StatelessWidget {
             ),
             Container(
               child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pushNamed(
+                onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil(
                   HomePage.route,
+                  (route) => false,
                   arguments: {
                     'phone_number': loginController.text,
                   },
