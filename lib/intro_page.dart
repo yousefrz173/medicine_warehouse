@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'loginpage.dart';
+import 'package:flutter_application_1/home.dart';
+import 'package:flutter_application_1/login_register.dart';
 
 class IntroPage extends StatelessWidget {
   static final route = 'intro_page_route';
@@ -21,15 +22,15 @@ class _IntroPage extends StatelessWidget {
         children: <Widget>[
           const Padding(
             padding: EdgeInsets.fromLTRB(130, 130, 130, 20),
-            child: Image(color: Colors.white54,image: AssetImage('assets/icons/caduceus-symbol.png'),fit: BoxFit.contain),
+            child: Image(
+                color: Colors.white54,
+                image: AssetImage('assets/icons/caduceus-symbol.png'),
+                fit: BoxFit.contain),
           ),
           const Text(
             'Welcome',
             style: TextStyle(
-              fontFamily: 'Pacifico',
-              fontSize: 30,
-              color: Colors.white54
-            ),
+                fontFamily: 'Pacifico', fontSize: 30, color: Colors.white54),
           ),
           const Padding(
             padding: EdgeInsets.only(top: 20),
@@ -43,12 +44,12 @@ class _IntroPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 30),
             child: ElevatedButton(
-              onPressed: () => Navigator.of(context).pushNamed(Loginpage.route),
+              onPressed: () => Navigator.of(context).pushNamed(LoginRegister.route),
               style: ElevatedButton.styleFrom(
                   minimumSize: const Size(200, 50),
                   backgroundColor: Colors.white),
               child: const Text(
-                'Login',
+                'Get Started',
                 style: TextStyle(fontSize: 30, color: Colors.black),
               ),
             ),

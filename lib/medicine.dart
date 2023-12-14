@@ -35,6 +35,12 @@ class Medicine {
 
   Map<String, Object> get medicineInfo => _medicineInfo;
 
+  int get amount => _amount;
+
+  set amount(int value) {
+    _amount = value;
+  }
+
   set price(double value) {
     _price = value;
   }

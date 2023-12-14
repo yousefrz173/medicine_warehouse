@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medicine_warehouse/medicine.dart';
+import 'medicine.dart';
 
 List<Medicine> PharamacistMedicineList = List.generate(
     12,
