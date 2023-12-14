@@ -165,7 +165,7 @@ class _LoginRegisterState extends State<LoginRegister> {
 
     _formKey.currentState!.save();
     if (_authMode == AuthMode.Login) {
-      
+      //Login user in
     } else {
       //Sign user up
     }
