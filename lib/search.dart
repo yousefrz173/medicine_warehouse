@@ -110,7 +110,7 @@ class _SearchState extends State<Search> {
                         )
                       : Center(
                           child: Text(
-                            'No results',
+                            'No Results',
                             style: TextStyle(fontSize: 30),
                           ),
                         ),
