@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -78,18 +80,15 @@ class _LoginRegisterState extends State<LoginRegister> {
                   },
                   onSaved: (val) {
                     _authData['phone_number'] = val!;
-                    print(_authData['phone_number']);
                   },
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   style: TextStyle(color: Colors.white),
-                  controller: _passwordController,
                   cursorColor: Colors.indigo,
                   decoration: InputDecoration(
                     hintText: 'Password',
                     hintStyle: TextStyle(color: Colors.white),
-
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -103,7 +102,6 @@ class _LoginRegisterState extends State<LoginRegister> {
                   },
                   onSaved: (val) {
                     _authData['password'] = val!;
-                    print(_authData['password']);
                   },
                 ),
                 const SizedBox(height: 20),
@@ -113,7 +111,6 @@ class _LoginRegisterState extends State<LoginRegister> {
                     enabled: _authMode == AuthMode.SignUp,
                     cursorColor: Colors.indigo,
                     decoration: InputDecoration(
-
                       hintText: 'Confirm Password',
                       hintStyle: TextStyle(color: Colors.white),
                       border: OutlineInputBorder(
@@ -150,6 +147,9 @@ class _LoginRegisterState extends State<LoginRegister> {
                     foregroundColor: MaterialStateProperty.all(Colors.white),
                   ),
                 ),
+                Container(
+                  child: Text(_passwordController.text, style: TextStyle(color: Colors.white),),
+                )
               ],
             ),
           ),
@@ -158,16 +158,28 @@ class _LoginRegisterState extends State<LoginRegister> {
     );
   }
 
-  void _submit() {
+  void _submit() async {
     if (_formKey.currentState!.validate()) {
       return;
     }
 
     _formKey.currentState!.save();
     if (_authMode == AuthMode.Login) {
-      //Login user in
+
     } else {
       //Sign user up
     }
   }
 }
+
+
+//http.Response response = await http.post(
+//         Uri.parse('http://127.0.0.1:8000/api/register'),
+//         body: jsonEncode({
+//           'username': _authData['phone_number'],
+//           'password': _authData['password']
+//         }),
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//       );
