@@ -1,4 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/login_register.dart';
+import 'package:http/http.dart' as http;
+import 'current_user.dart';
 import 'search.dart';
 import 'store.dart';
 import 'favorites.dart';
@@ -156,20 +160,21 @@ class _HomePageState extends State<HomePage> {
     },
     {
       'screen': MyStock(),
-      'title': Text('My Stock',
-          style: TextStyle(fontSize: 19.5, color: Colors.white)),
+      'title':
+          Text('My Stock', style: TextStyle(fontSize: 23, color: Colors.white)),
     },
     {
       'screen': Store(),
       'title':
-          Text('Store', style: TextStyle(fontSize: 20.5, color: Colors.white)),
+          Text('Store', style: TextStyle(fontSize: 23, color: Colors.white)),
     },
     {
       'screen': Favorites(),
       'title': Text('Favorites',
-          style: TextStyle(fontSize: 20, color: Colors.white)),
+          style: TextStyle(fontSize: 23, color: Colors.white)),
     },
   ];
+  List<double> amounts = [0.0, 33.0, -8.0, 32.0];
 
   void BottomNavBarChanger(int index) {
     setState(() {
@@ -186,63 +191,98 @@ class _HomePageState extends State<HomePage> {
         ? map
         : ModalRoute.of(context)?.settings.arguments as Map<String, String>;
     return Scaffold(
-      backgroundColor: Color.fromRGBO(22, 1, 32, 1),
-      appBar: AppBar(
-        actions: [
-          Container(
-            child: Row(
-              children: [
-                _bottomNavBarScreens[_selectedPageIndex]['title']!,
-                SizedBox(
-                  width: 212,
-                ),
-                InkWell(
-                  borderRadius: BorderRadius.circular(50),
-                  onTap: () {
-                    Navigator.of(context).pushNamed(Search.route);
-                  },
-                  child: Icon(
-                    Icons.search,
-                    size: 45.0,
+      drawerScrimColor: Colors.purple.withOpacity(0.5),
+      endDrawer: Drawer(
+        backgroundColor: Color.fromRGBO(153, 153, 153, 1.0),
+        child: Column(
+          children: [
+            Center(
+              child: Container(
+                margin: EdgeInsets.only(top: 50),
+                width: 90,
+                height: 90,
+                decoration: BoxDecoration(
+                    color: Colors.purpleAccent,
+                    borderRadius: BorderRadius.circular(50)),
+              ),
+            ),
+            Center(
+              child: Container(
+                width: 260,
+                height: 70,
+                child: Text(
+                  textAlign: TextAlign.center,
+                  'eisdwqad',
+                  style: TextStyle(
+                    fontSize: 45,
                     color: Colors.white,
                   ),
                 ),
-                InkWell(
-                  borderRadius: BorderRadius.circular(50),
-                  focusColor: Colors.purple,
-                  onTap: () => {},
-                  child: Container(
-                    width: 45,
-                    height: 45,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
+              ),
+            ),
+            Container(
+              child: OutlinedButton(
+                style: ButtonStyle(
+                  elevation: MaterialStatePropertyAll(50),
+                  backgroundColor: MaterialStatePropertyAll(Colors.purple),
                 ),
-                SizedBox(
-                  width: 20,
+                onPressed: _LogOut,
+                child: Text(
+                  'Logout',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
-              ],
+              ),
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: Color.fromRGBO(22, 1, 32, 1),
+      appBar: AppBar(
+        title: _bottomNavBarScreens[_selectedPageIndex]['title']!,
+        actions: [
+          InkWell(
+            borderRadius: BorderRadius.circular(50),
+            onTap: () {
+              Navigator.of(context).pushNamed(Search.route);
+            },
+            child: Icon(
+              Icons.search,
+              size: 45.0,
+              color: Colors.white,
             ),
           ),
+          Builder(builder: (context) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.purple,
+                borderRadius: BorderRadius.circular(60),
+              ),
+              width: 50,
+              height: 50,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  Scaffold.of(context).openEndDrawer();
+                },
+              ),
+            );
+          }),
+          SizedBox(width: 10),
         ],
         backgroundColor: Color.fromRGBO(153, 153, 153, 1.0),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _bottomNavBarScreens[_selectedPageIndex]['screen']!,
-            Container(
-              child: Text(
-                routeArguments['phone_number']!,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                ),
-              ),
-            )
-          ],
+        child: Container(
+          height: 1300,
+          width: 500,
+          child: Column(
+            children: [
+              Container(
+                  height: 1000,
+                  child: _bottomNavBarScreens[_selectedPageIndex]['screen']!),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -260,5 +300,19 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  _LogOut() async {
+    http.Response response = await http.post(
+      Uri.parse('http://127.0.0.1:8000/api/logout)'),
+      headers: {'Authorization': 'Bearer ${userInfo['api_token']}'},
+    );
+    if (response.statusCode == 200) {
+      print('success!');
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(LoginRegister.route, (route) => false);
+    }else if(response.statusCode == 400){
+      print('failed!');
+    }
   }
 }

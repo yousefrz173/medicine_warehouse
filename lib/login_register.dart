@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/home.dart';
 import 'package:http/http.dart' as http;
+import 'current_user.dart';
 
 class LoginRegister extends StatefulWidget {
   static final String route = 'route_login_register';
@@ -19,7 +21,7 @@ class _LoginRegisterState extends State<LoginRegister> {
   AuthMode _authMode = AuthMode.Login;
 
   final Map<String, String> _authData = {
-    'phone_number': '',
+    'phone': '',
     'password': '',
   };
 
@@ -80,11 +82,13 @@ class _LoginRegisterState extends State<LoginRegister> {
                   },
                   onSaved: (val) {
                     _authData['phone_number'] = val!;
+                    print(_authData['phone_number']);
                   },
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   style: TextStyle(color: Colors.white),
+                  controller: _passwordController,
                   cursorColor: Colors.indigo,
                   decoration: InputDecoration(
                     hintText: 'Password',
@@ -102,6 +106,7 @@ class _LoginRegisterState extends State<LoginRegister> {
                   },
                   onSaved: (val) {
                     _authData['password'] = val!;
+                    print(_authData['password']);
                   },
                 ),
                 const SizedBox(height: 20),
@@ -148,7 +153,10 @@ class _LoginRegisterState extends State<LoginRegister> {
                   ),
                 ),
                 Container(
-                  child: Text(_passwordController.text, style: TextStyle(color: Colors.white),),
+                  child: Text(
+                    _authData['password']!,
+                    style: TextStyle(color: Colors.white),
+                  ),
                 )
               ],
             ),
@@ -159,27 +167,32 @@ class _LoginRegisterState extends State<LoginRegister> {
   }
 
   void _submit() async {
-    if (_formKey.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
 
     _formKey.currentState!.save();
     if (_authMode == AuthMode.Login) {
-
+      http.Response response = await http.post(
+        Uri.parse(
+            'http://127.0.0.1:8000/api/login?phone=${_authData['phone']}&password=${_authData['password']}'),
+      );
+      if (response.statusCode == 200) {
+        print('sucess!');
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
+      }
     } else {
-      //Sign user up
+      http.Response response = await http.post(Uri.parse(
+          'http://127.0.0.1:8000/api/register?phone=${_authData['phone']}&password=${_authData['password']}'));
+      if (response.statusCode == 200) {
+        print('sucess!');
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
+      } else if (response.statusCode == 400) {
+        print('failed');
+        return;
+      }
     }
   }
 }
-
-
-//http.Response response = await http.post(
-//         Uri.parse('http://127.0.0.1:8000/api/register'),
-//         body: jsonEncode({
-//           'username': _authData['phone_number'],
-//           'password': _authData['password']
-//         }),
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       );

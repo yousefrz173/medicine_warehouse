@@ -6,7 +6,9 @@ class Store extends StatelessWidget{
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(22, 1, 32, 1),
-      body: Text('whorehouse'),
+      body: Container(
+        child: Text('Fuck', style: TextStyle(color: Colors.white,fontSize: 40),),
+      ),
     );
   }
 
