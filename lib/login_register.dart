@@ -183,6 +183,7 @@ class _LoginRegisterState extends State<LoginRegister> {
             .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
       }
     } else {
+      //10.0.2.2
       http.Response response = await http.post(Uri.parse(
           'http://127.0.0.1:8000/api/register?phone=${_authData['phone']}&password=${_authData['password']}'));
       if (response.statusCode == 200) {
