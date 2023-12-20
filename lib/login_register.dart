@@ -183,23 +183,23 @@ class _LoginRegisterState extends State<LoginRegister> {
             'http://10.0.2.2/api/login?phone=${_authData['phone']}&password=${_authData['password']}'),
       );
       _switchLoading(false);
-      if (jsonDecode(response.body)["statusNumber"] == 200) {
+      if ((jsonDecode(response.body))["statusNumber"] == 200) {
         print(jsonDecode(response.body)["message"]);
         Navigator.of(context)
             .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
-      } else if (jsonDecode(response.body)["statusNumber"] == 400) {
-        print(jsonDecode(response.body)["message"]);
+      } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
+        print((jsonDecode(response.body))["message"]);
       }
     } else {
       //10.0.2.2
       http.Response response = await http.post(Uri.parse(
           'http://10.0.2.2/api/register?phone=${_authData['phone']}&password=${_authData['password']}'));
       _switchLoading(false);
-      if (jsonDecode(response.body)[2]["statusNumber"] == 200) {
+      if ((jsonDecode(response.body))["statusNumber"] == 200) {
         print(jsonDecode(response.body)[1]);
         _switchAuthMode();
-      } else if (jsonDecode(response.body)[2]["statusNumber"] == 400) {
-        print(jsonDecode(response.body)["message"]);
+      } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
+        print((jsonDecode(response.body))["message"]);
         return;
       }
     }
