@@ -180,7 +180,7 @@ class _LoginRegisterState extends State<LoginRegister> {
     if (_authMode == AuthMode.Login) {
       http.Response response = await http.post(
         Uri.parse(
-            'http://10.0.2.2/api/login?phone=${_authData['phone']}&password=${_authData['password']}'),
+            'http://10.0.2.2:8000/api/login?phone=${_authData['phone']}&password=${_authData['password']}'),
       );
       _switchLoading(false);
       if ((jsonDecode(response.body))["statusNumber"] == 200) {
@@ -193,7 +193,7 @@ class _LoginRegisterState extends State<LoginRegister> {
     } else {
       //10.0.2.2
       http.Response response = await http.post(Uri.parse(
-          'http://10.0.2.2/api/register?phone=${_authData['phone']}&password=${_authData['password']}'));
+          'http://10.0.2.2:8000/api/register?phone=${_authData['phone']}&password=${_authData['password']}'));
       _switchLoading(false);
       if ((jsonDecode(response.body))["statusNumber"] == 200) {
         print(jsonDecode(response.body)[1]);
