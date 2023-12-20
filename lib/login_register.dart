@@ -20,6 +20,7 @@ class _LoginRegisterState extends State<LoginRegister> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
 
+  bool _isLoading = false;
   final Map<String, String> _authData = {
     'phone': '',
     'password': '',
@@ -37,6 +38,12 @@ class _LoginRegisterState extends State<LoginRegister> {
         _authMode = AuthMode.Login;
       });
     }
+  }
+
+  void _switchLoading(bool v) {
+    setState(() {
+      _isLoading = v;
+    });
   }
 
   @override
@@ -153,11 +160,8 @@ class _LoginRegisterState extends State<LoginRegister> {
                   ),
                 ),
                 Container(
-                  child: Text(
-                    _authData['password']!,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                )
+                  child: _isLoading ? CircularProgressIndicator() : null,
+                ),
               ],
             ),
           ),
@@ -172,26 +176,30 @@ class _LoginRegisterState extends State<LoginRegister> {
     }
     //10.0.2.2
     _formKey.currentState!.save();
+    _switchLoading(true);
     if (_authMode == AuthMode.Login) {
       http.Response response = await http.post(
         Uri.parse(
-            'http://127.0.0.1:8000/api/login?phone=${_authData['phone']}&password=${_authData['password']}'),
+            'http://10.0.2.2/api/login?phone=${_authData['phone']}&password=${_authData['password']}'),
       );
-      if (response.statusCode == 200) {
-        print('sucess!');
+      _switchLoading(false);
+      if (jsonDecode(response.body)["statusNumber"] == 200) {
+        print(jsonDecode(response.body)["message"]);
         Navigator.of(context)
             .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
+      } else if (jsonDecode(response.body)["statusNumber"] == 400) {
+        print(jsonDecode(response.body)["message"]);
       }
     } else {
       //10.0.2.2
       http.Response response = await http.post(Uri.parse(
-          'http://127.0.0.1:8000/api/register?phone=${_authData['phone']}&password=${_authData['password']}'));
-      if (response.statusCode == 200) {
-        print('sucess!');
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
-      } else if (response.statusCode == 400) {
-        print('failed');
+          'http://10.0.2.2/api/register?phone=${_authData['phone']}&password=${_authData['password']}'));
+      _switchLoading(false);
+      if (jsonDecode(response.body)[2]["statusNumber"] == 200) {
+        print(jsonDecode(response.body)[1]);
+        _switchAuthMode();
+      } else if (jsonDecode(response.body)[2]["statusNumber"] == 400) {
+        print(jsonDecode(response.body)["message"]);
         return;
       }
     }
