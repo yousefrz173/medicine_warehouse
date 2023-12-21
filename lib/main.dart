@@ -16,7 +16,7 @@ class MedicineWhorehouseApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Our Medicine Whorehouse',
-      initialRoute: HomePage.route,
+      initialRoute: LoginRegister.route,
       routes: {
         LoginRegister.route: (context) => LoginRegister(),
         HomePage.route: (context) => HomePage(),
