@@ -15,7 +15,7 @@ enum Filter { searchBy, Name, Genre }
 class _SearchState extends State<Search> {
   String? _selectedSearchType = 'search by';
   int itemCount = 0;
-  TextEditingController _searchController = TextEditingController();
+  TextEditingController _searchController = TextEditingController(text: '');
   List<Medicine> allItems = PharamacistMedicineList;
   List<Medicine> _searchResults = [];
   Filter? filter = Filter.searchBy;
@@ -30,15 +30,22 @@ class _SearchState extends State<Search> {
     setState(() {}); // Trigger a rebuild to update the UI with search results
   }
 
-  void sortBy(Filter? filter,List<Medicine> list){
-    if(filter == Filter.Genre){
-      list = PharamacistMedicineList.where((medicine) => medicine.genre == '').toList();
-      list.sort((a,b) => a.genre.compareTo(b.genre));
-    }else if(filter == Filter.Name){
-      list = PharamacistMedicineList.where((medicine) => medicine.genre == '').toList();
-      list.sort((a,b) => a.scientificName.compareTo(b.scientificName));
+  void sortBy(Filter? filter) {
+    if (filter == Filter.searchBy) {
+      return;
+    }
+    if (filter == Filter.Genre) {
+      setState(() {
+        PharamacistMedicineList.sort((a, b) => a.genre.compareTo(b.genre));
+      });
+    } else if (filter == Filter.Name) {
+      setState(() {
+        PharamacistMedicineList.sort(
+            (a, b) => a.scientificName.compareTo(b.scientificName));
+      });
     }
   }
+
   @override
   build(BuildContext context) {
     return Scaffold(
@@ -50,9 +57,9 @@ class _SearchState extends State<Search> {
               hintText: 'Search...',
               border: InputBorder.none,
               suffixIcon: IconButton(
-                icon: Icon(Icons.clear),
+                icon: Icon(Icons.search),
                 onPressed: () {
-                  _searchController.clear();
+                  search(_searchController.text);
                 },
               ),
             ),
@@ -87,9 +94,9 @@ class _SearchState extends State<Search> {
                             setState(() {
                               _selectedSearchType = newValue;
                               if (newValue == 'Name')
-                                filter = Filter.Name;
+                                sortBy(Filter.Name);
                               else if (newValue == 'Genre')
-                                filter = Filter.Genre;
+                                sortBy(Filter.Genre);
                             });
                           },
                           items: ['search by', 'Name', 'Genre']
@@ -137,15 +144,16 @@ class _SearchState extends State<Search> {
                                       return AlertDialog(
                                         backgroundColor:
                                             Color.fromRGBO(153, 153, 153, 1.0),
-                                        title: Text(
-                                          'Medicine Info',
-                                          style: TextStyle(
-                                              fontSize: 30,
-                                              color: Colors.black),
-                                        ),
+                                        title: IconButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            icon: Icon(Icons.close)),
                                         content: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(currentItem.scientificName),
@@ -159,9 +167,11 @@ class _SearchState extends State<Search> {
                                           ],
                                         ),
                                         actions: [
-                                          IconButton(onPressed: (){
-                                            Navigator.of(context).pop();
-                                          }, icon: Icon(Icons.close))
+                                          IconButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              icon: Icon(Icons.close))
                                         ],
                                       );
                                     });
@@ -172,7 +182,7 @@ class _SearchState extends State<Search> {
                       : Center(
                           child: Text(
                             'No Results',
-                            style: TextStyle(fontSize: 30,color: Colors.white),
+                            style: TextStyle(fontSize: 30, color: Colors.white),
                           ),
                         ),
                 )
