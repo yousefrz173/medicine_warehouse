@@ -178,15 +178,26 @@ class _LoginRegisterState extends State<LoginRegister> {
     _formKey.currentState!.save();
     _switchLoading(true);
     if (_authMode == AuthMode.Login) {
-      http.Response response = await http.post(
-        Uri.parse(
-            'http://10.0.2.2:8000/api/login?phone=${_authData['phone']}&password=${_authData['password']}'),
-      );
+      http.Response response =
+          await http.post(Uri.parse('http://10.0.2.2:8000/api/login'),
+              body: jsonEncode({
+                "phone": _authData['phone'],
+                "password": _authData['password'],
+              }),
+              headers: {'Content-Type': 'application/json'});
       _switchLoading(false);
       if ((jsonDecode(response.body))["statusNumber"] == 200) {
         print(jsonDecode(response.body)["message"]);
+        userInfo = {
+          "id": jsonDecode(response.body)["pharmacist_information"]["id"],
+          "phone": jsonDecode(response.body)["pharmacist_information"]["phone"],
+          "password": jsonDecode(response.body)["pharmacist_information"]
+              ["password"],
+          "api_token": jsonDecode(response.body)["pharmacist_information"]
+              ["api_token"],
+        };
         Navigator.of(context)
-            .pushNamedAndRemoveUntil(HomePage.route, (route) => false, arguments: {});
+            .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
       } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
         print((jsonDecode(response.body))["message"]);
       }

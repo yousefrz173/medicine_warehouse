@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/intro_page.dart';
 import 'package:flutter_application_1/login_register.dart';
 import 'package:http/http.dart' as http;
 import 'current_user.dart';
@@ -8,6 +11,7 @@ import 'store.dart';
 import 'favorites.dart';
 import 'medicineList.dart';
 import 'my_stock.dart';
+import 'current_user.dart';
 
 class HomePage extends StatefulWidget {
   static final String route = '/';
@@ -212,7 +216,7 @@ class _HomePageState extends State<HomePage> {
                 height: 70,
                 child: Text(
                   textAlign: TextAlign.center,
-                  'eisdwqad',
+                  '${userInfo["phone"]}',
                   style: TextStyle(
                     fontSize: 45,
                     color: Colors.white,
@@ -304,15 +308,20 @@ class _HomePageState extends State<HomePage> {
 
   _LogOut() async {
     http.Response response = await http.post(
-      Uri.parse('http://127.0.0.1:8000/api/logout)'),
-      headers: {'Authorization': 'Bearer ${userInfo['api_token']}'},
+      Uri.parse('http://10.0.2.2:8000/api/logout)'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${userInfo["api_token"]}'
+      },
     );
-    if (response.statusCode == 200) {
-      print('success!');
+    if (jsonDecode(response.body)["statusNumber"] == 200) {
+      print(jsonDecode(response.body)["message"]);
       Navigator.of(context)
-          .pushNamedAndRemoveUntil(LoginRegister.route, (route) => false);
-    }else if(response.statusCode == 400){
-      print('failed!');
+          .pushNamedAndRemoveUntil(IntroPage.route, (route) => false);
+    } else if (jsonDecode(response.body)["statusNumber"] == 400) {
+      print(jsonDecode(response.body)["message"]);
+    } else if (jsonDecode(response.body)["statusNumber"] == 403) {
+      print(jsonDecode(response.body)["message"]);
     }
   }
 }
