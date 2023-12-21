@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/intro_page.dart';
@@ -179,10 +178,17 @@ class _HomePageState extends State<HomePage> {
     },
   ];
   List<double> amounts = [0.0, 33.0, -8.0, 32.0];
+  bool _isLoading = false;
 
   void BottomNavBarChanger(int index) {
     setState(() {
       _selectedPageIndex = index;
+    });
+  }
+
+  void switchLoading(bool b) {
+    setState(() {
+      _isLoading = b;
     });
   }
 
@@ -238,6 +244,8 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            if(_isLoading)
+            CircularProgressIndicator(),
           ],
         ),
       ),
@@ -307,13 +315,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   _LogOut() async {
+    switchLoading(true);
     http.Response response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/api/logout)'),
+      Uri.parse('http://10.0.2.2:8000/api/logout'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${userInfo["api_token"]}'
+        'Authorization': "Bearer ${userInfo["api_token"]}"
       },
     );
+    switchLoading(false);
+    Map<String,dynamic> body = jsonDecode(response.body);
     if (jsonDecode(response.body)["statusNumber"] == 200) {
       print(jsonDecode(response.body)["message"]);
       Navigator.of(context)
