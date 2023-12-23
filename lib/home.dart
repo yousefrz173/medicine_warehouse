@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/intro_page.dart';
-import 'package:flutter_application_1/login_register.dart';
+import 'package:PharmacyApp/intro_page.dart';
+import 'package:PharmacyApp/login_register.dart';
 import 'package:http/http.dart' as http;
 import 'current_user.dart';
 import 'search.dart';

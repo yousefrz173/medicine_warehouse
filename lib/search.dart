@@ -17,30 +17,32 @@ class _SearchState extends State<Search> {
   int itemCount = 0;
   TextEditingController _searchController = TextEditingController(text: '');
   List<Medicine> allItems = PharamacistMedicineList;
+
   List<Medicine> _searchResults = [];
   Filter? filter = Filter.searchBy;
 
   void search(String query) {
     _searchResults.clear();
     for (Medicine item in allItems) {
-      if (item.commercialName.contains(query)) {
+      if (item.scientificName.contains(query)) {
         _searchResults.add(item);
       }
     }
     setState(() {}); // Trigger a rebuild to update the UI with search results
   }
 
-  void sortBy(Filter? filter) {
+  void sortBy(Filter? filter,List<Medicine> sortedList) {
     if (filter == Filter.searchBy) {
       return;
     }
+    List<Medicine> sortedList = PharamacistMedicineList;
     if (filter == Filter.Genre) {
       setState(() {
-        PharamacistMedicineList.sort((a, b) => a.genre.compareTo(b.genre));
+        sortedList.sort((a, b) => a.genre.compareTo(b.genre));
       });
     } else if (filter == Filter.Name) {
       setState(() {
-        PharamacistMedicineList.sort(
+        sortedList.sort(
             (a, b) => a.scientificName.compareTo(b.scientificName));
       });
     }
@@ -94,9 +96,9 @@ class _SearchState extends State<Search> {
                             setState(() {
                               _selectedSearchType = newValue;
                               if (newValue == 'Name')
-                                sortBy(Filter.Name);
+                                sortBy(Filter.Name,_searchResults);
                               else if (newValue == 'Genre')
-                                sortBy(Filter.Genre);
+                                sortBy(Filter.Genre,_searchResults);
                             });
                           },
                           items: ['search by', 'Name', 'Genre']
