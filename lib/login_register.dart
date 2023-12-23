@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:PharmacyApp/home.dart';
 import 'package:http/http.dart' as http;
+import 'current_user.dart';
 
 class LoginRegister extends StatefulWidget {
   static final String route = 'route_login_register';
@@ -18,8 +20,9 @@ class _LoginRegisterState extends State<LoginRegister> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
 
+  bool _isLoading = false;
   final Map<String, String> _authData = {
-    'phone_number': '',
+    'phone': '',
     'password': '',
   };
 
@@ -35,6 +38,12 @@ class _LoginRegisterState extends State<LoginRegister> {
         _authMode = AuthMode.Login;
       });
     }
+  }
+
+  void _switchLoading(bool v) {
+    setState(() {
+      _isLoading = v;
+    });
   }
 
   @override
@@ -79,12 +88,14 @@ class _LoginRegisterState extends State<LoginRegister> {
                     return null;
                   },
                   onSaved: (val) {
-                    _authData['phone_number'] = val!;
+                    _authData['phone'] = val!;
+                    print(_authData['phone']);
                   },
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
                   style: TextStyle(color: Colors.white),
+                  controller: _passwordController,
                   cursorColor: Colors.indigo,
                   decoration: InputDecoration(
                     hintText: 'Password',
@@ -102,6 +113,7 @@ class _LoginRegisterState extends State<LoginRegister> {
                   },
                   onSaved: (val) {
                     _authData['password'] = val!;
+                    print(_authData['password']);
                   },
                 ),
                 const SizedBox(height: 20),
@@ -148,8 +160,8 @@ class _LoginRegisterState extends State<LoginRegister> {
                   ),
                 ),
                 Container(
-                  child: Text(_passwordController.text, style: TextStyle(color: Colors.white),),
-                )
+                  child: _isLoading ? CircularProgressIndicator() : null,
+                ),
               ],
             ),
           ),
@@ -159,27 +171,56 @@ class _LoginRegisterState extends State<LoginRegister> {
   }
 
   void _submit() async {
-    if (_formKey.currentState!.validate()) {
+    if (!_formKey.currentState!.validate()) {
       return;
     }
-
+    //10.0.2.2
     _formKey.currentState!.save();
+    _switchLoading(true);
     if (_authMode == AuthMode.Login) {
-
+      http.Response response =
+          await http.post(Uri.parse('http://10.0.2.2:8000/api/login'),
+              body: jsonEncode({
+                "phone": _authData['phone'],
+                "password": _authData['password'],
+              }),
+              headers: {'Content-Type': 'application/json'});
+      _switchLoading(false);
+      if ((jsonDecode(response.body))["statusNumber"] == 200) {
+        print(jsonDecode(response.body)["message"]);
+        userInfo = {
+          "id": jsonDecode(response.body)["pharmacist_information"]["id"],
+          "phone": jsonDecode(response.body)["pharmacist_information"]["phone"],
+          "password": jsonDecode(response.body)["pharmacist_information"]
+              ["password"],
+          "api_token": jsonDecode(response.body)["pharmacist_information"]
+              ["api_token"],
+        };
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
+      } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
+        print((jsonDecode(response.body))["message"]);
+      }
     } else {
-      //Sign user up
+      //10.0.2.2
+      http.Response response = await http.post(
+        Uri.parse('http://10.0.2.2:8000/api/register'),
+        body: jsonEncode({
+          'phone': _authData['phone'],
+          'password': _authData['password'],
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      _switchLoading(false);
+      if ((jsonDecode(response.body))["statusNumber"] == 200) {
+        print(jsonDecode(response.body)["message"]);
+        _switchAuthMode();
+      } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
+        print((jsonDecode(response.body))["message"]);
+        return;
+      }
     }
   }
 }
-
-
-//http.Response response = await http.post(
-//         Uri.parse('http://127.0.0.1:8000/api/register'),
-//         body: jsonEncode({
-//           'username': _authData['phone_number'],
-//           'password': _authData['password']
-//         }),
-//         headers: {
-//           'Content-Type': 'application/json',
-//         },
-//       );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'home.dart' as HomePage;
+import 'medicine.dart';
 import 'medicineList.dart';
 
 class Search extends StatefulWidget {
@@ -9,21 +10,42 @@ class Search extends StatefulWidget {
   State<Search> createState() => _SearchState();
 }
 
+enum Filter { searchBy, Name, Genre }
+
 class _SearchState extends State<Search> {
-  String _selectedSearchType = 'search by';
+  String? _selectedSearchType = 'search by';
   int itemCount = 0;
-  TextEditingController _searchController = TextEditingController();
-  List<String> allItems = ['Apple', 'Banana', 'Orange', 'Mango'];
-  List<String> _searchResults = [];
+  TextEditingController _searchController = TextEditingController(text: '');
+  List<Medicine> allItems = PharamacistMedicineList;
+
+  List<Medicine> _searchResults = [];
+  Filter? filter = Filter.searchBy;
 
   void search(String query) {
     _searchResults.clear();
-    for (String item in allItems) {
-      if (item.toLowerCase().contains(query.toLowerCase())) {
+    for (Medicine item in allItems) {
+      if (item.scientificName.contains(query)) {
         _searchResults.add(item);
       }
     }
     setState(() {}); // Trigger a rebuild to update the UI with search results
+  }
+
+  void sortBy(Filter? filter,List<Medicine> sortedList) {
+    if (filter == Filter.searchBy) {
+      return;
+    }
+    List<Medicine> sortedList = PharamacistMedicineList;
+    if (filter == Filter.Genre) {
+      setState(() {
+        sortedList.sort((a, b) => a.genre.compareTo(b.genre));
+      });
+    } else if (filter == Filter.Name) {
+      setState(() {
+        sortedList.sort(
+            (a, b) => a.scientificName.compareTo(b.scientificName));
+      });
+    }
   }
 
   @override
@@ -37,10 +59,9 @@ class _SearchState extends State<Search> {
               hintText: 'Search...',
               border: InputBorder.none,
               suffixIcon: IconButton(
-                icon: Icon(Icons.clear),
+                icon: Icon(Icons.search),
                 onPressed: () {
-                  _searchController.clear();
-                  search('');
+                  search(_searchController.text);
                 },
               ),
             ),
@@ -73,7 +94,11 @@ class _SearchState extends State<Search> {
                           value: _selectedSearchType,
                           onChanged: (String? newValue) {
                             setState(() {
-                              _selectedSearchType = newValue!;
+                              _selectedSearchType = newValue;
+                              if (newValue == 'Name')
+                                sortBy(Filter.Name,_searchResults);
+                              else if (newValue == 'Genre')
+                                sortBy(Filter.Genre,_searchResults);
                             });
                           },
                           items: ['search by', 'Name', 'Genre']
@@ -93,7 +118,7 @@ class _SearchState extends State<Search> {
                   ),
                 ),
                 Container(
-                  height: 268,
+                  height: 460,
                   child: _searchResults.isNotEmpty
                       ? ListView.builder(
                           scrollDirection: Axis.vertical,
@@ -102,16 +127,64 @@ class _SearchState extends State<Search> {
                             final currentItem = _searchResults[index];
                             return ListTile(
                               style: ListTileStyle.list,
-                              shape: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                              title: Text(currentItem),
+                              shape: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              title: Row(
+                                children: [
+                                  Text(currentItem.scientificName),
+                                  SizedBox(
+                                    width: 50,
+                                  ),
+                                  Text(currentItem.genre),
+                                ],
+                              ),
                               tileColor: Colors.purple,
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        backgroundColor:
+                                            Color.fromRGBO(153, 153, 153, 1.0),
+                                        title: IconButton(
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                            icon: Icon(Icons.close)),
+                                        content: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(currentItem.scientificName),
+                                            Text(currentItem.commercialName),
+                                            Text(currentItem.genre),
+                                            Text(currentItem.company),
+                                            Text('${currentItem.amount}'),
+                                            Text('${currentItem.price}'),
+                                            Text(currentItem.expirationDate
+                                                .toString()),
+                                          ],
+                                        ),
+                                        actions: [
+                                          IconButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                              icon: Icon(Icons.close))
+                                        ],
+                                      );
+                                    });
+                              },
                             );
                           },
                         )
                       : Center(
                           child: Text(
                             'No Results',
-                            style: TextStyle(fontSize: 30),
+                            style: TextStyle(fontSize: 30, color: Colors.white),
                           ),
                         ),
                 )
