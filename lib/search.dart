@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'home.dart' as HomePage;
 import 'medicine.dart';
 import 'medicineList.dart';
+import 'package:http/http.dart' as http;
+import 'current_user.dart';
+import 'package:intl/intl.dart';
 
 class Search extends StatefulWidget {
   static final String route = '/route_search';
@@ -14,9 +19,10 @@ enum Filter { searchBy, Name, Genre }
 
 class _SearchState extends State<Search> {
   String? _selectedSearchType = 'search by';
+  bool _isLoading = false;
   int itemCount = 0;
   TextEditingController _searchController = TextEditingController(text: '');
-  List<Medicine> allItems = PharamacistMedicineList;
+  List<Medicine> allItems = [];
 
   List<Medicine> _searchResults = [];
   Filter? filter = Filter.searchBy;
@@ -31,7 +37,7 @@ class _SearchState extends State<Search> {
     setState(() {}); // Trigger a rebuild to update the UI with search results
   }
 
-  void sortBy(Filter? filter,List<Medicine> sortedList) {
+  void sortBy(Filter? filter, List<Medicine> sortedList) {
     if (filter == Filter.searchBy) {
       return;
     }
@@ -42,10 +48,13 @@ class _SearchState extends State<Search> {
       });
     } else if (filter == Filter.Name) {
       setState(() {
-        sortedList.sort(
-            (a, b) => a.scientificName.compareTo(b.scientificName));
+        sortedList.sort((a, b) => a.scientificName.compareTo(b.scientificName));
       });
     }
+  }
+
+  void _switchLoading(bool b) {
+    _isLoading = b;
   }
 
   @override
@@ -61,6 +70,7 @@ class _SearchState extends State<Search> {
               suffixIcon: IconButton(
                 icon: Icon(Icons.search),
                 onPressed: () {
+                  _getMedicines();
                   search(_searchController.text);
                 },
               ),
@@ -78,7 +88,7 @@ class _SearchState extends State<Search> {
           },
           body: Container(
             width: 600,
-            height: 400,
+            height: 600,
             child: Column(
               children: [
                 Container(
@@ -96,9 +106,9 @@ class _SearchState extends State<Search> {
                             setState(() {
                               _selectedSearchType = newValue;
                               if (newValue == 'Name')
-                                sortBy(Filter.Name,_searchResults);
+                                sortBy(Filter.Name, _searchResults);
                               else if (newValue == 'Genre')
-                                sortBy(Filter.Genre,_searchResults);
+                                sortBy(Filter.Genre, _searchResults);
                             });
                           },
                           items: ['search by', 'Name', 'Genre']
@@ -118,7 +128,7 @@ class _SearchState extends State<Search> {
                   ),
                 ),
                 Container(
-                  height: 460,
+                  height: 260,
                   child: _searchResults.isNotEmpty
                       ? ListView.builder(
                           scrollDirection: Axis.vertical,
@@ -140,17 +150,25 @@ class _SearchState extends State<Search> {
                               ),
                               tileColor: Colors.purple,
                               onTap: () {
+                                setState(() {
+                                  RecentList.add(currentItem);
+                                });
                                 showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
                                         backgroundColor:
                                             Color.fromRGBO(153, 153, 153, 1.0),
-                                        title: IconButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            icon: Icon(Icons.close)),
+                                        title: Row(
+                                          children: [
+                                            Text('Medicine Info'),
+                                            IconButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                icon: Icon(Icons.close)),
+                                          ],
+                                        ),
                                         content: Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
@@ -164,7 +182,7 @@ class _SearchState extends State<Search> {
                                             Text(currentItem.company),
                                             Text('${currentItem.amount}'),
                                             Text('${currentItem.price}'),
-                                            Text(currentItem.expirationDate
+                                            Text(DateFormat('yy/MM/dd').format(currentItem.expirationDate)
                                                 .toString()),
                                           ],
                                         ),
@@ -181,16 +199,50 @@ class _SearchState extends State<Search> {
                             );
                           },
                         )
-                      : Center(
-                          child: Text(
-                            'No Results',
-                            style: TextStyle(fontSize: 30, color: Colors.white),
-                          ),
-                        ),
+                      : _isLoading
+                          ? CircularProgressIndicator()
+                          : Center(
+                              child: Text(
+                                'No Results',
+                                style: TextStyle(
+                                    fontSize: 30, color: Colors.white),
+                              ),
+                            ),
                 )
               ],
             ),
           ),
         ));
+  }
+
+  _getMedicines() async {
+    _switchLoading(true);
+    http.Response response = await http.get(
+      Uri.parse('http://10.0.2.2:8000/api/getmedicine'),
+      headers: {
+        'Authorization': "Bearer ${userInfo["api_token"]}"
+      }
+    );
+    _switchLoading(false);
+    if (jsonDecode(response.body)["statusNumber"] == 200) {
+      setState(() {
+        Map<String, dynamic> responseMap =
+            jsonDecode(response.body)["categories"];
+        for (var key in responseMap.keys) {
+          allItems.add(Medicine(
+              id: responseMap[key][0]["id"],
+              scientificName: responseMap[key]![0]["s_name"],
+              commercialName: responseMap[key]![0]["s_name"],
+              genre: key,
+              company: responseMap[key]![0]["s_name"],
+              expirationDate: responseMap[key]![0]["id"],
+              price: responseMap[key]![0]["price"],
+              amount: responseMap[key]![0]["id"]));
+        }
+      });
+      print(jsonDecode(response.body)["message"]);
+    } else if (jsonDecode(response.body)["statusNumber"] == 403) {
+      print(jsonDecode(response.body)["message"]);
+    }
   }
 }

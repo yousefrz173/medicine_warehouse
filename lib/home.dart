@@ -50,6 +50,7 @@ class _HomePageState extends State<HomePage> {
                                 borderRadius: BorderRadius.circular(50),
                                 onTap: () => {},
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Icon(
                                       Icons.pending,
@@ -57,7 +58,7 @@ class _HomePageState extends State<HomePage> {
                                       size: 55,
                                     ),
                                     Text(
-                                      'Shipments',
+                                      'Orders',
                                       style: TextStyle(
                                           fontSize: 20, color: Colors.white),
                                       textAlign: TextAlign.center,
@@ -70,6 +71,7 @@ class _HomePageState extends State<HomePage> {
                                 borderRadius: BorderRadius.circular(50),
                                 onTap: () => {},
                                 child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Icon(
                                       Icons.local_shipping,
@@ -77,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                                       size: 40,
                                     ),
                                     Text(
-                                      'New \n Shipment',
+                                      'New \n Order',
                                       style: TextStyle(
                                           fontSize: 20, color: Colors.white),
                                       textAlign: TextAlign.center,
@@ -113,7 +115,9 @@ class _HomePageState extends State<HomePage> {
                     width: 380,
                     height: 400,
                     child: GridView.builder(
-                      itemCount: PharamacistMedicineList.length,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: RecentList.length,
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () => {},
@@ -129,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                             height: 25,
                             width: 10,
                             child: Text(
-                              PharamacistMedicineList[index].commercialName,
+                              RecentList[index].commercialName,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
