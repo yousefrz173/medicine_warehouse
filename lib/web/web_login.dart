@@ -21,7 +21,7 @@ class _LoginRegisterState extends State<LoginRegister> {
 
   bool _isLoading = false;
   final Map<String, String> _authData = {
-    'phone': '',
+    'username': '',
     'password': '',
   };
 
@@ -87,8 +87,8 @@ class _LoginRegisterState extends State<LoginRegister> {
                     return null;
                   },
                   onSaved: (val) {
-                    _authData['phone'] = val!;
-                    print(_authData['phone']);
+                    _authData['username'] = val!;
+                    print(_authData['username']);
                   },
                 ),
                 const SizedBox(height: 20),
@@ -179,9 +179,9 @@ class _LoginRegisterState extends State<LoginRegister> {
     _switchLoading(true);
     if (_authMode == AuthMode.Login) {
       http.Response response =
-          await http.post(Uri.parse('http://10.0.2.2:8000/api/login'),
+          await http.post(Uri.parse('http://127.0.0.1:8000/login'),
               body: jsonEncode({
-                "phone": _authData['phone'],
+                "username": _authData['username'],
                 "password": _authData['password'],
               }),
               headers: {'Content-Type': 'application/json'});
@@ -209,34 +209,6 @@ class _LoginRegisterState extends State<LoginRegister> {
           duration: Duration(seconds: 3),
         );
         print((jsonDecode(response.body))["message"]);
-      }
-    } else {
-      //10.0.2.2
-      http.Response response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/register'),
-        body: jsonEncode({
-          'phone': _authData['phone'],
-          'password': _authData['password'],
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
-      _switchLoading(false);
-      if ((jsonDecode(response.body))["statusNumber"] == 200) {
-        snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
-          duration: Duration(seconds: 3),
-        );
-        print(jsonDecode(response.body)["message"]);
-        _switchAuthMode();
-      } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
-        snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
-          duration: Duration(seconds: 3),
-        );
-        print((jsonDecode(response.body))["message"]);
-        return;
       }
     }
     ScaffoldMessenger.of(context).showSnackBar(snackBar);

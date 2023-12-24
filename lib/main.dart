@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/login_register.dart';
-import '../favorites.dart';
-import '../intro_page.dart';
-import '../store.dart';
-import '../search.dart';
+import 'favorites.dart';
+import 'intro_page.dart';
+import 'store.dart';
+import 'search.dart';
 import 'home.dart';
 
 void main() {
@@ -16,7 +16,7 @@ class AdminWebApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Our Medicine Whorehouse',
-      initialRoute: HomePage.route,
+      initialRoute: IntroPage.route,
       routes: {
         LoginRegister.route: (context) => LoginRegister(),
         HomePage.route: (context) => HomePage(),
