@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'web_home.dart';
 import 'package:http/http.dart' as http;
 import 'current_admin.dart';
@@ -17,6 +18,7 @@ enum AuthMode { SignUp, Login }
 
 class _LoginRegisterState extends State<LoginRegister> {
   final GlobalKey<FormState> _formKey = GlobalKey();
+  bool _obscureText = true;
 
   bool _isLoading = false;
   final Map<String, String> _authData = {
@@ -51,56 +53,72 @@ class _LoginRegisterState extends State<LoginRegister> {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Column(
               children: [
-                TextFormField(
-                  style: TextStyle(color: Colors.white),
-                  cursorColor: Colors.indigo,
-                  decoration: InputDecoration(
-                    hintText: 'User Name',
-                    hintStyle: TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(320, 20, 320, 20),
+                  child: TextFormField(
+                    inputFormatters: [
+                      FilteringTextInputFormatter.singleLineFormatter
+                    ],
+                    style: TextStyle(color: Colors.white),
+                    cursorColor: Colors.indigo,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.account_circle_outlined),
+                      hintText: 'User Name',
+                      hintStyle: TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a valid user name';
+                      }
+                      return null;
+                    },
+                    onSaved: (val) {
+                      _authData['username'] = val!;
+                      print(_authData['username']);
+                    },
                   ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null ||
-                        value.isEmpty ||
-                        value.contains('.') ||
-                        value.contains(',') ||
-                        value.contains('-') ||
-                        value.contains(' ')) {
-                      return 'Please enter a valid phone number';
-                    }
-                    return null;
-                  },
-                  onSaved: (val) {
-                    _authData['username'] = val!;
-                    print(_authData['username']);
-                  },
                 ),
                 const SizedBox(height: 20),
-                TextFormField(
-                  style: TextStyle(color: Colors.white),
-                  controller: _passwordController,
-                  cursorColor: Colors.indigo,
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    hintStyle: TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(320, 20, 320, 20),
+                  child: TextFormField(
+                    obscureText: _obscureText,
+                    style: TextStyle(color: Colors.white),
+                    controller: _passwordController,
+                    cursorColor: Colors.indigo,
+                    decoration: InputDecoration(
+                      prefixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                        child: Icon(_obscureText
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                      ),
+                      hintText: 'Password',
+                      hintStyle: TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
                     ),
+                    keyboardType: TextInputType.visiblePassword,
+                    validator: (value) {
+                      if (value == null || value.isEmpty || value.length <= 5) {
+                        return 'Please enter a valid password,\n password should contain 5 elements at least';
+                      }
+                      return null;
+                    },
+                    onSaved: (val) {
+                      _authData['password'] = val!;
+                      print(_authData['password']);
+                    },
                   ),
-                  keyboardType: TextInputType.visiblePassword,
-                  validator: (value) {
-                    if (value == null || value.isEmpty || value.length <= 5) {
-                      return 'Please enter a valid password,\n password should contain 5 elements at least';
-                    }
-                    return null;
-                  },
-                  onSaved: (val) {
-                    _authData['password'] = val!;
-                    print(_authData['password']);
-                  },
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
@@ -141,7 +159,9 @@ class _LoginRegisterState extends State<LoginRegister> {
             headers: {'Content-Type': 'application/json'});
     _switchLoading(false);
     print(response.statusCode);
-    if ((jsonDecode(response.body))["statusNumber"] == 200) {
+    print(jsonEncode(response.body));
+    snackBar = SnackBar(content: Text('${response.statusCode}'));
+    if (response.statusCode == 200) {
       snackBar = SnackBar(
         content: Text(jsonDecode(response.body)["message"]),
         duration: Duration(seconds: 3),
@@ -158,7 +178,7 @@ class _LoginRegisterState extends State<LoginRegister> {
       };
       Navigator.of(context)
           .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
-    } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
+    } else if (response.statusCode == 400) {
       snackBar = SnackBar(
         content: Text(jsonDecode(response.body)["message"]),
         duration: Duration(seconds: 3),

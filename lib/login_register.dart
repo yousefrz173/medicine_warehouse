@@ -186,6 +186,7 @@ class _LoginRegisterState extends State<LoginRegister> {
               }),
               headers: {'Content-Type': 'application/json'});
       _switchLoading(false);
+      print(response.statusCode);
       if ((jsonDecode(response.body))["statusNumber"] == 200) {
         snackBar = SnackBar(
           content: Text(jsonDecode(response.body)["message"]),
@@ -223,6 +224,7 @@ class _LoginRegisterState extends State<LoginRegister> {
         },
       );
       _switchLoading(false);
+      print(response.statusCode);
       if ((jsonDecode(response.body))["statusNumber"] == 200) {
         snackBar = SnackBar(
           content: Text(jsonDecode(response.body)["message"]),
