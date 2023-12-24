@@ -1,16 +1,13 @@
 import 'dart:convert';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/intro_page.dart';
-import 'package:PharmacyApp/login_register.dart';
 import 'package:http/http.dart' as http;
-import '../current_user.dart';
-import '../search.dart';
-import '../store.dart';
-import '../favorites.dart';
-import '../medicineList.dart';
-import '../my_stock.dart';
-import '../current_user.dart';
+import 'current_user.dart';
+import 'search.dart';
+import 'store.dart';
+import 'favorites.dart';
+import 'package:PharmacyApp/shared/medicineList.dart';
+import 'my_stock.dart';
 
 class HomePage extends StatefulWidget {
   static final String route = '/';
