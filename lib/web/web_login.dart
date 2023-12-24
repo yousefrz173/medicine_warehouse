@@ -17,7 +17,6 @@ enum AuthMode { SignUp, Login }
 
 class _LoginRegisterState extends State<LoginRegister> {
   final GlobalKey<FormState> _formKey = GlobalKey();
-  AuthMode _authMode = AuthMode.Login;
 
   bool _isLoading = false;
   final Map<String, String> _authData = {
@@ -26,18 +25,6 @@ class _LoginRegisterState extends State<LoginRegister> {
   };
 
   final _passwordController = TextEditingController();
-
-  void _switchAuthMode() {
-    if (_authMode == AuthMode.Login) {
-      setState(() {
-        _authMode = AuthMode.SignUp;
-      });
-    } else {
-      setState(() {
-        _authMode = AuthMode.Login;
-      });
-    }
-  }
 
   void _switchLoading(bool v) {
     setState(() {
@@ -68,7 +55,7 @@ class _LoginRegisterState extends State<LoginRegister> {
                   style: TextStyle(color: Colors.white),
                   cursorColor: Colors.indigo,
                   decoration: InputDecoration(
-                    hintText: 'Phone Number',
+                    hintText: 'User Name',
                     hintStyle: TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -116,46 +103,15 @@ class _LoginRegisterState extends State<LoginRegister> {
                   },
                 ),
                 const SizedBox(height: 20),
-                if (_authMode == AuthMode.SignUp)
-                  TextFormField(
-                    style: TextStyle(color: Colors.white),
-                    enabled: _authMode == AuthMode.SignUp,
-                    cursorColor: Colors.indigo,
-                    decoration: InputDecoration(
-                      hintText: 'Confirm Password',
-                      hintStyle: TextStyle(color: Colors.white),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    keyboardType: TextInputType.visiblePassword,
-                    validator: _authMode == AuthMode.SignUp
-                        ? (value) {
-                            if (value != _passwordController.text) {
-                              return 'The passwords do not match!';
-                            }
-                            return null;
-                          }
-                        : null,
-                  ),
-                const SizedBox(height: 20),
                 ElevatedButton(
                   child: Text(
-                    _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',
+                    'LOGIN',
                     style: TextStyle(color: Colors.black),
                   ),
                   onPressed: () => _submit(context),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
                         Color.fromRGBO(153, 153, 153, 1.0)),
-                  ),
-                ),
-                TextButton(
-                  child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGN UP' : 'LOGIN'} INSTEAD'),
-                  onPressed: _switchAuthMode,
-                  style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.all(Colors.white),
                   ),
                 ),
                 Container(
@@ -173,44 +129,43 @@ class _LoginRegisterState extends State<LoginRegister> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    //10.0.2.2
     _formKey.currentState!.save();
     SnackBar snackBar = SnackBar(content: Text(''));
     _switchLoading(true);
-    if (_authMode == AuthMode.Login) {
-      http.Response response =
-          await http.post(Uri.parse('http://127.0.0.1:8000/login'),
-              body: jsonEncode({
-                "username": _authData['username'],
-                "password": _authData['password'],
-              }),
-              headers: {'Content-Type': 'application/json'});
-      _switchLoading(false);
-      if ((jsonDecode(response.body))["statusNumber"] == 200) {
-        snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
-          duration: Duration(seconds: 3),
-        );
-        print(jsonDecode(response.body)["message"]);
+    http.Response response =
+        await http.post(Uri.parse('http://127.0.0.1:8000/login'),
+            body: jsonEncode({
+              "username": _authData['username'],
+              "password": _authData['password'],
+            }),
+            headers: {'Content-Type': 'application/json'});
+    _switchLoading(false);
+    print(response.statusCode);
+    if ((jsonDecode(response.body))["statusNumber"] == 200) {
+      snackBar = SnackBar(
+        content: Text(jsonDecode(response.body)["message"]),
+        duration: Duration(seconds: 3),
+      );
+      print(jsonDecode(response.body)["message"]);
 
-        userInfo = {
-          "id": jsonDecode(response.body)["pharmacist_information"]["id"],
-          "phone": jsonDecode(response.body)["pharmacist_information"]["phone"],
-          "password": jsonDecode(response.body)["pharmacist_information"]
-              ["password"],
-          "api_token": jsonDecode(response.body)["pharmacist_information"]
-              ["api_token"],
-        };
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
-      } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
-        snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
-          duration: Duration(seconds: 3),
-        );
-        print((jsonDecode(response.body))["message"]);
-      }
+      userInfo = {
+        "id": jsonDecode(response.body)["pharmacist_information"]["id"],
+        "phone": jsonDecode(response.body)["pharmacist_information"]["phone"],
+        "password": jsonDecode(response.body)["pharmacist_information"]
+            ["password"],
+        "api_token": jsonDecode(response.body)["pharmacist_information"]
+            ["api_token"],
+      };
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
+    } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
+      snackBar = SnackBar(
+        content: Text(jsonDecode(response.body)["message"]),
+        duration: Duration(seconds: 3),
+      );
+      print((jsonDecode(response.body))["message"]);
     }
+
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
