@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'home.dart';
 import 'package:http/http.dart' as http;
 import 'current_user.dart';
@@ -18,6 +19,7 @@ enum AuthMode { SignUp, Login }
 class _LoginRegisterState extends State<LoginRegister> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
+  bool _obscureText = true;
 
   bool _isLoading = false;
   final Map<String, String> _authData = {
@@ -65,9 +67,13 @@ class _LoginRegisterState extends State<LoginRegister> {
             child: Column(
               children: [
                 TextFormField(
+                  inputFormatters: [
+                    FilteringTextInputFormatter.singleLineFormatter
+                  ],
                   style: TextStyle(color: Colors.white),
                   cursorColor: Colors.indigo,
                   decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.account_circle_outlined),
                     hintText: 'Phone Number',
                     hintStyle: TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
@@ -93,10 +99,21 @@ class _LoginRegisterState extends State<LoginRegister> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
+                  obscureText: _obscureText,
                   style: TextStyle(color: Colors.white),
                   controller: _passwordController,
                   cursorColor: Colors.indigo,
                   decoration: InputDecoration(
+                    prefixIcon: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                      child: Icon(_obscureText
+                          ? Icons.visibility
+                          : Icons.visibility_off),
+                    ),
                     hintText: 'Password',
                     hintStyle: TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
