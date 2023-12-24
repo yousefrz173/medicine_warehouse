@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:PharmacyApp/login_register.dart';
-import '../favorites.dart';
-import '../intro_page.dart';
-import '../store.dart';
-import '../search.dart';
+import 'web_login.dart';
+import 'web_intro_page.dart';
+import 'web_search.dart';
 import 'web_home.dart';
 
 void main() {
@@ -21,8 +19,6 @@ class AdminWebApp extends StatelessWidget {
         LoginRegister.route: (context) => LoginRegister(),
         HomePage.route: (context) => HomePage(),
         Search.route: (context) => Search(),
-        Store.route: (context) => Store(),
-        Favorites.route: (context) => Favorites(),
         IntroPage.route: (context) => IntroPage(),
       },
     );

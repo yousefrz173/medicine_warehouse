@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:PharmacyApp/web/web_home.dart';
+import 'web_home.dart';
 import 'package:http/http.dart' as http;
-import 'package:PharmacyApp/web/current_admin.dart';
+import 'current_admin.dart';
 
 class LoginRegister extends StatefulWidget {
   static final String route = 'route_login_register';

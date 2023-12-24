@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:PharmacyApp/login_register.dart';
+import 'login_register.dart';
 import 'favorites.dart';
 import 'intro_page.dart';
 import 'store.dart';
@@ -7,10 +7,10 @@ import 'search.dart';
 import 'home.dart';
 
 void main() {
-  runApp(AdminWebApp());
+  runApp(PharmacistApp());
 }
 
-class AdminWebApp extends StatelessWidget {
+class PharmacistApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

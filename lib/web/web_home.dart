@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:PharmacyApp/intro_page.dart';
-import 'package:PharmacyApp/login_register.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter/material.dart';
+
+import 'web_intro_page.dart';
+import 'web_login.dart';
 import 'current_admin.dart';
 import 'web_search.dart';
 import 'package:PharmacyApp/shared/medicineList.dart';
