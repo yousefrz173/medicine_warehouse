@@ -84,6 +84,7 @@ flutter:
   assets:
     - assets/images/dank2.png
     - assets/icons/caduceus-symbol.png
+    - assets/images/image_processing.gif
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

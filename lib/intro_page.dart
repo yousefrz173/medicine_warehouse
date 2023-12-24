@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:PharmacyApp/home.dart';
+import 'package:PharmacyApp/web/web_home.dart';
 import 'package:PharmacyApp/login_register.dart';
 
 class IntroPage extends StatelessWidget {

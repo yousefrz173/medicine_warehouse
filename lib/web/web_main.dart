@@ -4,7 +4,7 @@ import '../favorites.dart';
 import '../intro_page.dart';
 import '../store.dart';
 import '../search.dart';
-import 'home.dart';
+import 'web_home.dart';
 
 void main() {
   runApp(AdminWebApp());
