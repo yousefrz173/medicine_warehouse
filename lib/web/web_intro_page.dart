@@ -45,7 +45,7 @@ class _IntroPage extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 1),
+              padding: const EdgeInsets.only(top: 15),
               child: ElevatedButton(
                 onPressed: () =>
                     Navigator.of(context).pushNamed(LoginRegister.route),
