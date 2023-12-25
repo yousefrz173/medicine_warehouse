@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:PharmacyApp/intro_page.dart';
+import '/intro_page.dart';
 import 'package:http/http.dart' as http;
 import 'current_user.dart';
 import 'search.dart';
 import 'store.dart';
 import 'favorites.dart';
-import 'package:PharmacyApp/shared/medicineList.dart';
+import '/shared/medicineList.dart';
 import 'my_stock.dart';
 
 class HomePage extends StatefulWidget {

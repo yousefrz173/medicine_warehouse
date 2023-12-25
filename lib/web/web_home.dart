@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'web_intro_page.dart';
 import 'current_admin.dart';
 import 'web_search.dart';
-import 'package:PharmacyApp/shared/medicineList.dart';
+import '/shared/medicineList.dart';
 
 class HomePage extends StatefulWidget {
   static final String route = '/';
