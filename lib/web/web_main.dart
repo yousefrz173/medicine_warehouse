@@ -1,3 +1,4 @@
+import 'package:PharmacyApp/web/web_add_medicine.dart';
 import 'package:flutter/material.dart';
 import 'web_login.dart';
 import 'web_intro_page.dart';
@@ -20,6 +21,7 @@ class AdminWebApp extends StatelessWidget {
         HomePage.route: (context) => HomePage(),
         Search.route: (context) => Search(),
         IntroPage.route: (context) => IntroPage(),
+        AddMedicine.route: (context) => AddMedicine(),
       },
     );
   }

@@ -158,7 +158,6 @@ class _LoginRegisterState extends State<LoginRegister> {
     print(csrfToken);
     var loginResponse = await http.post(
       Uri.parse('http://127.0.0.1:8000/login'),
-
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         //'X-CSRF-TOKEN': csrfToken,
