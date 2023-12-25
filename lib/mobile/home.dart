@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:PharmacyApp/intro_page.dart';
+import 'intro_page.dart';
 import 'package:http/http.dart' as http;
 import 'current_user.dart';
 import 'search.dart';

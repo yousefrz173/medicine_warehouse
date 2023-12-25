@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'web_home.dart';
 import 'package:http/http.dart' as http;
 import 'current_admin.dart';
+import 'package:html/parser.dart' show parse;
+//import 'package:html/dom.dart';
 
 class LoginRegister extends StatefulWidget {
   static final String route = 'route_login_register';
@@ -21,6 +23,13 @@ class _LoginRegisterState extends State<LoginRegister> {
   bool _obscureText = true;
 
   bool _isLoading = false;
+
+  Future<String> extractCsrfToken(String html) async {
+    var document = parse(html);
+    var csrfTokenElement = document.querySelector('input[name="csrf_token"]');
+    return csrfTokenElement?.attributes['value'] ?? '';
+  }
+
   final Map<String, String> _authData = {
     'username': '',
     'password': '',
@@ -56,9 +65,6 @@ class _LoginRegisterState extends State<LoginRegister> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(320, 20, 320, 20),
                   child: TextFormField(
-                    inputFormatters: [
-                      FilteringTextInputFormatter.singleLineFormatter
-                    ],
                     style: TextStyle(color: Colors.white),
                     cursorColor: Colors.indigo,
                     decoration: InputDecoration(
@@ -150,40 +156,59 @@ class _LoginRegisterState extends State<LoginRegister> {
     _formKey.currentState!.save();
     SnackBar snackBar = SnackBar(content: Text(''));
     _switchLoading(true);
-    http.Response response =
-        await http.post(Uri.parse('http://127.0.0.1:8000/login'),
-            body: jsonEncode({
-              "username": _authData['username'],
-              "password": _authData['password'],
-            }),
-            headers: {'Content-Type': 'application/json'});
+    var response = await http.get(Uri.parse('http://127.0.0.1:8000/go-login'));
+    var csrfToken = await extractCsrfToken(response.body);
+
+    var loginResponse =
+        await http.post(Uri.parse('http://127.0.0.1:8000/login'), headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    }, body: {
+      "username": _authData['username'],
+      "password": _authData['password'],
+      "@csrf": csrfToken,
+    });
+    // var request = http.MultipartRequest('POST', Uri.parse('http://127.0.0.1:8000/login'));
+    // request.fields["username"] = _authData['username']!;
+    // request.fields["password"] = _authData['password']!;
+    // request.fields['csrf_token'] = csrfToken;
+    //var loginResponse = await request.send();
+
+    // http.Response response =
+    //     await http.post(Uri.parse('http://127.0.0.1:8000/login'),
+    //         body: Uri.encodeQueryComponent({
+    //           "username": _authData['username'],
+    //           "password": _authData['password'],
+    //         }.toString()),
+    //         headers: {
+    //       'Content-Type': 'application/x-www-form-urlencoded',
+    //     });
     _switchLoading(false);
-    print(response.statusCode);
-    print(jsonEncode(response.body));
-    snackBar = SnackBar(content: Text('${response.statusCode}'));
-    if (response.statusCode == 200) {
+    print(loginResponse.statusCode);
+    print(loginResponse.body);
+    snackBar = SnackBar(content: Text('${loginResponse.statusCode}'));
+    if (loginResponse.statusCode == 200) {
       snackBar = SnackBar(
-        content: Text(jsonDecode(response.body)["message"]),
+        content: Text(await loginResponse.body),
         duration: Duration(seconds: 3),
       );
-      print(jsonDecode(response.body)["message"]);
+      print(await loginResponse.body);
 
-      userInfo = {
-        "id": jsonDecode(response.body)["pharmacist_information"]["id"],
-        "phone": jsonDecode(response.body)["pharmacist_information"]["phone"],
-        "password": jsonDecode(response.body)["pharmacist_information"]
-            ["password"],
-        "api_token": jsonDecode(response.body)["pharmacist_information"]
-            ["api_token"],
-      };
+      // userInfo = {
+      //   "id": jsonDecode(response.body)["pharmacist_information"]["id"],
+      //   "phone": jsonDecode(response.body)["pharmacist_information"]["phone"],
+      //   "password": jsonDecode(response.body)["pharmacist_information"]
+      //       ["password"],
+      //   "api_token": jsonDecode(response.body)["pharmacist_information"]
+      //       ["api_token"],
+      // };
       Navigator.of(context)
           .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
-    } else if (response.statusCode == 400) {
+    } else if (loginResponse.statusCode == 400) {
       snackBar = SnackBar(
-        content: Text(jsonDecode(response.body)["message"]),
+        content: Text(await loginResponse.body),
         duration: Duration(seconds: 3),
       );
-      print((jsonDecode(response.body))["message"]);
+      print(await loginResponse.body);
     }
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
