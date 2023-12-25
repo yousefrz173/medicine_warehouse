@@ -24,12 +24,6 @@ class _LoginRegisterState extends State<LoginRegister> {
 
   bool _isLoading = false;
 
-  Future<String> extractCsrfToken(String html) async {
-    final RegExp regex = RegExp(r'name="_token" value="([^"]+)"');
-    final Match match = regex.firstMatch(html)!;
-    return match?.group(1) ?? '';
-  }
-
   final Map<String, String> _authData = {
     'username': '',
     'password': '',
@@ -156,38 +150,29 @@ class _LoginRegisterState extends State<LoginRegister> {
     _formKey.currentState!.save();
     SnackBar snackBar = SnackBar(content: Text(''));
     _switchLoading(true);
-    var response = await http.get(Uri.parse('http://127.0.0.1:8000/go-login'));
+    var response =
+        await http.get(Uri.parse('http://127.0.0.1:8000/csrf-token'));
     print(response.body);
-    var csrfToken = await extractCsrfToken(response.body);
+    print(response.headers);
+    String csrfToken = jsonDecode(response.body)["csrf_token"];
     print(csrfToken);
-    var loginResponse =
-    await http.post(Uri.parse('http://127.0.0.1:8000/login'),
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: <String, dynamic>{
-          "_token": csrfToken,
-          "username": _authData['username'],
-          "password": _authData['password'],
-        });
-    // var request = http.MultipartRequest('POST', Uri.parse('http://127.0.0.1:8000/login'));
-    // request.fields["username"] = _authData['username']!;
-    // request.fields["password"] = _authData['password']!;
-    // request.fields['csrf_token'] = csrfToken;
-    //var loginResponse = await request.send();
+    var loginResponse = await http.post(
+      Uri.parse('http://127.0.0.1:8000/login'),
 
-    // http.Response response =
-    //     await http.post(Uri.parse('http://127.0.0.1:8000/login'),
-    //         body: Uri.encodeQueryComponent({
-    //           "username": _authData['username'],
-    //           "password": _authData['password'],
-    //         }.toString()),
-    //         headers: {
-    //       'Content-Type': 'application/x-www-form-urlencoded',
-    //     });
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        //'X-CSRF-TOKEN': csrfToken,
+      },
+      body: {
+        'username': _authData['username']!,
+        'password': _authData['password']!,
+        '_token': csrfToken,
+      },
+    );
     _switchLoading(false);
     print(loginResponse.statusCode);
     print(loginResponse.body);
+    print(loginResponse.headers);
     snackBar = SnackBar(content: Text('${loginResponse.statusCode}'));
     if (loginResponse.statusCode == 200) {
       snackBar = SnackBar(
