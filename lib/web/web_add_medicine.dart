@@ -8,7 +8,6 @@ class Addbages extends StatelessWidget {
     return const Addbage();
   }
 }
-
 class Addbage extends StatefulWidget {
   const Addbage({super.key});
 

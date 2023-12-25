@@ -1,13 +1,11 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:PharmacyApp/intro_page.dart';
 import 'package:http/http.dart' as http;
-import 'current_user.dart';
-import 'search.dart';
-import 'store.dart';
-import 'favorites.dart';
+import 'package:flutter/material.dart';
+
+import 'web_intro_page.dart';
+import 'current_admin.dart';
+import 'web_search.dart';
 import 'package:PharmacyApp/shared/medicineList.dart';
-import 'my_stock.dart';
 
 class HomePage extends StatefulWidget {
   static final String route = '/';
@@ -164,17 +162,17 @@ class _HomePageState extends State<HomePage> {
           Text('Home', style: TextStyle(fontSize: 23, color: Colors.black)),
     },
     {
-      'screen': MyStock(),
+      'screen': Scaffold(),
       'title':
           Text('My Stock', style: TextStyle(fontSize: 23, color: Colors.black)),
     },
     {
-      'screen': Store(),
+      'screen': Scaffold(),
       'title':
           Text('Store', style: TextStyle(fontSize: 23, color: Colors.black)),
     },
     {
-      'screen': Favorites(),
+      'screen': Scaffold(),
       'title': Text('Favorites',
           style: TextStyle(fontSize: 23, color: Colors.black)),
     },

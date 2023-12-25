@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'login_register.dart';
+import 'web_login.dart';
 
 class IntroPage extends StatelessWidget {
   static final route = 'intro_page_route';

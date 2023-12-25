@@ -1,7 +1,6 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:PharmacyApp/home.dart';
+import 'home.dart';
 import 'package:http/http.dart' as http;
 import 'current_user.dart';
 
@@ -145,7 +144,7 @@ class _LoginRegisterState extends State<LoginRegister> {
                     _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',
                     style: TextStyle(color: Colors.black),
                   ),
-                  onPressed: _submit,
+                  onPressed: () => _submit(context),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
                         Color.fromRGBO(153, 153, 153, 1.0)),
@@ -170,12 +169,13 @@ class _LoginRegisterState extends State<LoginRegister> {
     );
   }
 
-  void _submit() async {
+  void _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
     //10.0.2.2
     _formKey.currentState!.save();
+    SnackBar snackBar = SnackBar(content: Text(''));
     _switchLoading(true);
     if (_authMode == AuthMode.Login) {
       http.Response response =
@@ -186,8 +186,14 @@ class _LoginRegisterState extends State<LoginRegister> {
               }),
               headers: {'Content-Type': 'application/json'});
       _switchLoading(false);
+      print(response.statusCode);
       if ((jsonDecode(response.body))["statusNumber"] == 200) {
+        snackBar = SnackBar(
+          content: Text(jsonDecode(response.body)["message"]),
+          duration: Duration(seconds: 3),
+        );
         print(jsonDecode(response.body)["message"]);
+
         userInfo = {
           "id": jsonDecode(response.body)["pharmacist_information"]["id"],
           "phone": jsonDecode(response.body)["pharmacist_information"]["phone"],
@@ -199,6 +205,10 @@ class _LoginRegisterState extends State<LoginRegister> {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
       } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
+        snackBar = SnackBar(
+          content: Text(jsonDecode(response.body)["message"]),
+          duration: Duration(seconds: 3),
+        );
         print((jsonDecode(response.body))["message"]);
       }
     } else {
@@ -214,13 +224,23 @@ class _LoginRegisterState extends State<LoginRegister> {
         },
       );
       _switchLoading(false);
+      print(response.statusCode);
       if ((jsonDecode(response.body))["statusNumber"] == 200) {
+        snackBar = SnackBar(
+          content: Text(jsonDecode(response.body)["message"]),
+          duration: Duration(seconds: 3),
+        );
         print(jsonDecode(response.body)["message"]);
         _switchAuthMode();
       } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
+        snackBar = SnackBar(
+          content: Text(jsonDecode(response.body)["message"]),
+          duration: Duration(seconds: 3),
+        );
         print((jsonDecode(response.body))["message"]);
         return;
       }
     }
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'home.dart' as HomePage;
+import 'web_home.dart' as HomePage;
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:http/http.dart' as http;
-import 'current_user.dart';
+import 'current_admin.dart';
 import 'package:intl/intl.dart';
 
 class Search extends StatefulWidget {
