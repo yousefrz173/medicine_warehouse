@@ -4,8 +4,8 @@ import 'package:flutter/services.dart';
 import 'web_home.dart';
 import 'package:http/http.dart' as http;
 import 'current_admin.dart';
-import 'package:html/parser.dart' show parse;
-//import 'package:html/dom.dart';
+import 'package:html/parser.dart' as htmlParser;
+import 'package:html/dom.dart' as htmlDom;
 
 class LoginRegister extends StatefulWidget {
   static final String route = 'route_login_register';
@@ -25,9 +25,9 @@ class _LoginRegisterState extends State<LoginRegister> {
   bool _isLoading = false;
 
   Future<String> extractCsrfToken(String html) async {
-    var document = parse(html);
-    var csrfTokenElement = document.querySelector('input[name="csrf_token"]');
-    return csrfTokenElement?.attributes['value'] ?? '';
+    final RegExp regex = RegExp(r'name="_token" value="([^"]+)"');
+    final Match match = regex.firstMatch(html)!;
+    return match?.group(1) ?? '';
   }
 
   final Map<String, String> _authData = {
@@ -157,16 +157,19 @@ class _LoginRegisterState extends State<LoginRegister> {
     SnackBar snackBar = SnackBar(content: Text(''));
     _switchLoading(true);
     var response = await http.get(Uri.parse('http://127.0.0.1:8000/go-login'));
+    print(response.body);
     var csrfToken = await extractCsrfToken(response.body);
-
+    print(csrfToken);
     var loginResponse =
-        await http.post(Uri.parse('http://127.0.0.1:8000/login'), headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    }, body: {
-      "username": _authData['username'],
-      "password": _authData['password'],
-      "csrf_token": csrfToken,
-    });
+    await http.post(Uri.parse('http://127.0.0.1:8000/login'),
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: <String, dynamic>{
+          "_token": csrfToken,
+          "username": _authData['username'],
+          "password": _authData['password'],
+        });
     // var request = http.MultipartRequest('POST', Uri.parse('http://127.0.0.1:8000/login'));
     // request.fields["username"] = _authData['username']!;
     // request.fields["password"] = _authData['password']!;
