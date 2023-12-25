@@ -23,11 +23,14 @@ class _IntroPage extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.fromLTRB(130, 130, 130, 20),
               child: Image(
+                  width: 170,
+                  height: 170,
                   color: Colors.white54,
                   image: AssetImage('assets/icons/caduceus-symbol.png'),
-                  fit: BoxFit.fitHeight),
+                  fit: BoxFit.fill),
             ),
             const Text(
+              textAlign: TextAlign.center,
               'Welcome',
               style: TextStyle(
                   fontFamily: 'Pacifico', fontSize: 30, color: Colors.white54),
@@ -36,19 +39,22 @@ class _IntroPage extends StatelessWidget {
               padding: EdgeInsets.only(top: 20),
               child: Divider(
                 color: Colors.grey,
-                indent: 50,
-                endIndent: 50,
+                indent: 300,
+                endIndent: 300,
                 thickness: 3,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 30),
+              padding: const EdgeInsets.only(top: 1),
               child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pushNamed(LoginRegister.route),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(LoginRegister.route),
                 style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.only(bottom: 13),
                     minimumSize: const Size(200, 50),
                     backgroundColor: Colors.white),
                 child: const Text(
+                  textAlign: TextAlign.center,
                   'Get Started',
                   style: TextStyle(fontSize: 30, color: Colors.black),
                 ),
@@ -58,8 +64,8 @@ class _IntroPage extends StatelessWidget {
               padding: EdgeInsets.only(top: 20),
               child: Divider(
                 color: Colors.grey,
-                indent: 50,
-                endIndent: 50,
+                indent: 300,
+                endIndent: 300,
                 thickness: 3,
               ),
             ),
