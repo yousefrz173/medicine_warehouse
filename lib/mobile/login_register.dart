@@ -19,7 +19,8 @@ enum AuthMode { SignUp, Login }
 class _LoginRegisterState extends State<LoginRegister> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
-  bool _obscureText = true;
+  bool _passwordObscureText = true;
+  bool _confirmPasswordObscureText = true;
 
   bool _isLoading = false;
   final Map<String, String> _authData = {
@@ -99,7 +100,7 @@ class _LoginRegisterState extends State<LoginRegister> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  obscureText: _obscureText,
+                  obscureText: _passwordObscureText,
                   style: TextStyle(color: Colors.white),
                   controller: _passwordController,
                   cursorColor: Colors.indigo,
@@ -107,10 +108,10 @@ class _LoginRegisterState extends State<LoginRegister> {
                     prefixIcon: GestureDetector(
                       onTap: () {
                         setState(() {
-                          _obscureText = !_obscureText;
+                          _passwordObscureText = !_passwordObscureText;
                         });
                       },
-                      child: Icon(_obscureText
+                      child: Icon(_passwordObscureText
                           ? Icons.visibility
                           : Icons.visibility_off),
                     ),
@@ -135,10 +136,22 @@ class _LoginRegisterState extends State<LoginRegister> {
                 const SizedBox(height: 20),
                 if (_authMode == AuthMode.SignUp)
                   TextFormField(
+                    obscureText: _confirmPasswordObscureText,
+
                     style: TextStyle(color: Colors.white),
                     enabled: _authMode == AuthMode.SignUp,
                     cursorColor: Colors.indigo,
                     decoration: InputDecoration(
+                      prefixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _passwordObscureText = !_passwordObscureText;
+                          });
+                        },
+                        child: Icon(_passwordObscureText
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                      ),
                       hintText: 'Confirm Password',
                       hintStyle: TextStyle(color: Colors.white),
                       border: OutlineInputBorder(

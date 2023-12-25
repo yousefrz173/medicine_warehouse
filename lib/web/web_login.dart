@@ -165,7 +165,7 @@ class _LoginRegisterState extends State<LoginRegister> {
     }, body: {
       "username": _authData['username'],
       "password": _authData['password'],
-      "@csrf": csrfToken,
+      "csrf_token": csrfToken,
     });
     // var request = http.MultipartRequest('POST', Uri.parse('http://127.0.0.1:8000/login'));
     // request.fields["username"] = _authData['username']!;
