@@ -1,3 +1,9 @@
+/*
+todo:
+   design
+   connect
+   based on mobile
+ */
 import 'dart:async';
 import 'dart:convert';
 

@@ -1,4 +1,9 @@
-//TODO: DO THIS
+/*
+todo:
+   design
+   connect
+   based on mobile
+ */
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
