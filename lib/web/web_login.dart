@@ -7,18 +7,18 @@ import 'current_admin.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as htmlDom;
 
-class LoginRegister extends StatefulWidget {
+class Login extends StatefulWidget {
   static final String route = 'route_login_register';
 
-  const LoginRegister({Key? key}) : super(key: key);
+  const Login({Key? key}) : super(key: key);
 
   @override
-  _LoginRegisterState createState() => _LoginRegisterState();
+  _LoginState createState() => _LoginState();
 }
 
 enum AuthMode { SignUp, Login }
 
-class _LoginRegisterState extends State<LoginRegister> {
+class _LoginState extends State<Login> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   bool _obscureText = true;
 

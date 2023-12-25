@@ -150,7 +150,7 @@ class _AddMedicineState extends State<_AddMedicine> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  required;
+                  //required;
                   _submitform();
                 },
                 style: ElevatedButton.styleFrom(
