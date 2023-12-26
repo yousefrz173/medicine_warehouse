@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:PharmacyApp/shared/connect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PharmacyApp/mobile/home.dart';
@@ -29,6 +30,10 @@ class _LoginRegisterState extends State<LoginRegister> {
     'phone': '',
     'password': '',
   };
+  String get _authDataJson => jsonEncode({
+    'phone': _authData['phone']!,
+    'password': _authData['password']!,
+  });
 
   final _passwordController = TextEditingController();
 
@@ -199,6 +204,8 @@ class _LoginRegisterState extends State<LoginRegister> {
       ),
     );
   }
+
+
 
   void _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
