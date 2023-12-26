@@ -1,10 +1,10 @@
 import 'package:PharmacyApp/shared/shared.dart';
 import 'package:PharmacyApp/web/web_add_medicine.dart';
 import 'package:flutter/material.dart';
-import 'Package:/PharmacyApp/web/web_login.dart';
-import 'Package:/PharmacyApp/web/web_intro_page.dart';
-import 'Package:/PharmacyApp/web/web_search.dart';
-import 'Package:/PharmacyApp/web/web_home.dart';
+import 'package:/PharmacyApp/web/web_login.dart';
+import 'package:/PharmacyApp/web/web_intro_page.dart';
+import 'package:/PharmacyApp/web/web_search.dart';
+import 'package:/PharmacyApp/web/web_home.dart';
 
 void main() {
   runApp(AdminWebApp());

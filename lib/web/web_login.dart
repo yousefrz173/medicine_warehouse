@@ -3,9 +3,9 @@ import 'package:PharmacyApp/shared/shared.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'Package:/PharmacyApp/web/web_home.dart';
+import 'package:/PharmacyApp/web/web_home.dart';
 import 'package:http/http.dart' as http;
-import 'Package:/PharmacyApp/web/current_admin.dart';
+import 'package:/PharmacyApp/web/current_admin.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as htmlDom;
 
