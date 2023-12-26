@@ -1,24 +1,26 @@
+import 'package:PharmacyApp/shared/shared.dart';
+import 'package:PharmacyApp/shared/shared.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'web_home.dart';
+import 'Package:/PharmacyApp/web/web_home.dart';
 import 'package:http/http.dart' as http;
-import 'current_admin.dart';
+import 'Package:/PharmacyApp/web/current_admin.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as htmlDom;
 
-class Login extends StatefulWidget {
-  static final String route = 'route_login_register';
+class LoginWeb extends StatefulWidget {
+  static final String route = 'route_login_web_register';
 
-  const Login({Key? key}) : super(key: key);
+  const LoginWeb({Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  _LoginWebState createState() => _LoginWebState();
 }
 
 enum AuthMode { SignUp, Login }
 
-class _LoginState extends State<Login> {
+class _LoginWebState extends State<LoginWeb> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   bool _obscureText = true;
 
@@ -151,13 +153,13 @@ class _LoginState extends State<Login> {
     SnackBar snackBar = SnackBar(content: Text(''));
     _switchLoading(true);
     var response =
-        await http.get(Uri.parse('http://127.0.0.1:8000/csrf-token'));
+        await http.get(Uri.parse('http://${BackendRoutWeb}:8000/csrf-token'));
     print(response.body);
     print(response.headers);
     String csrfToken = jsonDecode(response.body)["csrf_token"];
     print(csrfToken);
     var loginResponse = await http.post(
-      Uri.parse('http://127.0.0.1:8000/login'),
+      Uri.parse('http://${BackendRoutWeb}:8000/login'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         //'X-CSRF-TOKEN': csrfToken,

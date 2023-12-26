@@ -1,8 +1,13 @@
+import 'package:PharmacyApp/shared/shared.dart';
+/*
+todo:
+   connect
+ */
 import 'package:flutter/material.dart';
 
 class AddMedicine extends StatelessWidget {
   const AddMedicine({super.key});
-  static final String route = 'route_add_medicine';
+  static const String route = 'route_add_medicine';
 
   @override
   Widget build(BuildContext context) {
