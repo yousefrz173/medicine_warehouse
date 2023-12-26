@@ -1,5 +1,3 @@
-import 'package:PharmacyApp/shared/connect.dart';
-import 'package:PharmacyApp/shared/shared.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,20 +20,13 @@ class _LoginRegisterState extends State<LoginRegister> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   bool _passwordObscureText = true;
-  final bool _confirmPasswordObscureText = true;
+  bool _confirmPasswordObscureText = true;
 
   bool _isLoading = false;
   final Map<String, String> _authData = {
     'phone': '',
     'password': '',
   };
-
-  String get _authDataJson {
-    return jsonEncode({
-      "phone": _authData['phone'],
-      "password": _authData['password'],
-    });
-  }
 
   final _passwordController = TextEditingController();
 
