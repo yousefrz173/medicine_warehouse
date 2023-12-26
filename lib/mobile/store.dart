@@ -7,6 +7,7 @@ class Store extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(onPressed: () {  },),
       backgroundColor: Color.fromRGBO(22, 1, 32, 1),
       body: Container(
         child: Text('Fuck', style: TextStyle(color: Colors.white,fontSize: 40),),

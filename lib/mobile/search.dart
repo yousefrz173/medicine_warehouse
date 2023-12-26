@@ -25,18 +25,18 @@ enum Filter { searchBy, Name, Genre }
 
 class _SearchState extends State<Search> {
   GlobalKey<ScaffoldState> ScaffoldKey = GlobalKey();
-  String? _selectedSearchType = 'search by';
   bool _isLoading = false;
+  String? _selectedSearchType = 'search by';
   int itemCount = 0;
-  TextEditingController _searchController = TextEditingController(text: '');
+  final TextEditingController _searchController = TextEditingController(text: '');
   List<Medicine> allItems = [];
-  List<Medicine> _tempList = [];
+  final List<Medicine> _tempList = [];
 
-  List<Medicine> _searchResults = [];
+  final List<Medicine> _searchResults = [];
   Filter? filter = Filter.searchBy;
 
   Timer t = Timer(
-    Duration(seconds: 10),
+    const Duration(seconds: 10),
       ()async {
       http.Response response = await http.get(Uri.parse('url'));
       }
@@ -84,7 +84,7 @@ class _SearchState extends State<Search> {
               hintText: 'Search...',
               border: InputBorder.none,
               suffixIcon: IconButton(
-                icon: Icon(Icons.search),
+                icon: const Icon(Icons.search),
                 onPressed: () {
                   _getMedicines();
                   search(_searchController.text, filter!);
@@ -198,7 +198,7 @@ class _SearchState extends State<Search> {
                                             Text(
                                                 'Company : ${currentItem.company}'),
                                             Text(
-                                                'Amount : ${'currentItem.amount'}'),
+                                                'Amount : ${currentItem.amount}'),
                                             Text(
                                                 'Price : ${currentItem.price}'),
                                             Text(
