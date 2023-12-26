@@ -327,6 +327,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
     switchLoading(false);
+    print(response.statusCode);
     Map<String,dynamic> body = jsonDecode(response.body);
     if (jsonDecode(response.body)["statusNumber"] == 200) {
       print(jsonDecode(response.body)["message"]);

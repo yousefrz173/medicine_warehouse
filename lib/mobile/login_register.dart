@@ -1,5 +1,3 @@
-import 'package:PharmacyApp/shared/connect.dart';
-import 'package:PharmacyApp/shared/shared.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,20 +20,13 @@ class _LoginRegisterState extends State<LoginRegister> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   bool _passwordObscureText = true;
-  final bool _confirmPasswordObscureText = true;
+  bool _confirmPasswordObscureText = true;
 
   bool _isLoading = false;
   final Map<String, String> _authData = {
     'phone': '',
     'password': '',
   };
-
-  String get _authDataJson {
-    return jsonEncode({
-      "phone": _authData['phone'],
-      "password": _authData['password'],
-    });
-  }
 
   final _passwordController = TextEditingController();
 
@@ -217,8 +208,7 @@ class _LoginRegisterState extends State<LoginRegister> {
     _switchLoading(true);
 
     if (_authMode == AuthMode.Login) {
-      http.Response response =
-          await Connect.http_login_mobile(_authDataJson);
+      http.Response response = await Connect.http_login_mobile(_authDataJson);
       _switchLoading(false);
       print(response.statusCode);
       if ((jsonDecode(response.body))["statusNumber"] == 200) {
@@ -247,13 +237,8 @@ class _LoginRegisterState extends State<LoginRegister> {
       }
     } else {
       //BackendRout
-      http.Response response = await http.post(
-        Uri.parse('http://$BackendRoutMobile:8000/api/register'),
-        body: _authDataJson,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
+      http.Response response =
+          await Connect.http_register_mobile(_authDataJson);
       _switchLoading(false);
       print(response.statusCode);
       if ((jsonDecode(response.body))["statusNumber"] == 200) {
