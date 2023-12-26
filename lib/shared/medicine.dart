@@ -1,5 +1,4 @@
 class Medicine {
-  late final Map<String, Object> _medicineInfo;
   late String _scientificName;
   late String _commercialName;
   late String _genre;
@@ -18,26 +17,24 @@ class Medicine {
     required DateTime expirationDate,
     required double price,
     required int amount,
-  })  : this._scientificName = scientificName,
-        this._commercialName = commercialName,
-        this._genre = genre,
-        this._company = company,
-        this._expirationDate = expirationDate,
-        this._price = price,
-        this._amount = amount,
-        this._id = id {
-    _medicineInfo = {
-      "id": _id,
-      "scientificName": _scientificName,
-      "commercialName": _commercialName,
-      "genre": _genre,
-      "company": _company,
-      "expirationDate": _expirationDate,
-      "price": _price,
-    };
-  }
+  })  : _scientificName = scientificName,
+        _commercialName = commercialName,
+        _genre = genre,
+        _company = company,
+        _expirationDate = expirationDate,
+        _price = price,
+        _amount = amount,
+        _id = id ;
 
-  Map<String, Object> get medicineInfo => _medicineInfo;
+  Map<String, Object> get medicineInfo =>  {
+    "id": _id,
+    "scientificName": _scientificName,
+    "commercialName": _commercialName,
+    "genre": _genre,
+    "company": _company,
+    "expirationDate": _expirationDate,
+    "price": _price,
+  };
 
   int get amount => _amount;
 

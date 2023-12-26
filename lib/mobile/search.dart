@@ -1,3 +1,8 @@
+import 'package:PharmacyApp/shared/shared.dart';
+/*
+todo:
+   connect
+ */
 import 'dart:async';
 import 'dart:convert';
 
@@ -6,11 +11,11 @@ import 'home.dart' as HomePage;
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:http/http.dart' as http;
-import 'current_user.dart';
+import 'package:PharmacyApp/mobile/current_user.dart';
 import 'package:intl/intl.dart';
 
 class Search extends StatefulWidget {
-  static final String route = '/route_search';
+  static const String route = '/route_search';
 
   @override
   State<Search> createState() => _SearchState();
@@ -226,10 +231,11 @@ class _SearchState extends State<Search> {
         ));
   }
 
+
   _getMedicines() async {
     _switchLoading(true);
     http.Response response = await http.get(
-        Uri.parse('http://10.0.2.2:8000/api/getmedicine'),
+        Uri.parse('http://${BackendRoutMobile}:8000/api/getmedicine'),
         headers: {'Authorization': "Bearer ${userInfo["api_token"]}"});
     _switchLoading(false);
     if (jsonDecode(response.body)["statusNumber"] == 200) {
