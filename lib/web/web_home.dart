@@ -16,7 +16,7 @@ import 'web_search.dart';
 import '/shared/medicineList.dart';
 
 class HomePage extends StatefulWidget {
-  static final String route = '/';
+  static const String route = '/';
 
   @override
   State<HomePage> createState() => _HomePageState();

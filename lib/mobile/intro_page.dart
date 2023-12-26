@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'login_register.dart';
+import 'package:PharmacyApp/mobile/login_register.dart';
 
 class IntroPage extends StatelessWidget {
-  static final route = 'intro_page_route';
+  static const route = 'intro_page_route';
 
   const IntroPage({super.key});
 

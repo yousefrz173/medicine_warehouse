@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Favorites extends StatelessWidget {
-  static final String route = '/route_favorites';
+  const Favorites({super.key});
+  static const String route = '/route_favorites';
   @override
   Widget build(BuildContext context) {
     return Scaffold(

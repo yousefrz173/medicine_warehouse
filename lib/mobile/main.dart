@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'login_register.dart';
-import 'favorites.dart';
-import 'intro_page.dart';
-import 'store.dart';
-import 'search.dart';
-import 'home.dart';
+import 'package:PharmacyApp/mobile/login_register.dart';
+import 'package:PharmacyApp/mobile/favorites.dart';
+import 'package:PharmacyApp/mobile/intro_page.dart';
+import 'package:PharmacyApp/mobile/store.dart';
+import 'package:PharmacyApp/mobile/search.dart';
+import 'package:PharmacyApp/mobile/home.dart';
 
 void main() {
   runApp(PharmacistApp());
 }
 
 class PharmacistApp extends StatelessWidget {
+  const PharmacistApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

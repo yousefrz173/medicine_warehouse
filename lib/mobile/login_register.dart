@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'home.dart';
+import 'package:PharmacyApp/mobile/home.dart';
 import 'package:http/http.dart' as http;
-import 'current_user.dart';
+import 'package:PharmacyApp/mobile/current_user.dart';
 
 class LoginRegister extends StatefulWidget {
-  static final String route = 'route_login_register';
+  static const String route = 'route_login_register';
 
-  const LoginRegister({Key? key}) : super(key: key);
+  const LoginRegister({super.key});
 
   @override
   _LoginRegisterState createState() => _LoginRegisterState();

@@ -7,14 +7,14 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'home.dart' as HomePage;
-import '/shared/medicine.dart';
-import '/shared/medicineList.dart';
+import 'package:PharmacyApp/shared/medicine.dart';
+import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:http/http.dart' as http;
-import 'current_user.dart';
+import 'package:PharmacyApp/mobile/current_user.dart';
 import 'package:intl/intl.dart';
 
 class Search extends StatefulWidget {
-  static final String route = '/route_search';
+  static const String route = '/route_search';
 
   @override
   State<Search> createState() => _SearchState();

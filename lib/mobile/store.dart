@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Store extends StatelessWidget{
-  static final String route = '/route_store';
+  const Store({super.key});
+  static const String route = '/route_store';
   @override
   Widget build(BuildContext context) {
     return Scaffold(

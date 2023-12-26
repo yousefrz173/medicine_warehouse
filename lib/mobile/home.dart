@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'intro_page.dart';
+import 'package:PharmacyApp/mobile/intro_page.dart';
 import 'package:http/http.dart' as http;
-import 'current_user.dart';
-import 'search.dart';
-import 'store.dart';
-import 'favorites.dart';
+import 'package:PharmacyApp/mobile/current_user.dart';
+import 'package:PharmacyApp/mobile/search.dart';
+import 'package:PharmacyApp/mobile/store.dart';
+import 'package:PharmacyApp/mobile/favorites.dart';
 import 'package:PharmacyApp/shared/medicineList.dart';
-import 'my_stock.dart';
+import 'package:PharmacyApp/mobile/my_stock.dart';
 
 class HomePage extends StatefulWidget {
-  static final String route = '/';
+  static const String route = '/';
 
   @override
   State<HomePage> createState() => _HomePageState();
