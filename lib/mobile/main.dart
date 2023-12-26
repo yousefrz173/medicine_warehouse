@@ -1,3 +1,4 @@
+import 'package:PharmacyApp/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/mobile/login_register.dart';
 import 'package:PharmacyApp/mobile/favorites.dart';

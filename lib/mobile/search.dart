@@ -1,3 +1,4 @@
+import 'package:PharmacyApp/shared/shared.dart';
 /*
 todo:
    connect
@@ -230,10 +231,11 @@ class _SearchState extends State<Search> {
         ));
   }
 
+
   _getMedicines() async {
     _switchLoading(true);
     http.Response response = await http.get(
-        Uri.parse('http://10.0.2.2:8000/api/getmedicine'),
+        Uri.parse('http://${BackendRoutMobile}:8000/api/getmedicine'),
         headers: {'Authorization': "Bearer ${userInfo["api_token"]}"});
     _switchLoading(false);
     if (jsonDecode(response.body)["statusNumber"] == 200) {

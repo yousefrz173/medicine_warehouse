@@ -1,8 +1,9 @@
+import 'package:PharmacyApp/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'web_login.dart';
+import 'Package:/PharmacyApp/web/web_login.dart';
 
 class IntroPage extends StatelessWidget {
-  static final route = 'intro_page_route';
+  static const route = 'intro_page_route';
 
   const IntroPage({super.key});
 
@@ -48,7 +49,7 @@ class _IntroPage extends StatelessWidget {
               padding: const EdgeInsets.only(top: 15),
               child: ElevatedButton(
                 onPressed: () =>
-                    Navigator.of(context).pushNamed(LoginRegister.route),
+                    Navigator.of(context).pushNamed(LoginWeb.route),
                 style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.only(bottom: 13),
                     minimumSize: const Size(200, 50),

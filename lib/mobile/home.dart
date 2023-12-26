@@ -1,3 +1,4 @@
+import 'package:PharmacyApp/shared/shared.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/mobile/intro_page.dart';
@@ -319,7 +320,7 @@ class _HomePageState extends State<HomePage> {
   _LogOut() async {
     switchLoading(true);
     http.Response response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/api/logout'),
+      Uri.parse('http://${BackendRoutMobile}:8000/api/logout'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': "Bearer ${userInfo["api_token"]}"
