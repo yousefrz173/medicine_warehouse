@@ -4,22 +4,23 @@ todo:
  */
 import 'package:flutter/material.dart';
 
-class Addbages extends StatelessWidget {
-  const Addbages({super.key});
+class AddMedicine extends StatelessWidget {
+  const AddMedicine({super.key});
+  static final String route = 'route_add_medicine';
 
   @override
   Widget build(BuildContext context) {
-    return const Addbage();
+    return const _AddMedicine();
   }
 }
-class Addbage extends StatefulWidget {
-  const Addbage({super.key});
+class _AddMedicine extends StatefulWidget {
+  const _AddMedicine({super.key});
 
   @override
-  State<Addbage> createState() => _MyWidgetState();
+  State<_AddMedicine> createState() => _AddMedicineState();
 }
 
-class _MyWidgetState extends State<Addbage> {
+class _AddMedicineState extends State<_AddMedicine> {
   final TextEditingController scintificcontroller = TextEditingController();
   final TextEditingController tradingcontroller = TextEditingController();
   final TextEditingController categorycontroller = TextEditingController();
@@ -153,7 +154,7 @@ class _MyWidgetState extends State<Addbage> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  required;
+                  //required;
                   _submitform();
                 },
                 style: ElevatedButton.styleFrom(

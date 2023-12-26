@@ -6,6 +6,7 @@ todo:
  */
 
 import 'dart:convert';
+import 'package:PharmacyApp/web/web_add_medicine.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -22,168 +23,172 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  GlobalKey _scaffoldKey = GlobalKey();
   var _selectedPageIndex = 0;
   var _selectedPageTitle = 'Home';
-  List<Map<String, Widget>> _bottomNavBarScreens = [
-    {
-      'screen': Center(
-        child: Container(
-          width: 700,
-          height: 1000,
-          child: Center(
-            child: Column(
-              children: [
-                Container(
-                  width: 1100,
-                  child: Stack(
-                    children: [
-                      Container(
-                        width: 900,
-                        height: 220,
-                        color: Color.fromRGBO(255, 243, 224, 1),
-                        child: Image.asset('assets/images/image_processing.gif',fit: BoxFit.contain),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 180),
-                        child: Center(
-                          child: Row(
-                            children: [
-                              SizedBox(width: 100),
-                              InkWell(
-                                borderRadius: BorderRadius.circular(50),
-                                onTap: () => {},
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Icon(
-                                      Icons.pending,
-                                      color: Colors.white,
-                                      size: 55,
-                                    ),
-                                    Text(
-                                      'Orders',
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.white),
-                                      textAlign: TextAlign.center,
-                                    )
-                                  ],
-                                ),
-                              ),
-                              SizedBox(width: 10),
-                              InkWell(
-                                borderRadius: BorderRadius.circular(50),
-                                onTap: () => {},
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Icon(
-                                      Icons.local_shipping,
-                                      color: Colors.white,
-                                      size: 40,
-                                    ),
-                                    Text(
-                                      'New \n Order',
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.white),
-                                      textAlign: TextAlign.center,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  margin: EdgeInsets.only(right: 240),
-                  padding: EdgeInsets.only(top: 8),
-                  width: 150,
-                  height: 30,
-                  child: Text(
-                    'Recent',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Container(
-                    width: 380,
-                    height: 400,
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      itemCount: RecentList.length,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () => {},
-                          child: Container(
-                            padding: EdgeInsets.only(top: 13),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(colors: [
-                                Colors.purple,
-                                Colors.deepOrangeAccent,
-                              ]),
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            height: 25,
-                            width: 10,
-                            child: Text(
-                              RecentList[index].commercialName,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontFamily: 'Quicksand',
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 200,
-                        mainAxisExtent: 60,
-                        mainAxisSpacing: 45,
-                        childAspectRatio: 3.0,
-                        crossAxisSpacing: 35,
-                      ),
-                    )),
-                SizedBox(
-                  width: 500,
-                  height: 3,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-      'title':
-          Text('Home', style: TextStyle(fontSize: 23, color: Colors.black)),
-    },
-    {
-      'screen': Scaffold(),
-      'title':
-          Text('My Stock', style: TextStyle(fontSize: 23, color: Colors.black)),
-    },
-    {
-      'screen': Scaffold(),
-      'title':
-          Text('Store', style: TextStyle(fontSize: 23, color: Colors.black)),
-    },
-    {
-      'screen': Scaffold(),
-      'title': Text('Favorites',
-          style: TextStyle(fontSize: 23, color: Colors.black)),
-    },
-  ];
+  // List<Map<String, Widget>> _bottomNavBarScreens = [
+  //   {
+  //     'screen': Center(
+  //       child: Container(
+  //         width: 700,
+  //         height: 1000,
+  //         child: Center(
+  //           child: Column(
+  //             children: [
+  //               Container(
+  //                 width: 1100,
+  //                 child: Stack(
+  //                   children: [
+  //                     Container(
+  //                       width: 900,
+  //                       height: 220,
+  //                       color: Color.fromRGBO(255, 243, 224, 1),
+  //                       child: Image.asset('assets/images/image_processing.gif',fit: BoxFit.contain),
+  //                     ),
+  //                     Container(
+  //                       margin: EdgeInsets.only(top: 180),
+  //                       child: Center(
+  //                         child: Row(
+  //                           children: [
+  //                             SizedBox(width: 100),
+  //                             InkWell(
+  //                               borderRadius: BorderRadius.circular(50),
+  //                               onTap: () => {},
+  //                               child: Column(
+  //                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                                 children: [
+  //                                   Icon(
+  //                                     Icons.pending,
+  //                                     color: Colors.white,
+  //                                     size: 55,
+  //                                   ),
+  //                                   Text(
+  //                                     'Orders',
+  //                                     style: TextStyle(
+  //                                         fontSize: 20, color: Colors.white),
+  //                                     textAlign: TextAlign.center,
+  //                                   )
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                             SizedBox(width: 10),
+  //                             InkWell(
+  //                               borderRadius: BorderRadius.circular(50),
+  //                               onTap: () {
+  //
+  //                                 Navigator.of(context).pushNamedAndRemoveUntil(AddMedicine.route, (route) => false)
+  //                               },
+  //                               child: Column(
+  //                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                                 children: [
+  //                                   Icon(
+  //                                     Icons.local_shipping,
+  //                                     color: Colors.white,
+  //                                     size: 40,
+  //                                   ),
+  //                                   Text(
+  //                                     'New \n Medicine',
+  //                                     style: TextStyle(
+  //                                         fontSize: 20, color: Colors.white),
+  //                                     textAlign: TextAlign.center,
+  //                                   )
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ),
+  //                   ],
+  //                 ),
+  //               ),
+  //               SizedBox(
+  //                 height: 10,
+  //               ),
+  //               Container(
+  //                 margin: EdgeInsets.only(right: 240),
+  //                 padding: EdgeInsets.only(top: 8),
+  //                 width: 150,
+  //                 height: 30,
+  //                 child: Text(
+  //                   'Recent',
+  //                   textAlign: TextAlign.center,
+  //                   style: TextStyle(color: Colors.white, fontSize: 20),
+  //                 ),
+  //               ),
+  //               SizedBox(
+  //                 height: 20,
+  //               ),
+  //               Container(
+  //                   width: 380,
+  //                   height: 400,
+  //                   child: GridView.builder(
+  //                     shrinkWrap: true,
+  //                     physics: NeverScrollableScrollPhysics(),
+  //                     itemCount: RecentList.length,
+  //                     itemBuilder: (context, index) {
+  //                       return InkWell(
+  //                         onTap: () => {},
+  //                         child: Container(
+  //                           padding: EdgeInsets.only(top: 13),
+  //                           decoration: BoxDecoration(
+  //                             gradient: LinearGradient(colors: [
+  //                               Colors.purple,
+  //                               Colors.deepOrangeAccent,
+  //                             ]),
+  //                             borderRadius: BorderRadius.circular(30),
+  //                           ),
+  //                           height: 25,
+  //                           width: 10,
+  //                           child: Text(
+  //                             RecentList[index].commercialName,
+  //                             textAlign: TextAlign.center,
+  //                             style: TextStyle(
+  //                               color: Colors.white,
+  //                               fontSize: 20,
+  //                               fontFamily: 'Quicksand',
+  //                               fontWeight: FontWeight.bold,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       );
+  //                     },
+  //                     gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+  //                       maxCrossAxisExtent: 200,
+  //                       mainAxisExtent: 60,
+  //                       mainAxisSpacing: 45,
+  //                       childAspectRatio: 3.0,
+  //                       crossAxisSpacing: 35,
+  //                     ),
+  //                   )),
+  //               SizedBox(
+  //                 width: 500,
+  //                 height: 3,
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ),
+  //     'title':
+  //         Text('Home', style: TextStyle(fontSize: 23, color: Colors.black)),
+  //   },
+  //   {
+  //     'screen': Scaffold(),
+  //     'title':
+  //         Text('My Stock', style: TextStyle(fontSize: 23, color: Colors.black)),
+  //   },
+  //   {
+  //     'screen': Scaffold(),
+  //     'title':
+  //         Text('Store', style: TextStyle(fontSize: 23, color: Colors.black)),
+  //   },
+  //   {
+  //     'screen': Scaffold(),
+  //     'title': Text('Favorites',
+  //         style: TextStyle(fontSize: 23, color: Colors.black)),
+  //   },
+  // ];
   List<double> amounts = [0.0, 33.0, -8.0, 32.0];
   bool _isLoading = false;
 
@@ -203,6 +208,171 @@ class _HomePageState extends State<HomePage> {
 
   @override
   build(BuildContext context) {
+    List<Map<String, Widget>> _bottomNavBarScreens = [
+      {
+        'screen': Center(
+          child: Container(
+            width: 2900,
+            height: 1000,
+            child: Center(
+              child: Column(
+                children: [
+                  Container(
+                    width: 5500,
+                    child: Stack(
+                      children: [
+                        Container(
+                          width: 1300,
+                          height: 220,
+                          color: Color.fromRGBO(253, 232, 223, 1.0),
+                          child: Image.asset('assets/images/image_processing.gif',fit: BoxFit.contain),
+                        ),
+                        Container(
+                          width: 1350,
+                          height: 207,
+                          margin: EdgeInsets.only(top: 130),
+                          child: FractionallySizedBox(
+                            heightFactor: 0.5,
+                            widthFactor: 0.23,
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  borderRadius: BorderRadius.circular(50),
+                                  onTap: () => {},
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(
+                                        Icons.pending,
+                                        color: Colors.purple,
+                                        size: 55,
+                                      ),
+                                      Text(
+                                        'Orders',
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white),
+                                        textAlign: TextAlign.center,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: 10),
+                                InkWell(
+                                  borderRadius: BorderRadius.circular(50),
+                                  onTap: () {
+                                    Navigator.of(context).pushNamed(AddMedicine.route);
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(
+                                        Icons.local_shipping,
+                                        color: Colors.purple,
+                                        size: 40,
+                                      ),
+                                      Text(
+                                        'New \n Medicine',
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.white),
+                                        textAlign: TextAlign.center,
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(right: 240),
+                    padding: EdgeInsets.only(top: 8),
+                    width: 150,
+                    height: 30,
+                    child: Text(
+                      'Recent',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Container(
+                      width: 380,
+                      height: 400,
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: RecentList.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () => {},
+                            child: Container(
+                              padding: EdgeInsets.only(top: 13),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(colors: [
+                                  Colors.purple,
+                                  Colors.deepOrangeAccent,
+                                ]),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              height: 25,
+                              width: 10,
+                              child: Text(
+                                RecentList[index].commercialName,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontFamily: 'Quicksand',
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200,
+                          mainAxisExtent: 60,
+                          mainAxisSpacing: 45,
+                          childAspectRatio: 3.0,
+                          crossAxisSpacing: 35,
+                        ),
+                      )),
+                  SizedBox(
+                    width: 500,
+                    height: 3,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+        'title':
+        Text('Home', style: TextStyle(fontSize: 23, color: Colors.black)),
+      },
+      {
+        'screen': Scaffold(),
+        'title':
+        Text('My Stock', style: TextStyle(fontSize: 23, color: Colors.black)),
+      },
+      {
+        'screen': Scaffold(),
+        'title':
+        Text('Store', style: TextStyle(fontSize: 23, color: Colors.black)),
+      },
+      {
+        'screen': Scaffold(),
+        'title': Text('Favorites',
+            style: TextStyle(fontSize: 23, color: Colors.black)),
+      },
+    ];
     Map<String, String> map = {'phone_number': ''};
     final routeArguments = ModalRoute.of(context)?.settings.arguments == null
         ? map
@@ -289,12 +459,13 @@ class _HomePageState extends State<HomePage> {
           }),
           SizedBox(width: 10),
         ],
-        backgroundColor: Color.fromRGBO(255, 243, 224, 1),
+        backgroundColor: Color.fromRGBO(253, 232, 223, 1.0),
       ),
       body: SingleChildScrollView(
         child: Container(
           height: 1300,
-          width: 500,
+          alignment: Alignment.center,
+          width: 1500,
           child: Column(
             children: [
               Container(
