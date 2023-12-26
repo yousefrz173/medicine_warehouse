@@ -1,6 +1,8 @@
+import 'package:PharmacyApp/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 class ProductForm extends StatefulWidget {
+
   static const String route = '/route_ProductForm_New_Order';
 
   const ProductForm({super.key});
@@ -10,6 +12,8 @@ class ProductForm extends StatefulWidget {
 }
 
 class _ProductFormState extends State<ProductForm> {
+  GlobalKey<ScaffoldState> ScaffoldKey = GlobalKey();
+  bool _isLoading = false;
   TextEditingController commercialNameController = TextEditingController();
   TextEditingController companyController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
@@ -18,6 +22,13 @@ class _ProductFormState extends State<ProductForm> {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey<ScaffoldState> ScaffoldKey = GlobalKey();
+    _isLoading = false;
+    // Widget x = Scaffold(body:
+    //   ,)
+
+
+
     return Container(
       padding: const EdgeInsets.all(16.0),
       color: Colors.purple,
@@ -60,7 +71,7 @@ class _ProductFormState extends State<ProductForm> {
               filled: true,
             ),
           ),
-          SizedBox(height: 32.0),
+          const SizedBox(height: 32.0),
           ElevatedButton(
             onPressed: isLoading ? null : _submitOrder,
             style: ButtonStyle(

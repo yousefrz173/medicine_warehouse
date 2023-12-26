@@ -1,3 +1,6 @@
+
+import 'package:PharmacyApp/shared/shared.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/mobile/login_register.dart';
 
@@ -13,10 +16,11 @@ class IntroPage extends StatelessWidget {
 }
 
 class _IntroPage extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(22, 1, 32, 1),
+      backgroundColor: const Color.fromRGBO(22, 1, 32, 1),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[

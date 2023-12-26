@@ -1,3 +1,5 @@
+import 'package:PharmacyApp/shared/connect.dart';
+import 'package:PharmacyApp/shared/shared.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,13 +22,20 @@ class _LoginRegisterState extends State<LoginRegister> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   AuthMode _authMode = AuthMode.Login;
   bool _passwordObscureText = true;
-  bool _confirmPasswordObscureText = true;
+  final bool _confirmPasswordObscureText = true;
 
   bool _isLoading = false;
   final Map<String, String> _authData = {
     'phone': '',
     'password': '',
   };
+
+  String get _authDataJson {
+    return jsonEncode({
+      "phone": _authData['phone'],
+      "password": _authData['password'],
+    });
+  }
 
   final _passwordController = TextEditingController();
 
@@ -51,9 +60,9 @@ class _LoginRegisterState extends State<LoginRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(22, 1, 32, 1),
+      backgroundColor: const Color.fromRGBO(22, 1, 32, 1),
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(153, 153, 153, 1.0),
+        backgroundColor: const Color.fromRGBO(153, 153, 153, 1.0),
         centerTitle: true,
         title: const Text(
           'Enter your info',
@@ -101,7 +110,7 @@ class _LoginRegisterState extends State<LoginRegister> {
                 const SizedBox(height: 20),
                 TextFormField(
                   obscureText: _passwordObscureText,
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   controller: _passwordController,
                   cursorColor: Colors.indigo,
                   decoration: InputDecoration(
@@ -116,7 +125,7 @@ class _LoginRegisterState extends State<LoginRegister> {
                           : Icons.visibility_off),
                     ),
                     hintText: 'Password',
-                    hintStyle: TextStyle(color: Colors.white),
+                    hintStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
@@ -137,8 +146,7 @@ class _LoginRegisterState extends State<LoginRegister> {
                 if (_authMode == AuthMode.SignUp)
                   TextFormField(
                     obscureText: _confirmPasswordObscureText,
-
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                     enabled: _authMode == AuthMode.SignUp,
                     cursorColor: Colors.indigo,
                     decoration: InputDecoration(
@@ -153,7 +161,7 @@ class _LoginRegisterState extends State<LoginRegister> {
                             : Icons.visibility_off),
                       ),
                       hintText: 'Confirm Password',
-                      hintStyle: TextStyle(color: Colors.white),
+                      hintStyle: const TextStyle(color: Colors.white),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
@@ -170,26 +178,26 @@ class _LoginRegisterState extends State<LoginRegister> {
                   ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  child: Text(
-                    _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',
-                    style: TextStyle(color: Colors.black),
-                  ),
                   onPressed: () => _submit(context),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
-                        Color.fromRGBO(153, 153, 153, 1.0)),
+                        const Color.fromRGBO(153, 153, 153, 1.0)),
+                  ),
+                  child: Text(
+                    _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP',
+                    style: const TextStyle(color: Colors.black),
                   ),
                 ),
                 TextButton(
-                  child: Text(
-                      '${_authMode == AuthMode.Login ? 'SIGN UP' : 'LOGIN'} INSTEAD'),
                   onPressed: _switchAuthMode,
                   style: ButtonStyle(
                     foregroundColor: MaterialStateProperty.all(Colors.white),
                   ),
+                  child: Text(
+                      '${_authMode == AuthMode.Login ? 'SIGN UP' : 'LOGIN'} INSTEAD'),
                 ),
                 Container(
-                  child: _isLoading ? CircularProgressIndicator() : null,
+                  child: _isLoading ? const CircularProgressIndicator() : null,
                 ),
               ],
             ),
@@ -203,18 +211,13 @@ class _LoginRegisterState extends State<LoginRegister> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    //10.0.2.2
+    //BackendRout
     _formKey.currentState!.save();
-    SnackBar snackBar = SnackBar(content: Text(''));
+    SnackBar snackBar = const SnackBar(content: Text(''));
     _switchLoading(true);
+
     if (_authMode == AuthMode.Login) {
-      http.Response response =
-          await http.post(Uri.parse('http://10.0.2.2:8000/api/login'),
-              body: jsonEncode({
-                "phone": _authData['phone'],
-                "password": _authData['password'],
-              }),
-              headers: {'Content-Type': 'application/json'});
+      http.Response response = await Connect.http_login_mobile(_authDataJson);
       _switchLoading(false);
       print(response.statusCode);
       if ((jsonDecode(response.body))["statusNumber"] == 200) {
@@ -242,23 +245,15 @@ class _LoginRegisterState extends State<LoginRegister> {
         print((jsonDecode(response.body))["message"]);
       }
     } else {
-      //10.0.2.2
-      http.Response response = await http.post(
-        Uri.parse('http://10.0.2.2:8000/api/register'),
-        body: jsonEncode({
-          'phone': _authData['phone'],
-          'password': _authData['password'],
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      );
+      //BackendRout
+      http.Response response =
+          await Connect.http_register_mobile(_authDataJson);
       _switchLoading(false);
       print(response.statusCode);
       if ((jsonDecode(response.body))["statusNumber"] == 200) {
         snackBar = SnackBar(
           content: Text(jsonDecode(response.body)["message"]),
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
         );
         print(jsonDecode(response.body)["message"]);
         _switchAuthMode();
