@@ -163,9 +163,9 @@ class _LoginState extends State<Login> {
         //'X-CSRF-TOKEN': csrfToken,
       },
       body: {
-        'username': _authData['username']!,
-        'password': _authData['password']!,
-        '_token': csrfToken,
+        "username": _authData['username']!,
+        "password": _authData['password']!,
+        "_token": csrfToken,
       },
     );
     _switchLoading(false);

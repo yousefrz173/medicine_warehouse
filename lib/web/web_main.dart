@@ -15,7 +15,7 @@ class AdminWebApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Our Medicine Whorehouse',
-      initialRoute: Login.route,
+      initialRoute: HomePage.route,
       routes: {
         Login.route: (context) => Login(),
         HomePage.route: (context) => HomePage(),
