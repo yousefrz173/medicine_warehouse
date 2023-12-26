@@ -5,10 +5,10 @@ import 'package:PharmacyApp/web/web_add_medicine.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-import 'Package:/PharmacyApp/web/web_intro_page.dart';
-import 'Package:/PharmacyApp/web/current_admin.dart';
-import 'Package:/PharmacyApp/web/web_search.dart';
-import 'Package:/PharmacyApp/shared/medicineList.dart';
+import 'package:PharmacyApp/web/web_intro_page.dart';
+import 'package:PharmacyApp/web/current_admin.dart';
+import 'package:PharmacyApp/web/web_search.dart';
+import 'package:PharmacyApp/shared/medicineList.dart';
 
 class HomePage extends StatefulWidget {
   static const String route = '/';

@@ -1,6 +1,6 @@
 import 'package:PharmacyApp/shared/shared.dart';
 import 'package:flutter/material.dart';
-import 'Package:/PharmacyApp/web/web_login.dart';
+import 'package:PharmacyApp/web/web_login.dart';
 
 class IntroPage extends StatelessWidget {
   static const route = 'intro_page_route';
