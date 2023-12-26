@@ -9,11 +9,11 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'Package:/PharmacyApp/web/web_home.dart' as HomePage;
-import 'Package:/PharmacyApp/shared/medicine.dart';
-import 'Package:/PharmacyApp/shared/medicineList.dart';
+import 'package:PharmacyApp/web/web_home.dart' as HomePage;
+import 'package:PharmacyApp/shared/medicine.dart';
+import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:http/http.dart' as http;
-import 'Package:/PharmacyApp/web/current_admin.dart';
+import 'package:PharmacyApp/web/current_admin.dart';
 import 'package:intl/intl.dart';
 
 class Search extends StatefulWidget {
