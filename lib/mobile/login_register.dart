@@ -1,12 +1,8 @@
-import 'dart:convert';
 import 'package:PharmacyApp/shared/connect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PharmacyApp/mobile/home.dart';
-import 'package:http/http.dart' as http;
 import 'package:PharmacyApp/mobile/current_user.dart';
-
-import 'package:PharmacyApp/shared/connect.dart';
 
 class LoginRegister extends StatefulWidget {
   static const String route = 'route_login_register';
@@ -30,10 +26,6 @@ class _LoginRegisterState extends State<LoginRegister> {
     'phone': '',
     'password': '',
   };
-  String get _authDataJson => jsonEncode({
-    'phone': _authData['phone']!,
-    'password': _authData['password']!,
-  });
 
   final _passwordController = TextEditingController();
 
@@ -205,66 +197,65 @@ class _LoginRegisterState extends State<LoginRegister> {
     );
   }
 
-
-
   void _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    //BackendRout
     _formKey.currentState!.save();
+    Map<String, dynamic> respondBody = {};
+
     SnackBar snackBar = const SnackBar(content: Text(''));
     _switchLoading(true);
+    try {
+      if (_authMode == AuthMode.Login) {
+        respondBody = await Connect.http_login_mobile(
+          phone: _authData['phone']!,
+          password: _authData['password']!,
+        );
+        _switchLoading(false);
 
-    if (_authMode == AuthMode.Login) {
-      http.Response response = await Connect.http_login_mobile(_authDataJson);
-      _switchLoading(false);
-      print(response.statusCode);
-      if ((jsonDecode(response.body))["statusNumber"] == 200) {
-        snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
-          duration: Duration(seconds: 3),
+        if (respondBody["statusNumber"] == 200) {
+          snackBar = SnackBar(
+            content: Text(respondBody["message"]),
+            duration: Duration(seconds: 3),
+          );
+          userInfo = {
+            "id": respondBody["pharmacist_information"]["id"],
+            "phone": respondBody["pharmacist_information"]["phone"],
+            "password": respondBody["pharmacist_information"]["password"],
+            "api_token": respondBody["pharmacist_information"]["api_token"],
+          };
+          Navigator.of(context).pushNamedAndRemoveUntil(
+            HomePage.route,
+            (route) => false,
+          );
+        } else {
+          throw Exception(respondBody["message"]);
+        }
+      } else {
+        //BackendRout
+        respondBody = await Connect.http_register_mobile(
+          phone: _authData['phone']!,
+          password: _authData['password']!,
         );
-        print(jsonDecode(response.body)["message"]);
-
-        userInfo = {
-          "id": jsonDecode(response.body)["pharmacist_information"]["id"],
-          "phone": jsonDecode(response.body)["pharmacist_information"]["phone"],
-          "password": jsonDecode(response.body)["pharmacist_information"]
-              ["password"],
-          "api_token": jsonDecode(response.body)["pharmacist_information"]
-              ["api_token"],
-        };
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
-      } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
-        snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
-          duration: Duration(seconds: 3),
-        );
-        print((jsonDecode(response.body))["message"]);
+        _switchLoading(false);
+        if (respondBody["statusNumber"] == 200) {
+          snackBar = SnackBar(
+            content: Text(respondBody["message"]),
+            duration: const Duration(seconds: 3),
+          );
+          print(respondBody["message"]);
+          _switchAuthMode();
+        } else {
+          throw Exception(respondBody["message"]);
+        }
       }
-    } else {
-      //BackendRout
-      http.Response response =
-          await Connect.http_register_mobile(_authDataJson);
-      _switchLoading(false);
-      print(response.statusCode);
-      if ((jsonDecode(response.body))["statusNumber"] == 200) {
-        snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
-          duration: const Duration(seconds: 3),
-        );
-        print(jsonDecode(response.body)["message"]);
-        _switchAuthMode();
-      } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
-        snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
-          duration: Duration(seconds: 3),
-        );
-        print((jsonDecode(response.body))["message"]);
-        return;
-      }
+    } catch (e) {
+      snackBar = SnackBar(
+        content: Text(e.toString()),
+        duration: Duration(seconds: 3),
+      );
+      print(e.toString());
     }
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }

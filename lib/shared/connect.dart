@@ -15,8 +15,8 @@ class Connect {
   static final Uri _search_url_mobile =
       Uri.parse('http://$BackendRoutMobile:8000/api/search');
 
-  static Uri _showDetails_url_mobile({required int num}) =>
-      Uri.parse('http://$BackendRoutMobile:8000/api//showdetails/$num');
+  static Uri _showDetails_url_mobile({required int Medicine_ID}) =>
+      Uri.parse('http://$BackendRoutMobile:8000/api//showdetails/$Medicine_ID');
   static final Uri _Order_Medicines_url_mobile =
       Uri.parse('http://$BackendRoutMobile:8000/api/order');
 
@@ -25,7 +25,7 @@ class Connect {
   static final Uri _add_to_favorite =
       Uri.parse('http://$BackendRoutMobile:8000/api/add-to-favorite');
 
-  static Future<Map<String,dynamic>> http_login_mobile(
+  static Future<Map<String, dynamic>> http_login_mobile(
       {required String phone, required String password}) async {
     final response = await http.post(_login_url_mobile,
         body: jsonEncode({
@@ -40,7 +40,7 @@ class Connect {
           'Error: ${response.statusCode}, ${response.reasonPhrase}');
   }
 
-  static Future<http.Response> http_register_mobile(
+  static Future<Map<String, dynamic>> http_register_mobile(
       {required String phone, required String password}) async {
     final response = await http.post(
       _PharmacistRegister_url_mobile,
@@ -53,7 +53,7 @@ class Connect {
       },
     );
     if (response.statusCode >= 200 && response.statusCode < 300)
-      return response;
+      return jsonDecode(response.body);
     else
       throw Exception(
           'Error: ${response.statusCode}, ${response.reasonPhrase}');
@@ -88,9 +88,9 @@ class Connect {
 
 //todo: implement this
   static Future<http.Response> http_showDetails_mobile(
-      {required int num}) async {
-    final response =
-        await http.get(_showDetails_url_mobile(num: num), headers: {
+      {required int Medicine_ID}) async {
+    final response = await http
+        .get(_showDetails_url_mobile(Medicine_ID: Medicine_ID), headers: {
       'Content-Type': 'application/json',
       'Authorization': "Bearer ${userInfo["api_token"]}"
     });
