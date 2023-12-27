@@ -24,11 +24,12 @@ class Connect {
 
   static Future<http.Response> http_logout_mobile() async {
     return await http.post(
-      Uri.parse('http://${BackendRoutMobile}:8000/api/logout'),
+      Uri.parse('http://$BackendRoutMobile:8000/api/logout'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': "Bearer ${userInfo["api_token"]}"
       },
     );
   }
+
 }

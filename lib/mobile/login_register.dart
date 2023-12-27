@@ -6,7 +6,7 @@ import 'package:PharmacyApp/mobile/home.dart';
 import 'package:http/http.dart' as http;
 import 'package:PharmacyApp/mobile/current_user.dart';
 
-import '../shared/connect.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 
 class LoginRegister extends StatefulWidget {
   static const String route = 'route_login_register';
