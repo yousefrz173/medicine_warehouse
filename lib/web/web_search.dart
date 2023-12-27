@@ -1,10 +1,9 @@
-import 'package:PharmacyApp/shared/shared.dart';
 /*
 todo:
    design
    connect
    based on mobile
- */
+*/
 import 'dart:async';
 import 'dart:convert';
 

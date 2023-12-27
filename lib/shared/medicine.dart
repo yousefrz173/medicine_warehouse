@@ -5,21 +5,20 @@ class Medicine {
   String company;
   DateTime expirationDate;
   double price;
-  int amount;
   int id;
-
+  int amount;
   Medicine({
-    required int this.id,
-    required String this.scientificName,
-    required String this.commercialName,
-    required String this.genre,
-    required String this.company,
-    required DateTime this.expirationDate,
-    required double this.price,
-    required int this.amount,
+    required this.id,
+    required this.scientificName,
+    required this.commercialName,
+    required this.genre,
+    required this.company,
+    required this.expirationDate,
+    required this.price,
+    required this.amount,
   });
 
-  Map<String, Object> get medicineInfo => {
+  Map<String, Object> get medicineInfoMap => {
         "id": id,
         "scientificName": scientificName,
         "commercialName": commercialName,
@@ -28,17 +27,4 @@ class Medicine {
         "expirationDate": expirationDate,
         "price": price,
       };
-
-  @override
-  bool operator ==(Object rhs) {
-    if (rhs is Medicine)
-      return ((this.id == rhs.id) &&
-          (this.commercialName == rhs.commercialName) &&
-          (this.scientificName == rhs.scientificName) &&
-          (this.genre == rhs.genre) &&
-          (this.company == rhs.company) &&
-          (this.expirationDate == rhs.expirationDate) &&
-          (this.price == rhs.price));
-    return this == rhs as Medicine;
-  }
 }

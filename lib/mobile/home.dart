@@ -1,7 +1,6 @@
 import 'package:PharmacyApp/shared/connect.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/mobile/intro_page.dart';
-import 'package:PharmacyApp/mobile/current_user.dart';
 import 'package:PharmacyApp/mobile/search.dart';
 import 'package:PharmacyApp/mobile/store.dart';
 import 'package:PharmacyApp/mobile/favorites.dart';
@@ -17,7 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var _selectedPageIndex = 0;
-  var _selectedPageTitle = 'Home';
+  final _selectedPageTitle = 'Home';
   List<Map<String, Widget>> _bottomNavBarScreens = [
     {
       'screen': Center(

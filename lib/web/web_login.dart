@@ -1,5 +1,4 @@
-import 'package:PharmacyApp/shared/shared.dart';
-import 'package:PharmacyApp/shared/shared.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -153,13 +152,13 @@ class _LoginWebState extends State<LoginWeb> {
     SnackBar snackBar = SnackBar(content: Text(''));
     _switchLoading(true);
     var response =
-        await http.get(Uri.parse('http://${BackendRoutWeb}:8000/csrf-token'));
+        await http.get(Uri.parse('http://${backendRoutWeb}:8000/csrf-token'));
     print(response.body);
     print(response.headers);
     String csrfToken = jsonDecode(response.body)["csrf_token"];
     print(csrfToken);
     var loginResponse = await http.post(
-      Uri.parse('http://${BackendRoutWeb}:8000/login'),
+      Uri.parse('http://${backendRoutWeb}:8000/login'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
         //'X-CSRF-TOKEN': csrfToken,

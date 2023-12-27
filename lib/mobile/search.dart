@@ -1,17 +1,16 @@
-import 'package:PharmacyApp/shared/shared.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 /*
 todo:
    connect
  */
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'home.dart' as HomePage;
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:http/http.dart' as http;
-import 'package:PharmacyApp/mobile/current_user.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 import 'package:intl/intl.dart';
 
 class Search extends StatefulWidget {
@@ -235,7 +234,7 @@ class _SearchState extends State<Search> {
   _getMedicines() async {
     _switchLoading(true);
     http.Response response = await http.get(
-        Uri.parse('http://${BackendRoutMobile}:8000/api/getmedicine'),
+        Uri.parse('http://${backendRoutMobile}:8000/api/getmedicine'),
         headers: {'Authorization': "Bearer ${userInfo["api_token"]}"});
     _switchLoading(false);
     if (jsonDecode(response.body)["statusNumber"] == 200) {

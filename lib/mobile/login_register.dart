@@ -2,7 +2,7 @@ import 'package:PharmacyApp/shared/connect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PharmacyApp/mobile/home.dart';
-import 'package:PharmacyApp/mobile/current_user.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 
 class LoginRegister extends StatefulWidget {
   static const String route = 'route_login_register';
@@ -234,7 +234,7 @@ class _LoginRegisterState extends State<LoginRegister> {
         }
       } else {
         //BackendRout
-        respondBody = await Connect.http_register_mobile(
+        respondBody = await Connect.httpRegisterMobile(
           phone: _authData['phone']!,
           password: _authData['password']!,
         );
