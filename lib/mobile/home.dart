@@ -1,9 +1,6 @@
 import 'package:PharmacyApp/shared/connect.dart';
-import 'package:PharmacyApp/shared/shared.dart';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/mobile/intro_page.dart';
-import 'package:http/http.dart' as http;
 import 'package:PharmacyApp/mobile/current_user.dart';
 import 'package:PharmacyApp/mobile/search.dart';
 import 'package:PharmacyApp/mobile/store.dart';
@@ -38,7 +35,8 @@ class _HomePageState extends State<HomePage> {
                         width: 900,
                         height: 220,
                         color: Color.fromRGBO(255, 243, 224, 1),
-                        child: Image.asset('assets/images/image_processing.gif',fit: BoxFit.contain),
+                        child: Image.asset('assets/images/image_processing.gif',
+                            fit: BoxFit.contain),
                       ),
                       Container(
                         margin: EdgeInsets.only(top: 180),
@@ -50,7 +48,8 @@ class _HomePageState extends State<HomePage> {
                                 borderRadius: BorderRadius.circular(50),
                                 onTap: () => {},
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Icon(
                                       Icons.pending,
@@ -71,7 +70,8 @@ class _HomePageState extends State<HomePage> {
                                 borderRadius: BorderRadius.circular(50),
                                 onTap: () => {},
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Icon(
                                       Icons.local_shipping,
@@ -248,8 +248,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            if(_isLoading)
-            CircularProgressIndicator(),
+            if (_isLoading) CircularProgressIndicator(),
           ],
         ),
       ),
@@ -320,18 +319,19 @@ class _HomePageState extends State<HomePage> {
 
   _LogOut() async {
     switchLoading(true);
-    http.Response response = await Connect.http_logout_mobile();
-    switchLoading(false);
-    print(response.statusCode);
-    Map<String,dynamic> body = jsonDecode(response.body);
-    if (jsonDecode(response.body)["statusNumber"] == 200) {
-      print(jsonDecode(response.body)["message"]);
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(IntroPage.route, (route) => false);
-    } else if (jsonDecode(response.body)["statusNumber"] == 400) {
-      print(jsonDecode(response.body)["message"]);
-    } else if (jsonDecode(response.body)["statusNumber"] == 403) {
-      print(jsonDecode(response.body)["message"]);
+    try {
+      Map<String, dynamic> RBody = await Connect.http_logout_mobile();
+      switchLoading(false);
+      if (RBody["statusNumber"] == 200) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          IntroPage.route,
+          (route) => false,
+        );
+      } else {
+        throw Exception(RBody["message"]);
+      }
+    } catch (e) {
+      print(e.toString());
     }
   }
 }

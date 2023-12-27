@@ -1,4 +1,3 @@
-import 'package:PharmacyApp/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 class MyStock extends StatelessWidget {

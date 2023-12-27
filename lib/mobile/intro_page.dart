@@ -1,6 +1,3 @@
-
-import 'package:PharmacyApp/shared/shared.dart';
-import 'package:PharmacyApp/shared/connect.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/mobile/login_register.dart';
 
