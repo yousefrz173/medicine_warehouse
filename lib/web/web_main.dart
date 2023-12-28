@@ -10,6 +10,8 @@ void main() {
 }
 
 class AdminWebApp extends StatelessWidget {
+  const AdminWebApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
