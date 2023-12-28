@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:PharmacyApp/shared/shared.dart';
+
 import 'package:http/http.dart' as http;
 import 'dart:html' as html;
 

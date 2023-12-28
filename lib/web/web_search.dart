@@ -1,4 +1,3 @@
-import 'package:PharmacyApp/shared/shared.dart';
 /*
 todo:
    design
@@ -50,7 +49,7 @@ class _SearchState extends State<Search> {
         if (filter == Filter.searchBy) {
           _searchResults.add(item);
         } else if (filter == Filter.Genre) {
-          if (item.genre.contains(query)) {
+          if (item.category.contains(query)) {
             _searchResults.add(item);
           }
         } else if (filter == Filter.Name) {
@@ -158,7 +157,7 @@ class _SearchState extends State<Search> {
                                   SizedBox(
                                     width: 50,
                                   ),
-                                  Text(currentItem.genre),
+                                  Text(currentItem.category),
                                 ],
                               ),
                               tileColor: Colors.purple,
@@ -196,7 +195,7 @@ class _SearchState extends State<Search> {
                                             Text(
                                                 'Commercial Name : ${currentItem.commercialName}'),
                                             Text(
-                                                'Category : ${currentItem.genre}'),
+                                                'Category : ${currentItem.category}'),
                                             Text(
                                                 'Company : ${currentItem.company}'),
                                             Text(
@@ -249,13 +248,13 @@ class _SearchState extends State<Search> {
               id: responseMap[key][0]["id"],
               scientificName: responseMap[key]![0]["s_name"],
               commercialName: responseMap[key]![0]["t_name"],
-              genre: responseMap[key]![0]["category"],
+              category: responseMap[key]![0]["category"],
               company: responseMap[key]![0]["s_name"],
               expirationDate: DateTime.parse(responseMap[key]![0]["end_date"]),
               price: responseMap[key]![0]["price"] is double
                   ? responseMap[key]![0]["price"]
                   : double.parse('${responseMap[key]![0]["price"]}.0'),
-              amount: responseMap[key]![0]["id"]));
+              availableAmount: responseMap[key]![0]["id"]));
         }
         _tempList.sort((a, b) => a.scientificName.compareTo(b.scientificName));
         allItems = _tempList;
