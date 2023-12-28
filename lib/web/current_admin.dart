@@ -2,8 +2,7 @@ import 'package:PharmacyApp/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 Map<String, dynamic?> userInfo = {
-  "id": null,
-  "phone": 0,
+  "username": "",
   "password": r"",
-  "api_token": "",
+  "yousef_session": "",
 };
