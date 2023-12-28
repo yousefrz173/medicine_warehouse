@@ -1,3 +1,4 @@
+import 'package:PharmacyApp/shared/shared.dart';
 import 'package:flutter/material.dart';
 
 class Store extends StatelessWidget{

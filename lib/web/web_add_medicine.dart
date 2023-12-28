@@ -1,16 +1,13 @@
-/*
 import 'dart:convert';
 
 import 'package:PharmacyApp/shared/shared.dart';
 import 'package:http/http.dart' as http;
-todo:
-   connect
- */
+import 'dart:html' as html;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+
 import 'current_admin.dart';
 
 class AddMedicine extends StatelessWidget {
@@ -297,27 +294,51 @@ class _AddMedicineState extends State<_AddMedicine> {
 
     _formKey.currentState!.save();
     _switchLoading(true);
-    try {
-      var response =
-          await http.post(Uri.parse('http://127.0.0.1:8000/add-medicine'),
-              body: jsonEncode({
-                "price": Medicine["price"],
-                "end_date": Medicine["end_date"],
-                "amount": Medicine["amount"],
-                "company": Medicine["company"],
-                "category": Medicine["category"],
-                "t_name": Medicine["t_name"],
-                "s_name": Medicine["s_name"],
-                "_token": userInfo["yousef_session"],
-              }),
-              headers: {
-            'Content-Type': 'application/json',
-          });
-      print(response.statusCode);
-      print(jsonDecode(response.body));
-    } catch (error) {
-      print(error);
-    }
+    html.HttpRequest.request(
+      'http://127.0.0.1:8000/add-medicine',
+      method: 'POST',
+      sendData: jsonEncode({
+        "price": Medicine["price"],
+        "end_date": Medicine["end_date"],
+        "amount": Medicine["amount"],
+        "company": Medicine["company"],
+        "category": Medicine["category"],
+        "t_name": Medicine["t_name"],
+        "s_name": Medicine["s_name"],
+        "_token": userInfo["yousef_session"],
+      }),
+      requestHeaders: {'Content-Type': 'application/json'},
+    ).then((html.HttpRequest response) {
+      if (response.status == 200) {
+        print('Request successful. Response: ${response.responseText}');
+      } else {
+        print('Request failed with status: ${response.status}');
+        print('Response body: ${response.responseText}');
+      }
+    }).catchError((error) {
+      print('Error sending request: $error');
+    });
+    // try {
+    //   var response =
+    //       await http.post(Uri.parse('http://127.0.0.1:8000/add-medicine'),
+    //           body: jsonEncode({
+    //             "price" : Medicine["price"],
+    //             "end_date": Medicine["end_date"],
+    //             "amount": Medicine["amount"],
+    //             "company":Medicine["company"],
+    //             "category":Medicine["category"],
+    //             "t_name": Medicine["t_name"],
+    //             "s_name": Medicine["s_name"],
+    //             "_token": userInfo["yousef_session"],
+    //           }),
+    //           headers: {
+    //         'Content-Type': 'application/json',
+    //       });
+    //   print(response.statusCode);
+    //   print(jsonDecode(response.body));
+    // } catch (error) {
+    //   print(error);
+    // }
     _switchLoading(false);
 
     String scintific = scintificcontroller.text;
