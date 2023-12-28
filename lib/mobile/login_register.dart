@@ -1,12 +1,8 @@
-import 'dart:convert';
 import 'package:PharmacyApp/shared/connect.dart';
+import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PharmacyApp/mobile/home.dart';
-import 'package:http/http.dart' as http;
-import 'package:PharmacyApp/mobile/current_user.dart';
-
-import '../shared/connect.dart';
 
 class LoginRegister extends StatefulWidget {
   static const String route = 'route_login_register';
@@ -30,10 +26,6 @@ class _LoginRegisterState extends State<LoginRegister> {
     'phone': '',
     'password': '',
   };
-  String get _authDataJson => jsonEncode({
-    'phone': _authData['phone']!,
-    'password': _authData['password']!,
-  });
 
   final _passwordController = TextEditingController();
 
@@ -205,67 +197,62 @@ class _LoginRegisterState extends State<LoginRegister> {
     );
   }
 
-
-
   void _submit(BuildContext context) async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    //BackendRout
     _formKey.currentState!.save();
+    Map<String, dynamic> respondBody = {};
+
     SnackBar snackBar = const SnackBar(content: Text(''));
     _switchLoading(true);
+    try {
+      if (_authMode == AuthMode.Login) {
+        respondBody = await Connect.httpLoginMobile(
+          phone: _authData['phone']!,
+          password: _authData['password']!,
+        );
 
-    if (_authMode == AuthMode.Login) {
-      http.Response response = await Connect.http_login_mobile(_authDataJson);
-      _switchLoading(false);
-      print(response.statusCode);
-      if ((jsonDecode(response.body))["statusNumber"] == 200) {
+        _switchLoading(false);
         snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
+          content: Text(respondBody["message"]),
           duration: Duration(seconds: 3),
         );
-        print(jsonDecode(response.body)["message"]);
-
-        userInfo = {
-          "id": jsonDecode(response.body)["pharmacist_information"]["id"],
-          "phone": jsonDecode(response.body)["pharmacist_information"]["phone"],
-          "password": jsonDecode(response.body)["pharmacist_information"]
-              ["password"],
-          "api_token": jsonDecode(response.body)["pharmacist_information"]
-              ["api_token"],
+        userInfoPharmacist = {
+          "id": respondBody["pharmacist_information"]["id"],
+          "phone": respondBody["pharmacist_information"]["phone"],
+          "password": respondBody["pharmacist_information"]["password"],
+          "api_token": respondBody["pharmacist_information"]["api_token"],
         };
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
-      } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
-        snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
-          duration: Duration(seconds: 3),
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          HomePage.route,
+          (route) => false,
         );
-        print((jsonDecode(response.body))["message"]);
       }
-    } else {
-      //BackendRout
-      http.Response response =
-          await Connect.http_register_mobile(_authDataJson);
-      _switchLoading(false);
-      print(response.statusCode);
-      if ((jsonDecode(response.body))["statusNumber"] == 200) {
+      /////////////////////////
+
+      else {
+        //BackendRout
+        respondBody = await Connect.httpRegisterMobile(
+          phone: _authData['phone']!,
+          password: _authData['password']!,
+        );
+        _switchLoading(false);
         snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
+          content: Text(respondBody["message"]),
           duration: const Duration(seconds: 3),
         );
-        print(jsonDecode(response.body)["message"]);
+        print(respondBody["message"]);
         _switchAuthMode();
-      } else if ((jsonDecode(response.body))["statusNumber"] == 400) {
-        snackBar = SnackBar(
-          content: Text(jsonDecode(response.body)["message"]),
-          duration: Duration(seconds: 3),
-        );
-        print((jsonDecode(response.body))["message"]);
-        return;
       }
+    } catch (e) {
+      _switchLoading(false);
+      snackBar = SnackBar(
+        content: Text(e.toString()),
+        duration: const Duration(seconds: 3),
+      );
+      print(e.toString());
     }
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

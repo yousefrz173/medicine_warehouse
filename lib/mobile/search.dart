@@ -1,17 +1,16 @@
-import 'package:PharmacyApp/shared/shared.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 /*
 todo:
    connect
  */
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'home.dart' as HomePage;
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:http/http.dart' as http;
-import 'package:PharmacyApp/mobile/current_user.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 import 'package:intl/intl.dart';
 
 class Search extends StatefulWidget {
@@ -48,7 +47,7 @@ class _SearchState extends State<Search> {
         if (filter == Filter.searchBy) {
           _searchResults.add(item);
         } else if (filter == Filter.Genre) {
-          if (item.genre.contains(query)) {
+          if (item.category.contains(query)) {
             _searchResults.add(item);
           }
         } else if (filter == Filter.Name) {
@@ -156,7 +155,7 @@ class _SearchState extends State<Search> {
                                   SizedBox(
                                     width: 50,
                                   ),
-                                  Text(currentItem.genre),
+                                  Text(currentItem.category),
                                 ],
                               ),
                               tileColor: Colors.purple,
@@ -194,11 +193,11 @@ class _SearchState extends State<Search> {
                                             Text(
                                                 'Commercial Name : ${currentItem.commercialName}'),
                                             Text(
-                                                'Category : ${currentItem.genre}'),
+                                                'Category : ${currentItem.category}'),
                                             Text(
                                                 'Company : ${currentItem.company}'),
                                             Text(
-                                                'Amount : ${currentItem.amount}'),
+                                                'Amount : ${currentItem.availableAmount}'),
                                             Text(
                                                 'Price : ${currentItem.price}'),
                                             Text(
@@ -235,8 +234,8 @@ class _SearchState extends State<Search> {
   _getMedicines() async {
     _switchLoading(true);
     http.Response response = await http.get(
-        Uri.parse('http://${BackendRoutMobile}:8000/api/getmedicine'),
-        headers: {'Authorization': "Bearer ${userInfo["api_token"]}"});
+        Uri.parse('http://${usedIP}:8000/api/getmedicine'),
+        headers: {'Authorization': "Bearer ${userInfoPharmacist["api_token"]}"});
     _switchLoading(false);
     if (jsonDecode(response.body)["statusNumber"] == 200) {
       setState(() {
@@ -248,13 +247,13 @@ class _SearchState extends State<Search> {
               id: responseMap[key][0]["id"],
               scientificName: responseMap[key]![0]["s_name"],
               commercialName: responseMap[key]![0]["t_name"],
-              genre: responseMap[key]![0]["category"],
+              category: responseMap[key]![0]["category"],
               company: responseMap[key]![0]["s_name"],
               expirationDate: DateTime.parse(responseMap[key]![0]["end_date"]),
               price: responseMap[key]![0]["price"] is double
                   ? responseMap[key]![0]["price"]
                   : double.parse('${responseMap[key]![0]["price"]}.0'),
-              amount: responseMap[key]![0]["id"]));
+              availableAmount: responseMap[key]![0]["id"]));
         }
         _tempList.sort((a, b) => a.scientificName.compareTo(b.scientificName));
         allItems = _tempList;
