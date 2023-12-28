@@ -55,6 +55,8 @@ class Cart {
   List<Order> _loadedOrders = [];
 
   Map<int, int> _quantities = {};
+List<int> MedicineIDs = [];
+List<int> quantities = [];
 
   double get cartTotoalPrice {
     double price = 0;

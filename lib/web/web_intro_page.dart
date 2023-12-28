@@ -21,7 +21,7 @@ class _IntroPage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             const Padding(
-              padding: EdgeInsets.fromLTRB(130, 130, 130, 20),
+              padding: EdgeInsets.fromLTRB(130, 90, 130, 20),
               child: Image(
                   width: 170,
                   height: 170,

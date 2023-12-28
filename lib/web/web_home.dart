@@ -43,160 +43,138 @@ class _HomePageState extends State<HomePage> {
       {
         'screen': Center(
           child: Container(
-            width: 2900,
-            height: 1000,
-            child: Center(
-              child: Column(
-                children: [
-                  Container(
-                    width: 5500,
-                    child: Stack(
-                      children: [
-                        Container(
-                          width: 1300,
-                          height: 220,
-                          color: Color.fromRGBO(253, 232, 223, 1.0),
-                          child: Image.asset('assets/images/image_processing.gif',fit: BoxFit.contain),
-                        ),
-                        Container(
-                          width: 1350,
-                          height: 207,
-                          margin: EdgeInsets.only(top: 130),
-                          child: FractionallySizedBox(
-                            heightFactor: 0.5,
-                            widthFactor: 0.23,
-                            child: Row(
-                              children: [
-                                InkWell(
-                                  borderRadius: BorderRadius.circular(50),
-                                  onTap: () => {},
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Icon(
-                                        Icons.pending,
-                                        color: Colors.purple,
-                                        size: 55,
-                                      ),
-                                      Text(
-                                        'Orders',
-                                        style: TextStyle(
-                                            fontSize: 20, color: Colors.white),
-                                        textAlign: TextAlign.center,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(width: 10),
-                                InkWell(
-                                  borderRadius: BorderRadius.circular(50),
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed(AddMedicine.route);
-                                  },
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Icon(
-                                        Icons.local_shipping,
-                                        color: Colors.purple,
-                                        size: 40,
-                                      ),
-                                      Text(
-                                        'New \n Medicine',
-                                        style: TextStyle(
-                                            fontSize: 20, color: Colors.white),
-                                        textAlign: TextAlign.center,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
+            width: 1350,
+            child: Column(
+              children: [
+                Container(
+                  width: 1300,
+                  height: 220,
+                  color: Color.fromRGBO(253, 232, 223, 1.0),
+                  child: Image.asset(
+                    'assets/images/image_processing.gif',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      borderRadius: BorderRadius.circular(50),
+                      onTap: () => {},
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.pending,
+                            color: Colors.purple,
+                            size: 55,
+                          ),
+                          Text(
+                            'Orders',
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    InkWell(
+                      borderRadius: BorderRadius.circular(50),
+                      onTap: () {
+                        Navigator.of(context).pushNamed(AddMedicine.route);
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.local_shipping,
+                            color: Colors.purple,
+                            size: 40,
+                          ),
+                          Text(
+                            'New \n Medicine',
+                            style: TextStyle(fontSize: 20, color: Colors.white),
+                            textAlign: TextAlign.center,
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Container(
+                  alignment: Alignment(-8, 0),
+                  padding: EdgeInsets.only(top: 8),
+                  width: 150,
+                  height: 30,
+                  child: Text(
+                    'Recent',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Container(
+                  width: 380,
+                  height: 400,
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: RecentList.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () => {},
+                        child: Container(
+                          padding: EdgeInsets.only(top: 13),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: [
+                              Colors.purple,
+                              Colors.deepOrangeAccent,
+                            ]),
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          height: 25,
+                          child: Center(
+                            child: Text(
+                              RecentList[index].commercialName,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontFamily: 'Quicksand',
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                      ],
+                      );
+                    },
+                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                      maxCrossAxisExtent: 200,
+                      mainAxisExtent: 60,
+                      mainAxisSpacing: 45,
+                      childAspectRatio: 3.0,
+                      crossAxisSpacing: 35,
                     ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 240),
-                    padding: EdgeInsets.only(top: 8),
-                    width: 150,
-                    height: 30,
-                    child: Text(
-                      'Recent',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Container(
-                      width: 380,
-                      height: 400,
-                      child: GridView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        itemCount: RecentList.length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () => {},
-                            child: Container(
-                              padding: EdgeInsets.only(top: 13),
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(colors: [
-                                  Colors.purple,
-                                  Colors.deepOrangeAccent,
-                                ]),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              height: 25,
-                              width: 10,
-                              child: Text(
-                                RecentList[index].commercialName,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontFamily: 'Quicksand',
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 200,
-                          mainAxisExtent: 60,
-                          mainAxisSpacing: 45,
-                          childAspectRatio: 3.0,
-                          crossAxisSpacing: 35,
-                        ),
-                      )),
-                  SizedBox(
-                    width: 500,
-                    height: 3,
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
         'title':
-        Text('Home', style: TextStyle(fontSize: 23, color: Colors.black)),
+            Text('Home', style: TextStyle(fontSize: 23, color: Colors.black)),
+      },
+      {
+        'screen': Scaffold(),
+        'title': Text('My Stock',
+            style: TextStyle(fontSize: 23, color: Colors.black)),
       },
       {
         'screen': Scaffold(),
         'title':
-        Text('My Stock', style: TextStyle(fontSize: 23, color: Colors.black)),
-      },
-      {
-        'screen': Scaffold(),
-        'title':
-        Text('Store', style: TextStyle(fontSize: 23, color: Colors.black)),
+            Text('Store', style: TextStyle(fontSize: 23, color: Colors.black)),
       },
       {
         'screen': Scaffold(),
@@ -230,7 +208,7 @@ class _HomePageState extends State<HomePage> {
                 height: 70,
                 child: Text(
                   textAlign: TextAlign.center,
-                  '${userInfo["phone"]}',
+                  '${userInfo["username"]}',
                   style: TextStyle(
                     fontSize: 45,
                     color: Colors.white,
@@ -252,8 +230,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            if(_isLoading)
-            CircularProgressIndicator(),
+            if (_isLoading) CircularProgressIndicator(),
           ],
         ),
       ),
@@ -324,24 +301,33 @@ class _HomePageState extends State<HomePage> {
   }
 
   _LogOut() async {
+    SnackBar snackBar = SnackBar(content: Text(''));
     switchLoading(true);
-    http.Response response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/api/logout'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': "Bearer ${userInfo["api_token"]}"
-      },
+    http.Response response = await http.get(
+      Uri.parse('http://127.0.0.1:8000/logout'),
     );
     switchLoading(false);
-    Map<String,dynamic> body = jsonDecode(response.body);
-    if (jsonDecode(response.body)["statusNumber"] == 200) {
+    print(response.statusCode);
+    Map<String, dynamic> body = jsonDecode(response.body);
+    if (response.statusCode == 200) {
+      snackBar = SnackBar(
+        content: Text(body["message"]),
+        duration: Duration(seconds: 3),
+      );
+      if (body["statusNumber"] != 200) {
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
       print(jsonDecode(response.body)["message"]);
       Navigator.of(context)
           .pushNamedAndRemoveUntil(IntroPage.route, (route) => false);
-    } else if (jsonDecode(response.body)["statusNumber"] == 400) {
-      print(jsonDecode(response.body)["message"]);
-    } else if (jsonDecode(response.body)["statusNumber"] == 403) {
+    } else if (response.statusCode >= 400) {
+      snackBar = SnackBar(
+        content: Text(body["message"]),
+        duration: Duration(seconds: 3),
+      );
       print(jsonDecode(response.body)["message"]);
     }
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
