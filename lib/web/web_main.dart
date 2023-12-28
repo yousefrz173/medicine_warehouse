@@ -1,4 +1,3 @@
-import 'package:PharmacyApp/shared/shared.dart';
 import 'package:PharmacyApp/web/web_add_medicine.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/web/web_login.dart';
@@ -11,6 +10,8 @@ void main() {
 }
 
 class AdminWebApp extends StatelessWidget {
+  const AdminWebApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
