@@ -25,7 +25,6 @@ void loadedMedicinesFromServer() async {
       loadedMedicines.add(medicine);
       loadedMedicinesByCategory[categoryName]!.add(medicine);
     }
-
   }
   for (Medicine medicine in loadedMedicines)
     print(medicine.medicineInfoMap.toString());
