@@ -151,23 +151,20 @@ class _LoginWebState extends State<LoginWeb> {
     }
     _formKey.currentState!.save();
     SnackBar snackBar = SnackBar(content: Text(''));
+
     _switchLoading(true);
     var response =
-        await http.get(Uri.parse('http://${BackendRoutWeb}:8000/csrf-token'));
-    print(response.body);
-    print(response.headers);
-    String csrfToken = jsonDecode(response.body)["csrf_token"];
-    print(csrfToken);
+        await http.get(Uri.parse('http://127.0.0.1:8000/csrf-token'));
+    var csrfToken = jsonDecode(response.body)["csrf_token"];
     var loginResponse = await http.post(
-      Uri.parse('http://${BackendRoutWeb}:8000/login'),
+      Uri.parse('http://$BackendRoutWeb:8000/login'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        //'X-CSRF-TOKEN': csrfToken,
       },
       body: {
+        "_token": csrfToken,
         "username": _authData['username']!,
         "password": _authData['password']!,
-        "_token": csrfToken,
       },
     );
     _switchLoading(false);
@@ -177,21 +174,19 @@ class _LoginWebState extends State<LoginWeb> {
     snackBar = SnackBar(content: Text('${loginResponse.statusCode}'));
     if (loginResponse.statusCode == 200) {
       snackBar = SnackBar(
-        content: Text(await loginResponse.body),
+        content: Text(loginResponse.body),
         duration: Duration(seconds: 3),
       );
       print(await loginResponse.body);
-
-      // userInfo = {
-      //   "id": jsonDecode(response.body)["pharmacist_information"]["id"],
-      //   "phone": jsonDecode(response.body)["pharmacist_information"]["phone"],
-      //   "password": jsonDecode(response.body)["pharmacist_information"]
-      //       ["password"],
-      //   "api_token": jsonDecode(response.body)["pharmacist_information"]
-      //       ["api_token"],
-      // };
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
+      if (jsonDecode(loginResponse.body)["statusNumber"] == 200) {
+        userInfo = {
+          "username": _authData['username'],
+          "password": _authData['password'],
+          "yousef_session": csrfToken,
+        };
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
+      }
     } else if (loginResponse.statusCode == 400) {
       snackBar = SnackBar(
         content: Text(await loginResponse.body),
