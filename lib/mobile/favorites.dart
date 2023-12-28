@@ -1,4 +1,8 @@
-import 'package:PharmacyApp/shared/shared.dart';
+/*
+todo:
+   design
+   connect
+*/
 import 'package:flutter/material.dart';
 
 class Favorites extends StatelessWidget {
