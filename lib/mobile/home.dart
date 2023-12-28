@@ -319,7 +319,7 @@ class _HomePageState extends State<HomePage> {
   _LogOut() async {
     switchLoading(true);
     try {
-      Map<String, dynamic> RBody = await Connect.http_logout_mobile();
+      Map<String, dynamic> RBody = await Connect.httpLogoutMobile();
       switchLoading(false);
       if (RBody["statusNumber"] == 200) {
         Navigator.of(context).pushNamedAndRemoveUntil(

@@ -1,8 +1,8 @@
 import 'package:PharmacyApp/shared/connect.dart';
+import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PharmacyApp/mobile/home.dart';
-import 'package:PharmacyApp/shared/connect.dart';
 
 class LoginRegister extends StatefulWidget {
   static const String route = 'route_login_register';
@@ -208,55 +208,51 @@ class _LoginRegisterState extends State<LoginRegister> {
     _switchLoading(true);
     try {
       if (_authMode == AuthMode.Login) {
-        respondBody = await Connect.http_login_mobile(
+        respondBody = await Connect.httpLoginMobile(
           phone: _authData['phone']!,
           password: _authData['password']!,
         );
-        _switchLoading(false);
 
-        if (respondBody["statusNumber"] == 200) {
-          snackBar = SnackBar(
-            content: Text(respondBody["message"]),
-            duration: Duration(seconds: 3),
-          );
-          userInfo = {
-            "id": respondBody["pharmacist_information"]["id"],
-            "phone": respondBody["pharmacist_information"]["phone"],
-            "password": respondBody["pharmacist_information"]["password"],
-            "api_token": respondBody["pharmacist_information"]["api_token"],
-          };
-          Navigator.of(context).pushNamedAndRemoveUntil(
-            HomePage.route,
-            (route) => false,
-          );
-        } else {
-          throw Exception(respondBody["message"]);
-        }
-      } else {
+        _switchLoading(false);
+        snackBar = SnackBar(
+          content: Text(respondBody["message"]),
+          duration: Duration(seconds: 3),
+        );
+        userInfo = {
+          "id": respondBody["pharmacist_information"]["id"],
+          "phone": respondBody["pharmacist_information"]["phone"],
+          "password": respondBody["pharmacist_information"]["password"],
+          "api_token": respondBody["pharmacist_information"]["api_token"],
+        };
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          HomePage.route,
+          (route) => false,
+        );
+      }
+      /////////////////////////
+
+      else {
         //BackendRout
         respondBody = await Connect.httpRegisterMobile(
           phone: _authData['phone']!,
           password: _authData['password']!,
         );
         _switchLoading(false);
-        if (respondBody["statusNumber"] == 200) {
-          snackBar = SnackBar(
-            content: Text(respondBody["message"]),
-            duration: const Duration(seconds: 3),
-          );
-          print(respondBody["message"]);
-          _switchAuthMode();
-        } else {
-          throw Exception(respondBody["message"]);
-        }
+        snackBar = SnackBar(
+          content: Text(respondBody["message"]),
+          duration: const Duration(seconds: 3),
+        );
+        print(respondBody["message"]);
+        _switchAuthMode();
       }
     } catch (e) {
+      _switchLoading(false);
       snackBar = SnackBar(
         content: Text(e.toString()),
-        duration: Duration(seconds: 3),
+        duration: const Duration(seconds: 3),
       );
       print(e.toString());
     }
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

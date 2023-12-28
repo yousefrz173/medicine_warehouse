@@ -1,3 +1,5 @@
+import 'package:PharmacyApp/mobile/Widget/MedicineList.dart';
+import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:flutter/material.dart';
 
 class MyStock extends StatelessWidget {
@@ -5,12 +7,9 @@ class MyStock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(22, 1, 32, 1),
-      body: Container(
-        height: 30,
-        width: 30,
-      ),
+    loadedMedicinesFromServer();
+    return MedicineList(
+      medicines: loadedMedicines,
     );
   }
 }

@@ -7,64 +7,77 @@ import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:PharmacyApp/shared/connect.dart';
 
 class Cart {
-  Cart() {
-    _cartMedicines = [];
-    _quantities = [];
-    _length = 0;
-  }
+  List<int> get cartMedicineIDs => _quantities.keys.toList();
 
-  List<int> get _medicineIDs =>
-      List<int>.generate(_length, (index) => _cartMedicines[index].id);
+  List<int> get cartMedicineQuantities => _quantities.values.toList();
 
-
-  void _remove_Item({required Medicine medicine, int? amount}) {}
-
-  void Order() async{
-    Map <String, dynamic> RBody = await
+  void order() async {
     Connect.httpOrderMobile(
-        Medicine_IDs: _medicineIDs, Quantities: _quantities);
-    if(RBody[""])
+        medicineIDs: cartMedicineIDs, quantities: cartMedicineQuantities);
+    _quantities = {};
   }
 
-  void isEmpty() {}
+  void syncPharmacistOrders() async {
+    _loadedOrders = [];
+    final Map<String, dynamic> rBody = await Connect.httpGetOrdersMobile();
+    List<Map<String, dynamic>> orders = rBody["orders"]!;
+    for (final orderJson in orders) {
+      _loadedOrders.add(Order.fromJson(orderjson: orderJson));
+    }
+  }
 
-  void addMedicine({required Medicine medicine, required int amount}) {
-    if (medicine.amount < amount) {
+  bool isEmpty() => _quantities.isEmpty;
+
+  void addMedicine({required int medicineId, required int amount}) {
+    if (loadedMedicines[medicineId]!.availableAmount <
+        (amount + _quantities[medicineId]!)) {
       throw Exception('There is No Enough Quantity');
     }
-    for (int i = 0; i <= _length; i++) {
-      if (_cartMedicines[i].medicineInfoMap == medicine.medicineInfoMap) {
-        if (_cartMedicines[i].amount < (amount + _quantities[i])) {
-          throw Exception('There is No Enough Quantity');
-        }
-        _quantities[i] += amount;
-        return;
-      }
+    if (_quantities[medicineId] == null) {
+      _quantities[medicineId] = amount;
+    } else {
+      _quantities[medicineId] = amount + _quantities[medicineId]!;
     }
-    _cartMedicines.add(medicine);
-    _quantities.add(amount);
+    return;
   }
 
-  void removeMedicine({required Medicine medicine, int? amount}) {
-    for (int i = 0; i <= _length; i++) {
-      if (_cartMedicines[i].medicineInfoMap == medicine.medicineInfoMap) {
-        if (amount == null) {
-          _cartMedicines.removeAt(i);
-          _quantities.removeAt(i);
-          return;
-        } else {
-          _quantities[i] -= amount;
-          if (_quantities[i] < 0) {
-            _cartMedicines.removeAt(i);
-            _quantities.removeAt(i);
-          }
-          return;
-        }
+  void removeMedicine({required int medicineId, int? amount}) {
+    if (amount == null) {
+      _quantities.remove(medicineId);
+    } else if (amount != 0) {
+      _quantities[medicineId] = _quantities[medicineId]! - amount;
+      if (_quantities[medicineId] == 0) {
+        _quantities.remove(_quantities[medicineId]);
       }
     }
   }
 
-  late int _length;
-  late List<Medicine> _cartMedicines;
-  late List<int> _quantities;
-}}
+  List<Order> _loadedOrders = [];
+
+  Map<int, int> _quantities = {};
+
+  double get cartTotoalPrice {
+    double price = 0;
+    for (final entry in _quantities.entries) {
+      final Medicine medicine = loadedMedicines[entry.key]!;
+      final double medicinePrice = medicine.price;
+      price += medicinePrice * entry.value;
+    }
+    return price;
+  }
+}
+
+class Order {
+  String state;
+  String payed;
+  double price;
+
+  Order({required this.price, required this.payed, required this.state});
+
+  factory Order.fromJson({required Map<String, dynamic> orderjson}) {
+    return Order(
+        price: orderjson['price'],
+        payed: orderjson['payed'],
+        state: orderjson['state']);
+  }
+}

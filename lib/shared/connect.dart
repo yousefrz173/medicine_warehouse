@@ -1,8 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-const String backendRoutMobile = '10.0.2.2';
+const String localIP1 = '10.0.2.2';
 const String backendRoutWeb = '127.0.0.1';
+const String BlueStacksNetworkIP = '172.27.224.1';
+const String usedIP = localIP1;
 
 Map<String, dynamic> userInfo = {
   "id": null,
@@ -26,33 +28,35 @@ class Connect {
     }
   }
 
-  static get x => {
+  static get authorizedHeader => {
         'Content-Type': 'application/json',
         'Authorization': "Bearer ${userInfo["api_token"]}"
       };
 
   static get userID => userInfo["id"];
 
-  static final _loginUrlMobile =
-      Uri.parse('http://$backendRoutMobile:8000/api/login');
+  static final _loginUrlMobile = Uri.parse('http://$usedIP:8000/api/login');
   static final _pharmacistRegisterUrlMobile =
-      Uri.parse('http://$backendRoutMobile:8000/api/register');
+      Uri.parse('http://$usedIP:8000/api/register');
   static final _pharmacistLogoutUrlMobile =
-      Uri.parse('http://$backendRoutMobile:8000/api/logout');
+      Uri.parse('http://$usedIP:8000/api/logout');
   static final _getAllMedicinesUrlMobile =
-      Uri.parse('http://$backendRoutMobile:8000/api/getmedicine');
+      Uri.parse('http://$usedIP:8000/api/getmedicine');
 
-  static Uri _showDetailsUrlMobile({required int Medicine_ID}) =>
-      Uri.parse('http://$backendRoutMobile:8000/api//showdetails/$Medicine_ID');
-  static final _OrderMedicinesUrlMobile =
-      Uri.parse('http://$backendRoutMobile:8000/api/order');
+  static final _searchUrlMobile =
+      Uri.parse('http://$usedIP:8000/api/getmedicine/search?');
 
-  static Uri get _get_Medicine_Orders_url_mobile =>
-      Uri.parse('http://$backendRoutMobile:8000/api/getorders/$userID');
-  static final _add_to_favorite =
-      Uri.parse('http://$backendRoutMobile:8000/api/add-to-favorite');
+  static Uri _showDetailsUrlMobile({required int medicineID}) =>
+      Uri.parse('http://$usedIP:8000/api//showdetails/$medicineID');
+  static final _orderMedicinesUrlMobile =
+      Uri.parse('http://$usedIP:8000/api/order');
 
-  static Future<Map<String, dynamic>> http_login_mobile(
+  static Uri get _getMedicineOrdersUrlMobile =>
+      Uri.parse('http://$usedIP:8000/api/getorders/$userID');
+  static final addToFavoriteUrlMobile =
+      Uri.parse('http://$usedIP:8000/api/add-to-favorite');
+
+  static Future<Map<String, dynamic>> httpLoginMobile(
       {required String phone, required String password}) async {
     final response = await http.post(
       _loginUrlMobile,
@@ -82,54 +86,58 @@ class Connect {
     return _convertToMap(response: response);
   }
 
-  static Future<Map<String, dynamic>> http_logout_mobile() async {
+  static Future<Map<String, dynamic>> httpLogoutMobile() async {
     final response = await http.post(
       _pharmacistLogoutUrlMobile,
-      headers: x,
+      headers: authorizedHeader,
     );
     return _convertToMap(response: response);
   }
 
-  static Future<Map<String, dynamic>> http_getAllMedicines_mobile() async {
-    final response = await http.get(_getAllMedicinesUrlMobile, headers: x);
-    return _convertToMap(response: response);
-  }
-
-  static Future<Map<String, dynamic>> http_showDetails_mobile(
-      {required int medicineID}) async {
-    final response = await http
-        .get(_showDetailsUrlMobile(Medicine_ID: medicineID), headers: x);
-    return _convertToMap(response: response);
-  }
-
-  static Future<Map<String, dynamic>> http_getOrders_mobile(
-      {required List<String> MedicineIDs,
-      required List<String> Medicine_Quantities}) async {
+  static Future<Map<String, dynamic>> httpGetAllMedicinesMobile() async {
     final response =
-        await http.post(_get_Medicine_Orders_url_mobile, headers: x, body: {
-      "pharmacist_id": userID,
-      "medicine_Ids": MedicineIDs,
-      "quan": Medicine_Quantities
-    });
+        await http.get(_getAllMedicinesUrlMobile, headers: authorizedHeader);
     return _convertToMap(response: response);
   }
 
-  static Future<Map<String, dynamic>> http_add_to_favorite_mobile(
-      {required int Medicine_ID}) async {
-    final response = await http.post(_add_to_favorite,
-        headers: x, body: {"pharId": userID, "medId": Medicine_ID});
+  static Future<Map<String, dynamic>> httpShowDetailsMobile(
+      {required int medicineID}) async {
+    final response = await http.get(
+        _showDetailsUrlMobile(medicineID: medicineID),
+        headers: authorizedHeader);
+    return _convertToMap(response: response);
+  }
+
+  static Future<Map<String, dynamic>> httpGetOrdersMobile() async {
+    final response =
+        await http.post(_getMedicineOrdersUrlMobile, headers: authorizedHeader);
     return _convertToMap(response: response);
   }
 
   static Future<Map<String, dynamic>> httpOrderMobile(
-      {required List<int> Medicine_IDs, required List<int> Quantities}) async {
-    final response = await http.post(_OrderMedicinesUrlMobile,
-        headers: x,
+      {required List<int> medicineIDs, required List<int> quantities}) async {
+    final response = await http.post(_orderMedicinesUrlMobile,
+        headers: authorizedHeader,
         body: {
           "pharmacist_id": userID,
-          "medicine_Ids": Medicine_IDs,
-          "quan": Quantities
+          "medicine_Ids": medicineIDs,
+          "quan": quantities
         });
+    return _convertToMap(response: response);
+  }
+
+  static Future<Map<String, dynamic>> httpAddToFavoriteMobile(
+      {required int medicineID}) async {
+    final response = await http.post(addToFavoriteUrlMobile,
+        headers: authorizedHeader,
+        body: {"pharId": userID, "medId": medicineID});
+    return _convertToMap(response: response);
+  }
+
+  static Future<Map<String, dynamic>> httpSearchMobile(
+      {required String value}) async {
+    final response = await http.post(_searchUrlMobile,
+        headers: authorizedHeader, body: {"value": value});
     return _convertToMap(response: response);
   }
 }
