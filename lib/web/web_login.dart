@@ -7,7 +7,10 @@ import 'package:http/http.dart' as http;
 import 'package:PharmacyApp/web/current_admin.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as htmlDom;
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:PharmacyApp/shared/connect.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 class LoginWeb extends StatefulWidget {
   static final String route = 'route_login_web_register';
 
@@ -156,7 +159,7 @@ class _LoginWebState extends State<LoginWeb> {
         await http.get(Uri.parse('http://127.0.0.1:8000/csrf-token'));
     var csrfToken = jsonDecode(response.body)["csrf_token"];
     var loginResponse = await http.post(
-      Uri.parse('http://$BackendRoutWeb:8000/login'),
+      Uri.parse('http://$usedIP:8000/login'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },

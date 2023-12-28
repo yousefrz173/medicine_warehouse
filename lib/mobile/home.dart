@@ -225,7 +225,7 @@ class _HomePageState extends State<HomePage> {
                 height: 70,
                 child: Text(
                   textAlign: TextAlign.center,
-                  '${userInfo["phone"]}',
+                  '${userInfoPharmacist["phone"]}',
                   style: TextStyle(
                     fontSize: 45,
                     color: Colors.white,

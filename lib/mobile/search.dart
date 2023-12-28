@@ -234,8 +234,8 @@ class _SearchState extends State<Search> {
   _getMedicines() async {
     _switchLoading(true);
     http.Response response = await http.get(
-        Uri.parse('http://${localIP1}:8000/api/getmedicine'),
-        headers: {'Authorization': "Bearer ${userInfo["api_token"]}"});
+        Uri.parse('http://${usedIP}:8000/api/getmedicine'),
+        headers: {'Authorization': "Bearer ${userInfoPharmacist["api_token"]}"});
     _switchLoading(false);
     if (jsonDecode(response.body)["statusNumber"] == 200) {
       setState(() {

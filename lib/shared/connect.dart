@@ -1,12 +1,12 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-const String localIP1 = '10.0.2.2';
-const String backendRoutWeb = '127.0.0.1';
-const String BlueStacksNetworkIP = '172.27.224.1';
-const String usedIP = localIP1;
+const String IP1 = '10.0.2.2';
+const String IP2 = '127.0.0.1';
+const String IP3 = '172.27.224.1';
+const String usedIP = IP1;
 
-Map<String, dynamic> userInfo = {
+Map<String, dynamic> userInfoPharmacist = {
   "id": null,
   "phone": 0,
   "password": r"",
@@ -30,10 +30,10 @@ class Connect {
 
   static get authorizedHeader => {
         'Content-Type': 'application/json',
-        'Authorization': "Bearer ${userInfo["api_token"]}"
+        'Authorization': "Bearer ${userInfoPharmacist["api_token"]}"
       };
 
-  static get userID => userInfo["id"];
+  static get userID => userInfoPharmacist["id"];
 
   static final _loginUrlMobile = Uri.parse('http://$usedIP:8000/api/login');
   static final _pharmacistRegisterUrlMobile =

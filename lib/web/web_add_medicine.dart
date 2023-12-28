@@ -9,7 +9,8 @@ todo:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'current_admin.dart';
 
 class AddMedicine extends StatelessWidget {
@@ -300,11 +301,11 @@ class _AddMedicineState extends State<_AddMedicine> {
       var response =
           await http.post(Uri.parse('http://127.0.0.1:8000/add-medicine'),
               body: jsonEncode({
-                "price" : Medicine["price"],
+                "price": Medicine["price"],
                 "end_date": Medicine["end_date"],
                 "amount": Medicine["amount"],
-                "company":Medicine["company"],
-                "category":Medicine["category"],
+                "company": Medicine["company"],
+                "category": Medicine["category"],
                 "t_name": Medicine["t_name"],
                 "s_name": Medicine["s_name"],
                 "_token": userInfo["yousef_session"],
