@@ -1,3 +1,4 @@
+import 'package:PharmacyApp/shared/connect.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:PharmacyApp/web/current_admin.dart';
 import 'package:html/parser.dart' as htmlParser;
 import 'package:html/dom.dart' as htmlDom;
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:PharmacyApp/shared/connect.dart';
 import 'package:PharmacyApp/shared/connect.dart';
 class LoginWeb extends StatefulWidget {
   static final String route = 'route_login_web_register';
