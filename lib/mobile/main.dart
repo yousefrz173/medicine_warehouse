@@ -1,3 +1,4 @@
+import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/mobile/login_register.dart';
 import 'package:PharmacyApp/mobile/favorites.dart';
@@ -21,7 +22,9 @@ class PharmacistApp extends StatelessWidget {
       title: 'Our Medicine Whorehouse',
       initialRoute: LoginRegister.route,
       routes: {
-        Store.route: (context) => Store(),
+        MedicineList.route: (context) => MedicineList(
+              medicines: ImportantLists.loadedMedicines,
+            ),
         LoginRegister.route: (context) => LoginRegister(),
         HomePage.route: (context) => HomePage(),
         Search.route: (context) => Search(),

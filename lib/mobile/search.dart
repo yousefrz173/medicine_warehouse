@@ -161,7 +161,7 @@ class _SearchState extends State<Search> {
                               tileColor: Colors.purple,
                               onTap: () {
                                 setState(() {
-                                  RecentList.add(currentItem);
+                                  ImportantLists.RecentList.add(currentItem);
                                 });
                                 showDialog(
                                     context: context,

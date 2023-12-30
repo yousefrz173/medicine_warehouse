@@ -36,12 +36,10 @@ class _SearchState extends State<Search> {
   List<Medicine> _searchResults = [];
   Filter? filter = Filter.searchBy;
 
-  Timer t = Timer(
-    Duration(seconds: 10),
-      ()async {
-      http.Response response = await http.get(Uri.parse('url'));
-      }
-  );
+  Timer t = Timer(Duration(seconds: 10), () async {
+    http.Response response = await http.get(Uri.parse('url'));
+  });
+
   void search(String query, Filter filter) {
     ScaffoldKey.currentState!.setState(() {
       _searchResults.clear();
@@ -163,7 +161,7 @@ class _SearchState extends State<Search> {
                               tileColor: Colors.purple,
                               onTap: () {
                                 setState(() {
-                                  RecentList.add(currentItem);
+                                  ImportantLists.RecentList.add(currentItem);
                                 });
                                 showDialog(
                                     context: context,
@@ -215,8 +213,8 @@ class _SearchState extends State<Search> {
                       : _isLoading
                           ? SizedBox(
                               width: 40,
-                              height: 40,
-                              child: CircularProgressIndicator(),
+                              height: 10,
+                              child: CircularProgressIndicator(strokeWidth: 2.0),
                             )
                           : Center(
                               child: Text(
@@ -258,6 +256,7 @@ class _SearchState extends State<Search> {
         }
         _tempList.sort((a, b) => a.scientificName.compareTo(b.scientificName));
         allItems = _tempList;
+
       });
       print(jsonDecode(response.body)["message"]);
     } else if (jsonDecode(response.body)["statusNumber"] == 403) {
