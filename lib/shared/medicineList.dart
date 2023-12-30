@@ -12,7 +12,7 @@ class ImportantLists{
     return result;
   }
 
-  static void loadedMedicinesFromServer() async {
+  static void loadMedicinesFromServer() async {
     loadedMedicines = [];
     final Map<String, dynamic> jsonData =
     await Connect.httpGetAllMedicinesMobile();

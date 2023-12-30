@@ -1,4 +1,3 @@
-import 'package:PharmacyApp/mobile/Widget/MedicineList.dart';
 import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:flutter/material.dart';
 
@@ -7,9 +6,7 @@ class MyStock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ImportantLists.loadedMedicinesFromServer();
-    return MedicineList(
-      medicines: ImportantLists.loadedMedicines,
-    );
+    ImportantLists.loadMedicinesFromServer();
+    return Text('null');
   }
 }

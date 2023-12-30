@@ -3,8 +3,7 @@ import 'dart:convert';
 
 const String IP1 = '10.0.2.2';
 const String IP2 = '127.0.0.1';
-const String IP3 = '172.27.224.1';
-const String usedIP = IP2;
+const String usedIP = IP1;
 
 Map<String, dynamic> userInfoPharmacist = {
   "id": null,

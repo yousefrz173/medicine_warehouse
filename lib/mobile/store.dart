@@ -26,8 +26,8 @@ class _StoreState extends State<Store> {
   @override
   void initState() {
     super.initState();
-    loadMedicinesFromServer();
-    medicines = loadedMedicines;
+    ImportantLists.loadMedicinesFromServer();
+    medicines = ImportantLists.loadedMedicines;
   }
 
   void _medicinetapped(Medicine medicine) {}
@@ -40,8 +40,8 @@ class _StoreState extends State<Store> {
         child: const Icon(Icons.refresh),
         onPressed: () {
           setState(() {
-            loadMedicinesFromServer();
-            medicines = loadedMedicines;
+            ImportantLists.loadMedicinesFromServer();
+            medicines = ImportantLists.loadedMedicines;
           });
         },
       ),

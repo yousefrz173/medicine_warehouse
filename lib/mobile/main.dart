@@ -6,7 +6,7 @@ import 'package:PharmacyApp/mobile/intro_page.dart';
 import 'package:PharmacyApp/mobile/store.dart';
 import 'package:PharmacyApp/mobile/search.dart';
 import 'package:PharmacyApp/mobile/home.dart';
-import 'package:PharmacyApp/mobile/Widget/MedicineList.dart';
+
 
 void main() {
   runApp(PharmacistApp());
@@ -22,9 +22,6 @@ class PharmacistApp extends StatelessWidget {
       title: 'Our Medicine Whorehouse',
       initialRoute: LoginRegister.route,
       routes: {
-        MedicineList.route: (context) => MedicineList(
-              medicines: ImportantLists.loadedMedicines,
-            ),
         LoginRegister.route: (context) => LoginRegister(),
         HomePage.route: (context) => HomePage(),
         Search.route: (context) => Search(),
