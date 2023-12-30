@@ -7,9 +7,9 @@ class MyStock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    loadedMedicinesFromServer();
+    ImportantLists.loadedMedicinesFromServer();
     return MedicineList(
-      medicines: loadedMedicines,
+      medicines: ImportantLists.loadedMedicines,
     );
   }
 }

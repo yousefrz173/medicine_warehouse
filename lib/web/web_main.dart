@@ -1,9 +1,12 @@
 import 'package:PharmacyApp/web/web_add_medicine.dart';
+import 'package:PharmacyApp/web/web_review_and_edit_orders.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/web/web_login.dart';
 import 'package:PharmacyApp/web/web_intro_page.dart';
 import 'package:PharmacyApp/web/web_search.dart';
 import 'package:PharmacyApp/web/web_home.dart';
+
+import 'current_order.dart';
 
 void main() {
   runApp(AdminWebApp());
@@ -17,13 +20,15 @@ class AdminWebApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'King Ameer Dashboard',
-      initialRoute: IntroPage.route,
+      initialRoute: LoginWeb.route,
       routes: {
         LoginWeb.route: (context) => LoginWeb(),
         HomePage.route: (context) => HomePage(),
         Search.route: (context) => Search(),
         IntroPage.route: (context) => IntroPage(),
         AddMedicine.route: (context) => AddMedicine(),
+        Orders.route: (context) => Orders(),
+        CurrentOrder.route: (context) => CurrentOrder(),
       },
     );
   }

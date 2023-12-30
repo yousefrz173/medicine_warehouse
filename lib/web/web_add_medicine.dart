@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,17 +38,6 @@ class _AddMedicineState extends State<_AddMedicine> {
     "price": '0.0',
   };
 
-  final TextEditingController scintificcontroller = TextEditingController();
-  final TextEditingController tradingcontroller = TextEditingController();
-  final TextEditingController categorycontroller = TextEditingController();
-  final TextEditingController manufactureCompanycontroller =
-      TextEditingController();
-  final TextEditingController availableQuantitycontroller =
-      TextEditingController();
-  final TextEditingController expirationDatecontroller =
-      TextEditingController();
-  final TextEditingController pricecontroller = TextEditingController();
-
   DateTime _selectedDate = DateTime.now();
   var _dateController = TextEditingController();
 
@@ -77,7 +65,6 @@ class _AddMedicineState extends State<_AddMedicine> {
                         borderRadius: BorderRadius.circular(16),
                         color: Colors.white),
                     child: TextFormField(
-                      inputFormatters: [],
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'this field is required';
@@ -87,9 +74,8 @@ class _AddMedicineState extends State<_AddMedicine> {
                         return null;
                       },
                       onSaved: (value) {
-                        Medicine["s_name"] = value;
+                        Medicine["s_name"] = value!;
                       },
-                      controller: scintificcontroller,
                       decoration: const InputDecoration(
                           label: Text('Enter the Scientific name')),
                     ),
@@ -111,9 +97,8 @@ class _AddMedicineState extends State<_AddMedicine> {
                         return null;
                       },
                       onSaved: (value) {
-                        Medicine["t_name"] = value;
+                        Medicine["t_name"] = value!;
                       },
-                      controller: tradingcontroller,
                       decoration: const InputDecoration(
                           label: Text('Enter the Commercial name')),
                     ),
@@ -135,9 +120,8 @@ class _AddMedicineState extends State<_AddMedicine> {
                         return null;
                       },
                       onSaved: (value) {
-                        Medicine["category"] = value;
+                        Medicine["category"] = value!;
                       },
-                      controller: categorycontroller,
                       decoration: const InputDecoration(
                           label: Text('Enter the Category')),
                     ),
@@ -159,9 +143,8 @@ class _AddMedicineState extends State<_AddMedicine> {
                         return null;
                       },
                       onSaved: (value) {
-                        Medicine["company"] = value;
+                        Medicine["company"] = value!;
                       },
-                      controller: manufactureCompanycontroller,
                       decoration: const InputDecoration(
                           label: Text('Enter the Manufacture company')),
                     ),
@@ -188,7 +171,6 @@ class _AddMedicineState extends State<_AddMedicine> {
                       onSaved: (value) {
                         Medicine["amount"] = value!;
                       },
-                      controller: availableQuantitycontroller,
                       decoration: const InputDecoration(
                           label: Text('Enter the Quantity Available by box')),
                       keyboardType: TextInputType.number,
@@ -209,7 +191,7 @@ class _AddMedicineState extends State<_AddMedicine> {
                         return null;
                       },
                       onSaved: (value) {
-                        Medicine["end_date"] = value.toString();
+                        Medicine["end_date"] = value;
                       },
                       controller: _dateController,
                       readOnly: true,
@@ -233,7 +215,6 @@ class _AddMedicineState extends State<_AddMedicine> {
                       onSaved: (value) {
                         Medicine["price"] = value!;
                       },
-                      controller: pricecontroller,
                       decoration:
                           const InputDecoration(label: Text('Enter the Price')),
                       keyboardType: TextInputType.number,
@@ -281,7 +262,7 @@ class _AddMedicineState extends State<_AddMedicine> {
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
-        _dateController.text = '${picked.day}-${picked.month}-${picked.year}';
+        _dateController.text = '${picked.year}-${picked.month}-${picked.day}';
       });
     }
   }
@@ -290,63 +271,38 @@ class _AddMedicineState extends State<_AddMedicine> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-
+    SnackBar snackbar = SnackBar(
+      content: Text(''),
+      duration: Duration(seconds: 3),
+    );
     _formKey.currentState!.save();
     _switchLoading(true);
-    html.HttpRequest.request(
-      'http://127.0.0.1:8000/add-medicine',
-      method: 'POST',
-      sendData: jsonEncode({
-        "price": Medicine["price"],
-        "end_date": Medicine["end_date"],
-        "amount": Medicine["amount"],
-        "company": Medicine["company"],
-        "category": Medicine["category"],
-        "t_name": Medicine["t_name"],
-        "s_name": Medicine["s_name"],
-        "_token": userInfo["yousef_session"],
-      }),
-      requestHeaders: {'Content-Type': 'application/json'},
-    ).then((html.HttpRequest response) {
-      if (response.status == 200) {
-        print('Request successful. Response: ${response.responseText}');
-      } else {
-        print('Request failed with status: ${response.status}');
-        print('Response body: ${response.responseText}');
-      }
-    }).catchError((error) {
-      print('Error sending request: $error');
-    });
-    // try {
-    //   var response =
-    //       await http.post(Uri.parse('http://127.0.0.1:8000/add-medicine'),
-    //           body: jsonEncode({
-    //             "price" : Medicine["price"],
-    //             "end_date": Medicine["end_date"],
-    //             "amount": Medicine["amount"],
-    //             "company":Medicine["company"],
-    //             "category":Medicine["category"],
-    //             "t_name": Medicine["t_name"],
-    //             "s_name": Medicine["s_name"],
-    //             "_token": userInfo["yousef_session"],
-    //           }),
-    //           headers: {
-    //         'Content-Type': 'application/json',
-    //       });
-    //   print(response.statusCode);
-    //   print(jsonDecode(response.body));
-    // } catch (error) {
-    //   print(error);
-    // }
-    _switchLoading(false);
 
-    String scintific = scintificcontroller.text;
-    String trading = tradingcontroller.text;
-    String Category = categorycontroller.text;
-    String ManufactureCompany = manufactureCompanycontroller.text;
-    String AvailableQuantity = availableQuantitycontroller.text;
-    String ExpirationDate = expirationDatecontroller.text;
-    double Price = double.parse(pricecontroller.text);
+    //don't remove the toString() inside this map
+    Map<String, String?> MedicineRequestBody = {
+      "price": Medicine["price"].toString(),
+      "end_date": Medicine["end_date"].toString(),
+      "amount": Medicine["amount"].toString(),
+      "company": Medicine["company"].toString(),
+      "category": Medicine["category"].toString(),
+      "t_name": Medicine["t_name"].toString(),
+      "s_name": Medicine["s_name"].toString(),
+      "_token": userInfo["_token"],
+    };
+    try {
+      var response = await http.post(
+        Uri.parse('http://127.0.0.1:8000/add-medicine'),
+        body: MedicineRequestBody,
+      );
+      _switchLoading(false);
+      snackbar = SnackBar(
+        content: Text(jsonDecode(response.body)["message"]),
+        duration: Duration(seconds: 3),
+      );
+    } catch (error) {
+      print(error);
+    }
+    ScaffoldMessenger.of(context).showSnackBar(snackbar);
   }
 
   void _switchLoading(bool bool) {
