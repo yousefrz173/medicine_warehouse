@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  GlobalKey<AnimatedListState> listKey = GlobalKey();
   var _selectedPageIndex = 0;
   final _selectedPageTitle = 'Home';
   List<Map<String, Widget>> _bottomNavBarScreens = [
@@ -116,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                     child: GridView.builder(
                       shrinkWrap: true,
                       physics: NeverScrollableScrollPhysics(),
-                      itemCount: RecentList.length,
+                      itemCount: ImportantLists.RecentList.length,
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () => {},
@@ -132,7 +133,7 @@ class _HomePageState extends State<HomePage> {
                             height: 25,
                             width: 10,
                             child: Text(
-                              RecentList[index].commercialName,
+                              ImportantLists.RecentList[index].commercialName,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,

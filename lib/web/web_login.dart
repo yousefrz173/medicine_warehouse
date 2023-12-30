@@ -11,8 +11,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:PharmacyApp/shared/connect.dart';
 import 'package:PharmacyApp/shared/connect.dart';
+
 class LoginWeb extends StatefulWidget {
-  static final String route = 'route_login_web_register';
+  static final String route = 'route_login_web';
 
   const LoginWeb({Key? key}) : super(key: key);
 
@@ -158,6 +159,7 @@ class _LoginWebState extends State<LoginWeb> {
     var response =
         await http.get(Uri.parse('http://127.0.0.1:8000/csrf-token'));
     var csrfToken = jsonDecode(response.body)["csrf_token"];
+    var sessionID = jsonDecode(response.body)["yousef_session"];
     var loginResponse = await http.post(
       Uri.parse('http://$usedIP:8000/login'),
       headers: {
@@ -184,7 +186,8 @@ class _LoginWebState extends State<LoginWeb> {
         userInfo = {
           "username": _authData['username'],
           "password": _authData['password'],
-          "yousef_session": csrfToken,
+          "_token":csrfToken,
+          "yousef_session": sessionID,
         };
         Navigator.of(context)
             .pushNamedAndRemoveUntil(HomePage.route, (route) => false);

@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/web/web_add_medicine.dart';
+import 'package:PharmacyApp/web/web_review_and_edit_orders.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -7,6 +9,7 @@ import 'package:PharmacyApp/web/web_intro_page.dart';
 import 'package:PharmacyApp/web/current_admin.dart';
 import 'package:PharmacyApp/web/web_search.dart';
 import 'package:PharmacyApp/shared/medicineList.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   static const String route = '/';
@@ -16,7 +19,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  GlobalKey _scaffoldKey = GlobalKey();
+  GlobalKey<ScaffoldState> GridKey = GlobalKey();
   var _selectedPageIndex = 0;
   var _selectedPageTitle = 'Home';
 
@@ -61,7 +64,8 @@ class _HomePageState extends State<HomePage> {
                   children: [
                     InkWell(
                       borderRadius: BorderRadius.circular(50),
-                      onTap: () => {},
+                      onTap: () =>
+                          Navigator.of(context).pushNamed(Orders.route),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -120,13 +124,12 @@ class _HomePageState extends State<HomePage> {
                   height: 400,
                   child: GridView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: RecentList.length,
+                    //physics: NeverScrollableScrollPhysics(),
+                    itemCount: ImportantLists.RecentList.length,
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () => {},
                         child: Container(
-                          padding: EdgeInsets.only(top: 13),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(colors: [
                               Colors.purple,
@@ -137,7 +140,7 @@ class _HomePageState extends State<HomePage> {
                           height: 25,
                           child: Center(
                             child: Text(
-                              RecentList[index].commercialName,
+                              ImportantLists.RecentList[index].commercialName,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.white,
@@ -168,18 +171,8 @@ class _HomePageState extends State<HomePage> {
       },
       {
         'screen': Scaffold(),
-        'title': Text('My Stock',
-            style: TextStyle(fontSize: 23, color: Colors.black)),
-      },
-      {
-        'screen': Scaffold(),
         'title':
             Text('Store', style: TextStyle(fontSize: 23, color: Colors.black)),
-      },
-      {
-        'screen': Scaffold(),
-        'title': Text('Favorites',
-            style: TextStyle(fontSize: 23, color: Colors.black)),
       },
     ];
     Map<String, String> map = {'phone_number': ''};
@@ -187,6 +180,7 @@ class _HomePageState extends State<HomePage> {
         ? map
         : ModalRoute.of(context)?.settings.arguments as Map<String, String>;
     return Scaffold(
+      key: GridKey,
       drawerScrimColor: Colors.purple.withOpacity(0.5),
       endDrawer: Drawer(
         backgroundColor: Color.fromRGBO(153, 153, 153, 1.0),
@@ -290,12 +284,16 @@ class _HomePageState extends State<HomePage> {
         currentIndex: _selectedPageIndex,
         items: [
           BottomNavigationBarItem(label: 'Home', icon: Icon(Icons.home)),
-          BottomNavigationBarItem(
-              label: 'My Stock', icon: Icon(Icons.warehouse_outlined)),
           BottomNavigationBarItem(label: 'Store', icon: Icon(Icons.store)),
-          BottomNavigationBarItem(
-              label: 'Favorites', icon: Icon(Icons.favorite)),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.refresh),
+        onPressed: () {
+          setState(() {
+            ImportantLists.RecentList = ImportantLists.RecentList;
+          });
+        },
       ),
     );
   }

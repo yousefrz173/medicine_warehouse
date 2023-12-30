@@ -229,7 +229,6 @@ class _LoginRegisterState extends State<LoginRegister> {
           (route) => false,
         );
       }
-      /////////////////////////
 
       else {
         //BackendRout
