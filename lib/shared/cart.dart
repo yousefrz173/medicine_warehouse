@@ -5,8 +5,16 @@
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/shared/connect.dart';
 
+Cart x = Cart();
+
 class Cart {
-  List<int> get cartMedicineIDs {
+  static int get length {
+    return quantities.length;
+  }
+
+
+
+  static List<int> get cartMedicineIDs {
     int length = Medicines.length;
     List<int> result = List.filled(length, 0);
     for (int index = 0; index < length; ++index) {
@@ -15,32 +23,32 @@ class Cart {
     return result;
   }
 
-  List<Medicine> Medicines = [];
-  List<int> quantities = [];
+  static List<Medicine> Medicines = [];
+  static List<int> quantities = [];
 
-  void order() async {
+  static void order() async {
     Connect.httpOrderMobile(
         medicineIDs: cartMedicineIDs, quantities: quantities);
     reset();
   }
 
-  void reset() {
+  static void reset() {
     Medicines = [];
     quantities = [];
   }
 
-  void syncPharmacistOrders() async {
-    _loadedOrders = [];
+  static void syncPharmacistOrders() async {
+    loadedOrders = [];
     final Map<String, dynamic> rBody = await Connect.httpGetOrdersMobile();
     List<Map<String, dynamic>> orders = rBody["orders"]!;
     for (final orderJson in orders) {
-      _loadedOrders.add(Order.fromJson(orderjson: orderJson));
+      loadedOrders.add(Order.fromJson(orderjson: orderJson));
     }
   }
 
-  bool isEmpty() => quantities.isEmpty;
+  static bool isEmpty() => quantities.isEmpty;
 
-  int getMedicineIndexInCart({required Medicine medicine}) {
+  static int getMedicineIndexInCart({required Medicine medicine}) {
     for (int index = 0; index < Medicines.length; index++) {
       if (Medicines[index].medicineInfoMap == medicine.medicineInfoMap) {
         return index;
@@ -49,7 +57,7 @@ class Cart {
     return -1;
   }
 
-  void addMedicine({required Medicine medicine, required int amount}) {
+  static void addMedicine({required Medicine medicine, required int amount}) {
     if (amount > medicine.availableAmount)
       throw Exception('There is No Enough Quantity');
     // check if medicine is in cart
@@ -68,7 +76,7 @@ class Cart {
     return;
   }
 
-  void removeMedicine({required Medicine medicine, int? amount}) {
+  static void removeMedicine({required Medicine medicine, int? amount}) {
     int medicineIndex = getMedicineIndexInCart(medicine: medicine);
 
     if (amount == null) {
@@ -81,9 +89,10 @@ class Cart {
     }
   }
 
-  List<Order> _loadedOrders = [];
+  static List<Order> loadedOrders = [];
+  static List<Order> get Orders => loadedOrders;
 
-  double get cartTotoalPrice {
+  static double get cartTotoalPrice {
     double price = 0;
     int length = quantities.length;
     for (int index = 0; index <= length; ++index) {

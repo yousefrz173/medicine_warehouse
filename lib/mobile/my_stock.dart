@@ -1,15 +1,21 @@
-import 'package:PharmacyApp/mobile/Widget/MedicineList.dart';
 import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:flutter/material.dart';
 
-class MyStock extends StatelessWidget {
+class MyStock extends StatefulWidget {
+  static String route = '/moblie/myStock';
+
   const MyStock({super.key});
 
   @override
+  State<StatefulWidget> createState() {
+    return _MyStockState();
+  }
+}
+
+class _MyStockState extends State<MyStock> {
+  @override
   Widget build(BuildContext context) {
-    loadedMedicinesFromServer();
-    return MedicineList(
-      medicines: loadedMedicines,
-    );
+    loadMedicinesFromServer();
+    return Scaffold(body: Text('Null'));
   }
 }

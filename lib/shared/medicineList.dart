@@ -12,7 +12,7 @@ List<int> get loadedMedicinesIDs {
   return result;
 }
 
-void loadedMedicinesFromServer() async {
+Future<void> loadMedicinesFromServer() async {
   loadedMedicines = [];
   final Map<String, dynamic> jsonData =
       await Connect.httpGetAllMedicinesMobile();
