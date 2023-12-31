@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:PharmacyApp/web/web_intro_page.dart';
 import 'package:PharmacyApp/web/current_admin.dart';
 import 'package:PharmacyApp/web/web_search.dart';
-import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {

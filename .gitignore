@@ -146,7 +146,6 @@ app.*.map.json
 /ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png
 /ios/Runner/Base.lproj/LaunchScreen.storyboard
 /linux/main.cc
-/lib/main.dart
 /ios/Runner/Base.lproj/Main.storyboard
 /macos/Runner/MainFlutterWindow.swift
 /macos/Runner/Base.lproj/MainMenu.xib

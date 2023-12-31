@@ -4,9 +4,8 @@ import 'package:PharmacyApp/mobile/intro_page.dart';
 import 'package:PharmacyApp/mobile/search.dart';
 import 'package:PharmacyApp/mobile/store.dart';
 import 'package:PharmacyApp/mobile/favorites.dart';
-import 'package:PharmacyApp/shared/medicineList.dart';
-import 'package:PharmacyApp/mobile/my_chart.dart';
-
+import 'package:PharmacyApp/mobile/my_stock.dart';
+import 'package:PharmacyApp/shared/medicine.dart';
 class HomePage extends StatefulWidget {
   static const String route = '/';
 
@@ -166,9 +165,9 @@ class _HomePageState extends State<HomePage> {
           Text('Home', style: TextStyle(fontSize: 23, color: Colors.black)),
     },
     {
-      'screen': MyChart(),
+      'screen': MyStock(),
       'title':
-          Text('My Chart', style: TextStyle(fontSize: 23, color: Colors.black)),
+          Text('My Stock', style: TextStyle(fontSize: 23, color: Colors.black)),
     },
     {
       'screen': Store(),
@@ -308,7 +307,7 @@ class _HomePageState extends State<HomePage> {
         items: [
           BottomNavigationBarItem(label: 'Home', icon: Icon(Icons.home)),
           BottomNavigationBarItem(
-              label: 'My Chart', icon: Icon(Icons.warehouse_outlined)),
+              label: 'My Stock', icon: Icon(Icons.warehouse_outlined)),
           BottomNavigationBarItem(label: 'Store', icon: Icon(Icons.store)),
           BottomNavigationBarItem(
               label: 'Favorites', icon: Icon(Icons.favorite)),
