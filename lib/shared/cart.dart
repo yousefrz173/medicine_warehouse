@@ -5,8 +5,6 @@
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/shared/connect.dart';
 
-Cart x = Cart();
-
 class Cart {
   static int get length {
     return cartQuantities.length;
@@ -44,7 +42,7 @@ class Cart {
     return loadedOrders;
   }
 
-  static int _getMedicineIndexInCart({required Medicine medicine}) {
+  static int getMedicineIndexInCart({required Medicine medicine}) {
     for (int index = 0; index < cartMedicines.length; index++) {
       if (cartMedicines[index].medicineInfoMap == medicine.medicineInfoMap) {
         return index;
@@ -53,12 +51,13 @@ class Cart {
     return -1;
   }
 
-  static void addMedicine(
+    static void addMedicine(
       {required Medicine medicine, required int addedAmount}) {
-    if (addedAmount > medicine.availableAmount)
+    if (addedAmount > medicine.availableAmount) {
       throw Exception('There is No Enough Quantity');
+    }
     // check if medicine is in cart
-    int medicineIndex = _getMedicineIndexInCart(medicine: medicine);
+    int medicineIndex = getMedicineIndexInCart(medicine: medicine);
     // medicine is not in cart
     if (medicineIndex == -1) {
       cartQuantities.add(addedAmount);
@@ -68,14 +67,15 @@ class Cart {
     // medicine is inside cart
     //check if can add more
     if (medicine.availableAmount >
-        (addedAmount + cartQuantities[medicineIndex]))
+        (addedAmount + cartQuantities[medicineIndex])) {
       throw Exception('There is No Enough Quantity To Add more');
+    }
     cartQuantities[medicineIndex] += addedAmount;
     return;
   }
 
   static void removeMedicine({required Medicine medicine, int? amount}) {
-    int medicineIndex = _getMedicineIndexInCart(medicine: medicine);
+    int medicineIndex = getMedicineIndexInCart(medicine: medicine);
     if (amount == null) {
       cartQuantities.remove(medicineIndex);
     } else if (amount != 0) {

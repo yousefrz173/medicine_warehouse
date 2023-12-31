@@ -8,14 +8,6 @@ class IntroPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _IntroPage();
-  }
-}
-
-class _IntroPage extends StatelessWidget {
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(22, 1, 32, 1),
       body: SingleChildScrollView(
@@ -45,7 +37,8 @@ class _IntroPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 30),
               child: ElevatedButton(
-                onPressed: () => Navigator.of(context).pushNamed(LoginRegister.route),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(LoginRegister.route),
                 style: ElevatedButton.styleFrom(
                     minimumSize: const Size(200, 50),
                     backgroundColor: Colors.white),

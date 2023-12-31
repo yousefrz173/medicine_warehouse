@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:PharmacyApp/web/current_order.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:PharmacyApp/shared/connect.dart';
 
 class Orders extends StatelessWidget {
   static const String route = "route_review_edit_orders";
@@ -29,36 +28,27 @@ class _OrdersState extends State<_Orders> {
     'medicines': [],
   };
   GlobalKey<AnimatedListState> key = GlobalKey();
-  late http.Response response;
 
   void _getOrders() async {
     try {
-      response = await http.get(Uri.parse('http://127.0.0.1:8000/getorders'));
-      print(jsonDecode(response.body));
-      if (response.statusCode == 200) {
-        setState(() {
-          Orders = jsonDecode(response.body)["orders"];
-        });
-      }
+      var rBody = await Connect.getOrdersAdmin();
+      setState(() {
+        Orders = rBody["orders"];
+      });
     } catch (error) {
       print(error);
     }
   }
 
   Future<List> _getOrderDetails(int orderNum) async {
-    late List temp;
     try {
-      var response = await http.get(
-        Uri.parse('http://127.0.0.1:8000/order-datails/$orderNum'),
-      );
-      print(jsonDecode(response.body));
-      if (response.statusCode == 200) {
-        temp = jsonDecode(response.body)["medicines"];
-      }
+      var rBody = await Connect.orderDetails(orderNumber: orderNum);
+      return rBody["medicines"];
     } catch (error) {
       print(error);
     }
-    return temp;
+//todo: fix this error
+    return [];
   }
 
   @override

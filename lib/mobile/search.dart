@@ -4,11 +4,9 @@ todo:
    connect
  */
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'home.dart' as HomePage;
 import 'package:PharmacyApp/shared/medicine.dart';
-import 'package:http/http.dart' as http;
 import 'package:PharmacyApp/shared/connect.dart';
 import 'package:intl/intl.dart';
 
@@ -26,19 +24,19 @@ class _SearchState extends State<Search> {
   bool _isLoading = false;
   String? _selectedSearchType = 'search by';
   int itemCount = 0;
-  final TextEditingController _searchController = TextEditingController(text: '');
+  final TextEditingController _searchController =
+      TextEditingController(text: '');
   List<Medicine> allItems = [];
   final List<Medicine> _tempList = [];
 
   final List<Medicine> _searchResults = [];
   Filter? filter = Filter.searchBy;
 
-  Timer t = Timer(
-    const Duration(seconds: 10),
-      ()async {
-      http.Response response = await http.get(Uri.parse('url'));
-      }
-  );
+  Timer t = Timer(const Duration(seconds: 10), () async {
+    //todo: fix this
+    // http.Response response = await http.get(Uri.parse('url'));
+  });
+
   void search(String query, Filter filter) {
     ScaffoldKey.currentState!.setState(() {
       _searchResults.clear();
@@ -229,17 +227,16 @@ class _SearchState extends State<Search> {
         ));
   }
 
-
   _getMedicines() async {
     _switchLoading(true);
-    http.Response response = await http.get(
-        Uri.parse('http://${usedIP}:8000/api/getmedicine'),
-        headers: {'Authorization': "Bearer ${userInfoPharmacist["api_token"]}"});
-    _switchLoading(false);
-    if (jsonDecode(response.body)["statusNumber"] == 200) {
+    try {
+      // todo : fix this
+      var rBody = await Connect.httpSearchMobile(value: '');
+
+      _switchLoading(false);
+
       setState(() {
-        Map<String, dynamic> responseMap =
-            jsonDecode(response.body)["categories"];
+        Map<String, dynamic> responseMap = rBody["categories"];
         _tempList.clear();
         for (var key in responseMap.keys) {
           _tempList.add(Medicine(
@@ -257,9 +254,8 @@ class _SearchState extends State<Search> {
         _tempList.sort((a, b) => a.scientificName.compareTo(b.scientificName));
         allItems = _tempList;
       });
-      print(jsonDecode(response.body)["message"]);
-    } else if (jsonDecode(response.body)["statusNumber"] == 403) {
-      print(jsonDecode(response.body)["message"]);
+    } catch (e) {
+      print(e.toString());
     }
   }
 }

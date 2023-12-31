@@ -1,12 +1,7 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-
-import 'current_admin.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 
 class AddMedicine extends StatelessWidget {
   const AddMedicine({super.key});
@@ -279,24 +274,21 @@ class _AddMedicineState extends State<_AddMedicine> {
     _switchLoading(true);
 
     //don't remove the toString() inside this map
-    Map<String, String?> MedicineRequestBody = {
-      "price": Medicine["price"].toString(),
-      "end_date": Medicine["end_date"].toString(),
-      "amount": Medicine["amount"].toString(),
-      "company": Medicine["company"].toString(),
-      "category": Medicine["category"].toString(),
-      "t_name": Medicine["t_name"].toString(),
-      "s_name": Medicine["s_name"].toString(),
-      "_token": userInfo["_token"],
-    };
+
     try {
-      var response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/add-medicine'),
-        body: MedicineRequestBody,
-      );
+      Map<String, dynamic> responseBody = await Connect.httpAddMedicineAdmin(
+          price: Medicine["price"].toString(),
+          end_state: Medicine["end_date"].toString(),
+          amount: Medicine["amount"].toString(),
+          company: Medicine["company"].toString(),
+          category: Medicine["category"].toString(),
+          commercial_name: Medicine["t_name"].toString(),
+          scientific_name: Medicine["s_name"].toString());
+
       _switchLoading(false);
+
       snackbar = SnackBar(
-        content: Text(jsonDecode(response.body)["message"]),
+        content: Text(responseBody["message"]),
         duration: Duration(seconds: 3),
       );
     } catch (error) {

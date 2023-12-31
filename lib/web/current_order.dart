@@ -1,11 +1,5 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
-
-import 'current_admin.dart';
-
+import 'package:PharmacyApp/shared/connect.dart';
 
 class CurrentOrder extends StatefulWidget {
   static const String route = "route_current_order";
@@ -20,7 +14,6 @@ class CurrentOrder extends StatefulWidget {
 }
 
 class _OrdersState extends State<CurrentOrder> {
-
   List<String?> itemsList = ['preparation', 'send', 'received'];
   List<String?> itemList = ['not-paid', 'paid'];
 
@@ -43,19 +36,13 @@ class _OrdersState extends State<CurrentOrder> {
         }
       ]
     };
-    final routeArguments = ModalRoute
-        .of(context)
-        ?.settings
-        .arguments == null
+    final routeArguments = ModalRoute.of(context)?.settings.arguments == null
         ? map
-        : ModalRoute
-        .of(context)
-        ?.settings
-        .arguments as Map<String, dynamic>;
+        : ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 130, 110, 142),
+      backgroundColor: const Color.fromARGB(255, 130, 110, 142),
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 159, 147, 168),
+        backgroundColor: const Color.fromARGB(255, 159, 147, 168),
         title: const Text('Orders'),
       ),
       body: Column(
@@ -124,28 +111,27 @@ class _OrdersState extends State<CurrentOrder> {
               children: [
                 Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
                   child: DropdownButton<String>(
                       value: CurrentOrder.selecteditem,
                       items: itemsList
-                          .map((item) =>
-                          DropdownMenuItem(
+                          .map((item) => DropdownMenuItem(
                               value: item,
                               child:
-                              Text(item!, style: TextStyle(fontSize: 20))))
+                                  Text(item!, style: TextStyle(fontSize: 20))))
                           .toList(),
-                      onChanged: (item) => setState(() => CurrentOrder.selecteditem = item)),
+                      onChanged: (item) =>
+                          setState(() => CurrentOrder.selecteditem = item)),
                 ),
                 Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50),
                     child: DropdownButton<String>(
                         value: CurrentOrder.selecteditem1,
                         items: itemList
-                            .map((item1) =>
-                            DropdownMenuItem(
+                            .map((item1) => DropdownMenuItem(
                                 value: item1,
                                 child: Text(item1!,
                                     style: TextStyle(fontSize: 20))))
@@ -180,32 +166,26 @@ class _OrdersState extends State<CurrentOrder> {
     );
   }
 
-  Future _updateOrder(routeArguments) async {
+  Future _updateOrder(Map<String, dynamic> routeArguments) async {
     SnackBar snackBar = SnackBar(
       content: Text(''),
       duration: Duration(seconds: 3),
     );
-    Map<String, String?> updateOrderRequestBody = {
-      "id": routeArguments['id'].toString(),
-      "state": CurrentOrder.selecteditem.toString(),
-      "payed": CurrentOrder.selecteditem1.toString(),
-      "_token": userInfo["_token"],
-    };
+
     try {
       togglePageIndicator();
-      var response = await http.post(
-          Uri.parse('http://127.0.0.1:8000/changestate'),
-          body: updateOrderRequestBody);
+      Map<String, dynamic> responseBody = await Connect.httpchangestateAdmin(
+        id: routeArguments['id'].toString(),
+        state: CurrentOrder.selecteditem.toString(),
+        payed: CurrentOrder.selecteditem1.toString(),
+      );
       togglePageIndicator();
-      if (response.statusCode == 200) {
-        var message = jsonDecode(response.body)["message"];
-        snackBar = SnackBar(
-          content: Text(message),
-          duration: Duration(seconds: 3),
-        );
-      }
+      snackBar = SnackBar(
+        content: Text(responseBody["message"]!),
+        duration: const Duration(seconds: 3),
+      );
     } catch (error) {
-      print(error);
+      print(error.toString());
     }
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
@@ -225,28 +205,21 @@ class PageIndicator extends StatelessWidget {
     return Overlay(
       initialEntries: [
         OverlayEntry(
-          builder: (context) =>
-              Positioned(
-                top: MediaQuery
-                    .of(context)
-                    .size
-                    .height * 0.5 - 50,
-                left: MediaQuery
-                    .of(context)
-                    .size
-                    .width * 0.5 - 50,
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.purple.withOpacity(0.7),
-                  ),
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
+          builder: (context) => Positioned(
+            top: MediaQuery.of(context).size.height * 0.5 - 50,
+            left: MediaQuery.of(context).size.width * 0.5 - 50,
+            child: Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.purple.withOpacity(0.7),
               ),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ),
         ),
       ],
     );

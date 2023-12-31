@@ -2,7 +2,7 @@ import 'package:PharmacyApp/shared/connect.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/mobile/intro_page.dart';
 import 'package:PharmacyApp/mobile/search.dart';
-import 'package:PharmacyApp/mobile/store.dart';
+import 'package:PharmacyApp/mobile/widget/store.dart';
 import 'package:PharmacyApp/mobile/favorites.dart';
 import 'package:PharmacyApp/mobile/my_stock.dart';
 import 'package:PharmacyApp/shared/medicine.dart';
@@ -225,7 +225,7 @@ class _HomePageState extends State<HomePage> {
                 height: 70,
                 child: Text(
                   textAlign: TextAlign.center,
-                  '${userInfoPharmacist["phone"]}',
+                  '${userInfo["phone"]}',
                   style: TextStyle(
                     fontSize: 45,
                     color: Colors.white,

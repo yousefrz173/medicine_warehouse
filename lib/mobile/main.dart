@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:PharmacyApp/mobile/login_register.dart';
 import 'package:PharmacyApp/mobile/favorites.dart';
 import 'package:PharmacyApp/mobile/intro_page.dart';
-import 'package:PharmacyApp/mobile/store.dart';
+import 'package:PharmacyApp/mobile/widget/store.dart';
 import 'package:PharmacyApp/mobile/search.dart';
 import 'package:PharmacyApp/mobile/home.dart';
 

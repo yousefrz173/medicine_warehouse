@@ -1,16 +1,7 @@
 import 'package:PharmacyApp/shared/connect.dart';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PharmacyApp/web/web_home.dart';
-import 'package:http/http.dart' as http;
-import 'package:PharmacyApp/web/current_admin.dart';
-import 'package:html/parser.dart' as htmlParser;
-import 'package:html/dom.dart' as htmlDom;
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'package:PharmacyApp/shared/connect.dart';
-import 'package:PharmacyApp/shared/connect.dart';
 
 class LoginWeb extends StatefulWidget {
   static final String route = 'route_login_web';
@@ -153,51 +144,25 @@ class _LoginWebState extends State<LoginWeb> {
       return;
     }
     _formKey.currentState!.save();
-    SnackBar snackBar = SnackBar(content: Text(''));
+    SnackBar snackBar = const SnackBar(content: Text(''));
+    try {
+      _switchLoading(true);
+      Map<String, dynamic> rBody = await Connect.loginAdmin(
+          username: _authData['username']!, password: _authData['password']!);
+      _switchLoading(false);
 
-    _switchLoading(true);
-    var response =
-        await http.get(Uri.parse('http://127.0.0.1:8000/csrf-token'));
-    var csrfToken = jsonDecode(response.body)["csrf_token"];
-    var sessionID = jsonDecode(response.body)["yousef_session"];
-    var loginResponse = await http.post(
-      Uri.parse('http://$usedIP:8000/login'),
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: {
-        "_token": csrfToken,
-        "username": _authData['username']!,
-        "password": _authData['password']!,
-      },
-    );
-    _switchLoading(false);
-    print(loginResponse.statusCode);
-    print(loginResponse.body);
-    print(loginResponse.headers);
-    snackBar = SnackBar(content: Text('${loginResponse.statusCode}'));
-    if (loginResponse.statusCode == 200) {
       snackBar = SnackBar(
-        content: Text(loginResponse.body),
-        duration: Duration(seconds: 3),
+        content: Text(rBody["message"]!),
+        duration: const Duration(seconds: 3),
       );
-      print(await loginResponse.body);
-      if (jsonDecode(loginResponse.body)["statusNumber"] == 200) {
-        userInfo = {
-          "username": _authData['username'],
-          "password": _authData['password'],
-          "_token":csrfToken,
-          "yousef_session": sessionID,
-        };
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
-      }
-    } else if (loginResponse.statusCode == 400) {
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
+      //catch
+    } catch (e) {
       snackBar = SnackBar(
-        content: Text(await loginResponse.body),
-        duration: Duration(seconds: 3),
+        content: Text(e.toString()),
+        duration: const Duration(seconds: 3),
       );
-      print(await loginResponse.body);
     }
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);

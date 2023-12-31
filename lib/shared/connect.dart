@@ -1,19 +1,28 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:html/parser.dart' as htmlParser;
+import 'package:html/dom.dart' as htmlDom;
+import 'dart:async';
 
-const String IP1 = '10.0.2.2';
-const String IP2 = '127.0.0.1';
-const String usedIP = IP1;
+const String usedIpAdmin = '127.0.0.1';
+const String usedIPPharmacist = '10.0.2.2';
 
-Map<String, dynamic> userInfoPharmacist = {
+Map<String, dynamic> userInfo = {
   "id": null,
   "phone": 0,
-  "password": r"",
   "api_token": "",
+  // for admin
+  "username": "",
+  "_token": "",
+  "yousef_session": "",
+  // for both
+  "password": r"",
 };
 
 class Connect {
-  static Map<String, dynamic> _convertToMap({required http.Response response}) {
+  static Map<String, dynamic> _convertToMapAndGetBody(
+      {required http.Response response}) {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final respondBody = jsonDecode(response.body);
       if (respondBody["statusNumber"] == 200) {
@@ -29,31 +38,140 @@ class Connect {
 
   static get authorizedHeader => {
         'Content-Type': 'application/json',
-        'Authorization': "Bearer ${userInfoPharmacist["api_token"]}"
+        'Authorization': "Bearer ${userInfo["api_token"]}"
       };
 
-  static get userID => userInfoPharmacist["id"];
+  static get userID => userInfo["id"];
 
-  static final _loginUrlMobile = Uri.parse('http://$usedIP:8000/api/login');
+  static final _loginUrlMobile =
+      Uri.parse('http://$usedIPPharmacist:8000/api/login');
   static final _pharmacistRegisterUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/register');
+      Uri.parse('http://$usedIPPharmacist:8000/api/register');
   static final _pharmacistLogoutUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/logout');
+      Uri.parse('http://$usedIPPharmacist:8000/api/logout');
   static final _getAllMedicinesUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/getmedicine');
+      Uri.parse('http://$usedIPPharmacist:8000/api/getmedicine');
 
   static final _searchUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/getmedicine/search?');
+      Uri.parse('http://$usedIPPharmacist:8000/api/getmedicine/search?');
 
   static Uri _showDetailsUrlMobile({required int medicineID}) =>
-      Uri.parse('http://$usedIP:8000/api//showdetails/$medicineID');
+      Uri.parse('http://$usedIPPharmacist:8000/api//showdetails/$medicineID');
   static final _orderMedicinesUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/order');
+      Uri.parse('http://$usedIPPharmacist:8000/api/order');
 
   static Uri get _getMedicineOrdersUrlMobile =>
-      Uri.parse('http://$usedIP:8000/api/getorders/$userID');
+      Uri.parse('http://$usedIPPharmacist:8000/api/getorders/$userID');
   static final addToFavoriteUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/add-to-favorite');
+      Uri.parse('http://$usedIPPharmacist:8000/api/add-to-favorite');
+
+  static final _changestateAdmin =
+      Uri.parse('http://$usedIpAdmin:8000/changestate');
+  static final _addMedicineAdmin =
+      Uri.parse('http://$usedIpAdmin:8000/add-medicine');
+  static final _logoutAdmin = Uri.parse('http://$usedIpAdmin:8000/logout');
+
+  static final _csrf_tokenAdmin =
+      Uri.parse('http://$usedIpAdmin:8000/csrf-token');
+
+  static final _getOrdersAdmin =
+      Uri.parse('http://$usedIpAdmin:8000/getorders');
+
+  static _order_datails({required orderNumber}) =>
+      Uri.parse('http://$usedIpAdmin:8000/order-datails/$orderNumber');
+  static final _getmedicine =
+      Uri.parse('http://$usedIpAdmin:8000/api/getmedicine');
+
+  static Future<Map<String, dynamic>> getmedicineAdmin() async {
+    final response = await http.get(_getmedicine,
+        headers: {'Authorization': "Bearer ${userInfo["api_token"]}"});
+    return _convertToMapAndGetBody(response: response);
+  }
+
+  static Future<Map<String, dynamic>> orderDetails(
+      {required int orderNumber}) async {
+    var response =
+        await http.get(Connect._order_datails(orderNumber: orderNumber));
+    return {};
+  }
+
+  static Future<Map<String, dynamic>> getOrdersAdmin() async {
+    var response = await http.get(Connect._getOrdersAdmin);
+    return _convertToMapAndGetBody(response: response);
+  }
+
+  static Future<Map<String, dynamic>> getCsrfToken() async {
+    var response = await http.get(Connect._csrf_tokenAdmin);
+    return _convertToMapAndGetBody(response: response);
+  }
+
+  static Future<Map<String, dynamic>> loginAdmin(
+      {required String username, required String password}) async {
+    var rBody = await Connect.getCsrfToken();
+    var csrfToken = rBody["csrf_token"];
+    var sessionID = rBody["yousef_session"];
+    var response = await http.post(
+      Uri.parse('http://$usedIPPharmacist:8000/login'),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: {
+        "_token": csrfToken,
+        "username": username,
+        "password": password,
+      },
+    );
+    userInfo = {
+      "_token": csrfToken,
+      "username": username,
+      "password": password,
+      "yousef_session": sessionID,
+    };
+    return {};
+  }
+
+  static Future<Map<String, dynamic>> logoutAdmin() async {
+    var response = await http.get(
+      _logoutAdmin,
+    );
+    return _convertToMapAndGetBody(response: response);
+  }
+
+  static Future<Map<String, dynamic>> httpAddMedicineAdmin(
+      {required price,
+      required end_state,
+      required amount,
+      required company,
+      required category,
+      required commercial_name,
+      required scientific_name}) async {
+    var response = await http.post(Connect._addMedicineAdmin, body: {
+      "price": price,
+      "end_date": end_state,
+      "amount": amount,
+      "company": company,
+      "category": category,
+      "t_name": commercial_name,
+      "s_name": scientific_name,
+      "_token": userInfo["_token"],
+    });
+
+    return _convertToMapAndGetBody(response: response);
+  }
+
+  static Future<Map<String, dynamic>> httpchangestateAdmin({
+    required String id,
+    required String state,
+    required String payed,
+  }) async {
+    var response = await http.post(Connect._changestateAdmin, body: {
+      "id": id,
+      "state": state,
+      "payed": payed,
+      "_token": userInfo["_token"]
+    });
+    return _convertToMapAndGetBody(response: response);
+  }
 
   static Future<Map<String, dynamic>> httpLoginMobile(
       {required String phone, required String password}) async {
@@ -67,7 +185,7 @@ class Connect {
       ),
       headers: {'Content-Type': 'application/json'},
     );
-    return _convertToMap(response: response);
+    return _convertToMapAndGetBody(response: response);
   }
 
   static Future<Map<String, dynamic>> httpRegisterMobile(
@@ -82,7 +200,7 @@ class Connect {
         'Content-Type': 'application/json',
       },
     );
-    return _convertToMap(response: response);
+    return _convertToMapAndGetBody(response: response);
   }
 
   static Future<Map<String, dynamic>> httpLogoutMobile() async {
@@ -90,13 +208,13 @@ class Connect {
       _pharmacistLogoutUrlMobile,
       headers: authorizedHeader,
     );
-    return _convertToMap(response: response);
+    return _convertToMapAndGetBody(response: response);
   }
 
   static Future<Map<String, dynamic>> httpGetAllMedicinesMobile() async {
     final response =
         await http.get(_getAllMedicinesUrlMobile, headers: authorizedHeader);
-    return _convertToMap(response: response);
+    return _convertToMapAndGetBody(response: response);
   }
 
   static Future<Map<String, dynamic>> httpShowDetailsMobile(
@@ -104,13 +222,13 @@ class Connect {
     final response = await http.get(
         _showDetailsUrlMobile(medicineID: medicineID),
         headers: authorizedHeader);
-    return _convertToMap(response: response);
+    return _convertToMapAndGetBody(response: response);
   }
 
   static Future<Map<String, dynamic>> httpGetOrdersMobile() async {
     final response =
         await http.get(_getMedicineOrdersUrlMobile, headers: authorizedHeader);
-    return _convertToMap(response: response);
+    return _convertToMapAndGetBody(response: response);
   }
 
   static Future<Map<String, dynamic>> httpOrderMobile(
@@ -122,7 +240,7 @@ class Connect {
           "medicine_Ids": medicineIDs,
           "quan": quantities
         });
-    return _convertToMap(response: response);
+    return _convertToMapAndGetBody(response: response);
   }
 
   static Future<Map<String, dynamic>> httpAddToFavoriteMobile(
@@ -130,13 +248,13 @@ class Connect {
     final response = await http.post(addToFavoriteUrlMobile,
         headers: authorizedHeader,
         body: {"pharId": userID, "medId": medicineID});
-    return _convertToMap(response: response);
+    return _convertToMapAndGetBody(response: response);
   }
 
   static Future<Map<String, dynamic>> httpSearchMobile(
       {required String value}) async {
     final response = await http.post(_searchUrlMobile,
         headers: authorizedHeader, body: {"value": value});
-    return _convertToMap(response: response);
+    return _convertToMapAndGetBody(response: response);
   }
 }
