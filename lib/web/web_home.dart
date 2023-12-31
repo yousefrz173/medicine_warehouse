@@ -10,6 +10,8 @@ import 'package:PharmacyApp/web/current_admin.dart';
 import 'package:PharmacyApp/web/web_search.dart';
 import 'package:intl/intl.dart';
 
+import 'web_store.dart';
+
 class HomePage extends StatefulWidget {
   static const String route = '/';
 
@@ -169,17 +171,7 @@ class _HomePageState extends State<HomePage> {
             Text('Home', style: TextStyle(fontSize: 23, color: Colors.black)),
       },
       {
-        'screen': Scaffold(
-          floatingActionButton: FloatingActionButton(
-            child: Container(
-              color: Colors.red,
-              width: 30,
-              height: 40,
-
-            ),
-            onPressed: () {},
-          ),
-        ),
+        'screen': Store(),
         'title':
             Text('Store', style: TextStyle(fontSize: 23, color: Colors.black)),
       },

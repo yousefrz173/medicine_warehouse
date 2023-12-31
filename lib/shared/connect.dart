@@ -55,6 +55,9 @@ class Connect {
   static final addToFavoriteUrlMobile =
       Uri.parse('http://$IP1:8000/api/add-to-favorite');
 
+  static final _getAllMedicinesUrlWeb =
+  Uri.parse('http://$IP2:8000/all-medicine');
+
   static Future<Map<String, dynamic>> httpLoginMobile(
       {required String phone, required String password}) async {
     final response = await http.post(
@@ -98,7 +101,11 @@ class Connect {
         await http.get(_getAllMedicinesUrlMobile, headers: authorizedHeader);
     return _convertToMap(response: response);
   }
-
+  static Future<Map<String, dynamic>> httpGetAllMedicinesWeb() async {
+    final response =
+    await http.get(_getAllMedicinesUrlWeb, headers: authorizedHeader);
+    return _convertToMap(response: response);
+  }
   static Future<Map<String, dynamic>> httpShowDetailsMobile(
       {required int medicineID}) async {
     final response = await http.get(

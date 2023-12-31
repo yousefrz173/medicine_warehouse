@@ -35,7 +35,7 @@ class _StoreState extends State<Store> {
   }
 
   Future<void> loadCategories() async {
-    categories = await ImportantLists.loadCategories();
+    categories = await ImportantLists.loadCategories(Mode.Mobile);
     setState(() {
       categoriesWidgets = List.generate(
           categories.length,
@@ -113,7 +113,7 @@ class _categoryStoreState extends State<categoryStore> {
   }
 
   void loadMedicines() async {
-    medicines = await ImportantLists.loadCategoryMedicines(this.category);
+    medicines = await ImportantLists.loadCategoryMedicines(this.category,Mode.Mobile);
     loadWidgets();
   }
 

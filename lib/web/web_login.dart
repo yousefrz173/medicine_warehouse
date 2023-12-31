@@ -161,7 +161,7 @@ class _LoginWebState extends State<LoginWeb> {
     var csrfToken = jsonDecode(response.body)["csrf_token"];
     var sessionID = jsonDecode(response.body)["yousef_session"];
     var loginResponse = await http.post(
-      Uri.parse('http://$usedIP:8000/login'),
+      Uri.parse('http://127.0.0.1:8000/login'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },

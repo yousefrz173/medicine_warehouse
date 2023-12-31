@@ -22,6 +22,17 @@ class Search extends StatefulWidget {
 enum Filter { searchBy, Name, Genre }
 
 class _SearchState extends State<Search> {
+  late List<String> categories = ['null'];
+  late List<Widget> categoriesWidgets;
+  List<Medicine> medicines = [];
+
+  @override
+  void initState(){
+    super.initState();
+    filter = Filter.searchBy;
+
+  }
+
   GlobalKey<ScaffoldState> ScaffoldKey = GlobalKey();
   bool _isLoading = false;
   String? _selectedSearchType = 'search by';
