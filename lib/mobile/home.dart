@@ -4,9 +4,8 @@ import 'package:PharmacyApp/mobile/intro_page.dart';
 import 'package:PharmacyApp/mobile/search.dart';
 import 'package:PharmacyApp/mobile/store.dart';
 import 'package:PharmacyApp/mobile/favorites.dart';
-import 'package:PharmacyApp/shared/medicineList.dart';
 import 'package:PharmacyApp/mobile/my_stock.dart';
-
+import 'package:PharmacyApp/shared/medicine.dart';
 class HomePage extends StatefulWidget {
   static const String route = '/';
 

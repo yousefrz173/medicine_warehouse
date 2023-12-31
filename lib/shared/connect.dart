@@ -109,7 +109,7 @@ class Connect {
 
   static Future<Map<String, dynamic>> httpGetOrdersMobile() async {
     final response =
-        await http.post(_getMedicineOrdersUrlMobile, headers: authorizedHeader);
+        await http.get(_getMedicineOrdersUrlMobile, headers: authorizedHeader);
     return _convertToMap(response: response);
   }
 
