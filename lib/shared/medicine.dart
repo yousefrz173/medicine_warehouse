@@ -1,6 +1,8 @@
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/shared/connect.dart';
 
+enum Mode { Mobile, Web }
+
 class Medicine {
   String scientificName;
   String commercialName;
@@ -65,9 +67,9 @@ class ImportantLists {
     return loaded;
   }
 
-  static Future<List<String>> loadCategories() async {
-    final Map<String, dynamic> jsonData =
-        await Connect.httpGetAllMedicinesMobile();
+  static Future<List<String>> loadCategories(Mode mode) async {
+    final Map<String, dynamic> jsonData = mode == Mode.Mobile?
+        await Connect.httpGetAllMedicinesMobile() : await Connect.httpGetAllMedicinesWeb();
     final Map<String, dynamic> categories = jsonData["categories"];
     final List<String> loaded = [];
     for (final String categoryName in categories.keys) {
@@ -77,10 +79,10 @@ class ImportantLists {
   }
 
   static Future<List<Medicine>> loadCategoryMedicines(
-      String categoryName) async {
+      String categoryName, Mode mode) async {
     List<Medicine> loaded = [];
-    final Map<String, dynamic> jsonData =
-        await Connect.httpGetAllMedicinesMobile();
+    final Map<String, dynamic> jsonData = mode == Mode.Mobile ?
+        await Connect.httpGetAllMedicinesMobile() : await Connect.httpGetAllMedicinesWeb();
     final Map<String, dynamic> categories = jsonData["categories"];
     final List categoryMedicines = categories[categoryName]!;
     for (final Map<String, dynamic> MedicineInfo in categoryMedicines) {

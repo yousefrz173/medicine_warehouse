@@ -1,8 +1,3 @@
-/*
-todo:
-   design
-   connect
-*/
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:flutter/material.dart';
 
@@ -39,29 +34,45 @@ class _StoreState extends State<Store> {
     );
   }
 
-  void loadCategories() async {
-    categories = await ImportantLists.loadCategories();
+  Future<void> loadCategories() async {
+    categories = await ImportantLists.loadCategories(Mode.Mobile);
     setState(() {
       categoriesWidgets = List.generate(
           categories.length,
-          (index) => ListTile(
-              title: Text(categories[index]),
-              tileColor: Colors.purple,
-              onTap: () => setState(
-                  () => _categoryTapped(categoryName: categories[index]))));
+          (index) => Card(
+                elevation: 3,
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: ListTile(
+                    shape: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    title: Text(categories[index]),
+                    tileColor: Colors.purple,
+                    onTap: () => setState(() =>
+                        _categoryTapped(categoryName: categories[index]))),
+              ));
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: loadCategories,
-          child: const Icon(Icons.refresh),
-        ),
-        body: Column(
-          children: categoriesWidgets,
-        ));
+      backgroundColor: Color.fromRGBO(22, 1, 32, 1),
+      floatingActionButton: FloatingActionButton(
+        onPressed: loadCategories,
+        child: const Icon(Icons.refresh),
+      ),
+      body: RefreshIndicator(
+        onRefresh: loadCategories,
+        child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: categoriesWidgets.length,
+            itemBuilder: (context, index) {
+              final Widget item = categoriesWidgets[index];
+              return item;
+            }),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+    );
   }
 }
 
@@ -102,7 +113,7 @@ class _categoryStoreState extends State<categoryStore> {
   }
 
   void loadMedicines() async {
-    medicines = await ImportantLists.loadCategoryMedicines(this.category);
+    medicines = await ImportantLists.loadCategoryMedicines(this.category,Mode.Mobile);
     loadWidgets();
   }
 
@@ -111,10 +122,14 @@ class _categoryStoreState extends State<categoryStore> {
   void loadWidgets() => setState(() {
         categoryWidgets = List.generate(
             medicines.length,
-            (index) => SizedBox(
+            (index) => Card(
+                  elevation: 3,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: ListTile(
+                    shape: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
                     title: Text(medicines[index].commercialName),
-                    // tileColor: Colors.purple,
+                    tileColor: Colors.purple,
                     onTap: () {
                       choosedMedicine = medicines[index];
                       _medicinetapped();
@@ -123,22 +138,29 @@ class _categoryStoreState extends State<categoryStore> {
                 ));
       });
 
-  void _refresh() {
+  Future<void> _refresh() async{
     loadMedicines();
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: _refresh,
-          child: const Icon(Icons.refresh),
-        ),
-        body: Card(
-          child: ListView(
+      backgroundColor: Color.fromRGBO(22, 1, 32, 1),
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(253, 232, 223, 1.0),
+        title: Text('Category Medicines'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _refresh,
+        child: const Icon(Icons.refresh),
+      ),
+      body: RefreshIndicator(
+        onRefresh: _refresh,
+        child: ListView(
             children: categoryWidgets,
           ),
-        ));
+      ),
+
+    );
   }
 }
 
@@ -160,27 +182,39 @@ class _MedicinePageState extends State<MedicinePage> {
 
   Widget FormattedRow({required String title, required String value}) {
     return Card(
+      elevation: 3,
+      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: ListTile(
+          tileColor: Colors.purple,
+          shape: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
           title: Row(
-        children: [Text(title), Spacer(), Text(value)],
-      )),
+            children: [Text(title), Spacer(), Text(value)],
+          )),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Color.fromRGBO(22, 1, 32, 1),
+        appBar: AppBar(
+          backgroundColor: Color.fromRGBO(253, 232, 223, 1.0),
+          title: Text('Medicine Info'),
+        ),
         body: ListView(
-      children: [
-        FormattedRow(title: 'commercial name', value: medicine.commercialName),
-        FormattedRow(title: 'scientific name', value: medicine.scientificName),
-        FormattedRow(title: 'company', value: medicine.company),
-        FormattedRow(title: 'category', value: medicine.category),
-        FormattedRow(title: 'price ', value: medicine.price.toStringAsFixed(2)),
-        FormattedRow(
-            title: 'available amount',
-            value: medicine.availableAmount.toString()),
-      ],
-    ));
+          children: [
+            FormattedRow(
+                title: 'commercial name', value: medicine.commercialName),
+            FormattedRow(
+                title: 'scientific name', value: medicine.scientificName),
+            FormattedRow(title: 'company', value: medicine.company),
+            FormattedRow(title: 'category', value: medicine.category),
+            FormattedRow(
+                title: 'price ', value: medicine.price.toStringAsFixed(2)),
+            FormattedRow(
+                title: 'available amount',
+                value: medicine.availableAmount.toString()),
+          ],
+        ));
   }
 }

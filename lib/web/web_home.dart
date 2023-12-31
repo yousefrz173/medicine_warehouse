@@ -10,6 +10,8 @@ import 'package:PharmacyApp/web/current_admin.dart';
 import 'package:PharmacyApp/web/web_search.dart';
 import 'package:intl/intl.dart';
 
+import 'web_store.dart';
+
 class HomePage extends StatefulWidget {
   static const String route = '/';
 
@@ -169,7 +171,7 @@ class _HomePageState extends State<HomePage> {
             Text('Home', style: TextStyle(fontSize: 23, color: Colors.black)),
       },
       {
-        'screen': Scaffold(),
+        'screen': Store(),
         'title':
             Text('Store', style: TextStyle(fontSize: 23, color: Colors.black)),
       },
@@ -286,14 +288,14 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(label: 'Store', icon: Icon(Icons.store)),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.refresh),
-        onPressed: () {
-          setState(() {
-            ImportantLists.RecentList = ImportantLists.RecentList;
-          });
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: Icon(Icons.refresh),
+      //   onPressed: () {
+      //     setState(() {
+      //       ImportantLists.RecentList = ImportantLists.RecentList;
+      //     });
+      //   },
+      // ),
     );
   }
 

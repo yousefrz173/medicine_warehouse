@@ -34,26 +34,29 @@ class Connect {
 
   static get userID => userInfoPharmacist["id"];
 
-  static final _loginUrlMobile = Uri.parse('http://$usedIP:8000/api/login');
+  static final _loginUrlMobile = Uri.parse('http://$IP1:8000/api/login');
   static final _pharmacistRegisterUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/register');
+      Uri.parse('http://$IP1:8000/api/register');
   static final _pharmacistLogoutUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/logout');
+      Uri.parse('http://$IP1:8000/api/logout');
   static final _getAllMedicinesUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/getmedicine');
+      Uri.parse('http://$IP1:8000/api/getmedicine');
 
   static final _searchUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/getmedicine/search?');
+      Uri.parse('http://$IP1:8000/api/getmedicine/search?');
 
   static Uri _showDetailsUrlMobile({required int medicineID}) =>
-      Uri.parse('http://$usedIP:8000/api//showdetails/$medicineID');
+      Uri.parse('http://$IP1:8000/api//showdetails/$medicineID');
   static final _orderMedicinesUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/order');
+      Uri.parse('http://$IP1:8000/api/order');
 
   static Uri get _getMedicineOrdersUrlMobile =>
-      Uri.parse('http://$usedIP:8000/api/getorders/$userID');
+      Uri.parse('http://$IP1:8000/api/getorders/$userID');
   static final addToFavoriteUrlMobile =
-      Uri.parse('http://$usedIP:8000/api/add-to-favorite');
+      Uri.parse('http://$IP1:8000/api/add-to-favorite');
+
+  static final _getAllMedicinesUrlWeb =
+  Uri.parse('http://$IP2:8000/all-medicine');
 
   static Future<Map<String, dynamic>> httpLoginMobile(
       {required String phone, required String password}) async {
@@ -98,7 +101,11 @@ class Connect {
         await http.get(_getAllMedicinesUrlMobile, headers: authorizedHeader);
     return _convertToMap(response: response);
   }
-
+  static Future<Map<String, dynamic>> httpGetAllMedicinesWeb() async {
+    final response =
+    await http.get(_getAllMedicinesUrlWeb, headers: authorizedHeader);
+    return _convertToMap(response: response);
+  }
   static Future<Map<String, dynamic>> httpShowDetailsMobile(
       {required int medicineID}) async {
     final response = await http.get(

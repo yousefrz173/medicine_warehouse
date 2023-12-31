@@ -22,7 +22,9 @@ class _Orders extends StatefulWidget {
 }
 
 class _OrdersState extends State<_Orders> {
-  List Orders = [];
+  late List Orders = [];
+  late List<Widget> OrdersWidgets;
+
   Map<String, dynamic> _currentOrder = {
     'state': 'preparation',
     'payed': 'un-payed',
@@ -30,6 +32,16 @@ class _OrdersState extends State<_Orders> {
   };
   GlobalKey<AnimatedListState> key = GlobalKey();
   late http.Response response;
+
+  @override
+  void initState() {
+    super.initState();
+    OrdersWidgets = [
+      const Center(
+        child: CircularProgressIndicator(),
+      )
+    ];
+  }
 
   void _getOrders() async {
     try {
