@@ -6,6 +6,9 @@ import 'package:PharmacyApp/mobile/widget/store.dart';
 import 'package:PharmacyApp/mobile/search.dart';
 import 'package:PharmacyApp/mobile/home.dart';
 
+import '../shared/medicine.dart';
+
+
 
 void main() {
   runApp(PharmacistApp());

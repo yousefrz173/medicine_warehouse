@@ -216,7 +216,12 @@ class Connect {
         await http.get(_getAllMedicinesUrlMobile, headers: authorizedHeader);
     return _convertToMapAndGetBody(response: response);
   }
-
+  //todo: fix this
+  // static Future<Map<String, dynamic>> httpGetAllMedicinesWeb() async {
+  //   final response =
+  //   await http.get(_getAllMedicinesUrlWeb, headers: authorizedHeader);
+  //   return _convertToMap(response: response);
+  // }
   static Future<Map<String, dynamic>> httpShowDetailsMobile(
       {required int medicineID}) async {
     final response = await http.get(

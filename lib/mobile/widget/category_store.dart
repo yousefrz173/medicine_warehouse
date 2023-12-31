@@ -11,6 +11,7 @@ class CategoryStore extends StatefulWidget {
   State<StatefulWidget> createState() =>
       _CategoryStoreState(category: category);
 }
+
 class _CategoryStoreState extends State<CategoryStore> {
   String category;
   late List<Widget> categoryWidgets;
@@ -38,39 +39,52 @@ class _CategoryStoreState extends State<CategoryStore> {
   }
 
   void loadMedicines() async {
-    medicines = await ImportantLists.loadCategoryMedicines(category);
+    medicines =
+        await ImportantLists.loadCategoryMedicines(category, Mode.Mobile);
     loadWidgets();
   }
 
   late Medicine choosedMedicine;
 
   void loadWidgets() => setState(() {
-    categoryWidgets = List.generate(
-        medicines.length,
-            (index) => SizedBox(
-          child: ListTile(
-            title: Text(medicines[index].commercialName),
-            // tileColor: Colors.purple,
-            onTap: () {
-              choosedMedicine = medicines[index];
-              _medicinetapped();
-            },
-          ),
-        ));
-  });
+        categoryWidgets = List.generate(
+            medicines.length,
+            (index) => Card(
+                  elevation: 3,
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  child: ListTile(
+                    shape: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    title: Text(medicines[index].commercialName),
+                    // tileColor: Colors.purple,
+                    onTap: () {
+                      choosedMedicine = medicines[index];
+                      _medicinetapped();
+                    },
+                  ),
+                ));
+      });
 
-  void _refresh() {
+  void _refresh() async {
     loadMedicines();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: const Color.fromRGBO(22, 1, 32, 1),
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(253, 232, 223, 1.0),
+          title: const Text('Category Medicines'),
+        ),
         floatingActionButton: FloatingActionButton(
           onPressed: _refresh,
           child: const Icon(Icons.refresh),
         ),
-        body: Card(
+        body: RefreshIndicator(
+          onRefresh: () async {
+            _refresh();
+          },
           child: ListView(
             children: categoryWidgets,
           ),

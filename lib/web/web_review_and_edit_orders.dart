@@ -21,13 +21,25 @@ class _Orders extends StatefulWidget {
 }
 
 class _OrdersState extends State<_Orders> {
-  List Orders = [];
+  late List Orders = [];
+  late List<Widget> OrdersWidgets;
+
   Map<String, dynamic> _currentOrder = {
     'state': 'preparation',
     'payed': 'un-payed',
     'medicines': [],
   };
   GlobalKey<AnimatedListState> key = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    OrdersWidgets = [
+      const Center(
+        child: CircularProgressIndicator(),
+      )
+    ];
+  }
 
   void _getOrders() async {
     try {

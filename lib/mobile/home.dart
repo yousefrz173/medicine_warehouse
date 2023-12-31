@@ -4,7 +4,7 @@ import 'package:PharmacyApp/mobile/intro_page.dart';
 import 'package:PharmacyApp/mobile/search.dart';
 import 'package:PharmacyApp/mobile/widget/store.dart';
 import 'package:PharmacyApp/mobile/favorites.dart';
-import 'package:PharmacyApp/mobile/my_stock.dart';
+import 'package:PharmacyApp/mobile/my_chart.dart';
 import 'package:PharmacyApp/shared/medicine.dart';
 class HomePage extends StatefulWidget {
   static const String route = '/';
@@ -284,7 +284,7 @@ class _HomePageState extends State<HomePage> {
           }),
           SizedBox(width: 10),
         ],
-        backgroundColor: Color.fromRGBO(255, 243, 224, 1),
+        backgroundColor: Color.fromRGBO(253, 232, 223, 1.0),
       ),
       body: SingleChildScrollView(
         child: Container(
