@@ -170,7 +170,17 @@ class _HomePageState extends State<HomePage> {
             Text('Home', style: TextStyle(fontSize: 23, color: Colors.black)),
       },
       {
-        'screen': Scaffold(),
+        'screen': Scaffold(
+          floatingActionButton: FloatingActionButton(
+            child: Container(
+              color: Colors.red,
+              width: 30,
+              height: 40,
+
+            ),
+            onPressed: () {},
+          ),
+        ),
         'title':
             Text('Store', style: TextStyle(fontSize: 23, color: Colors.black)),
       },
@@ -287,14 +297,14 @@ class _HomePageState extends State<HomePage> {
           BottomNavigationBarItem(label: 'Store', icon: Icon(Icons.store)),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.refresh),
-        onPressed: () {
-          setState(() {
-            ImportantLists.RecentList = ImportantLists.RecentList;
-          });
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: Icon(Icons.refresh),
+      //   onPressed: () {
+      //     setState(() {
+      //       ImportantLists.RecentList = ImportantLists.RecentList;
+      //     });
+      //   },
+      // ),
     );
   }
 

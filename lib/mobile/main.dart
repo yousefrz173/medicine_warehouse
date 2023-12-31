@@ -23,7 +23,7 @@ class PharmacistApp extends StatelessWidget {
       initialRoute: LoginRegister.route,
       routes: {
         MedicineList.route: (context) => MedicineList(
-              medicines: ImportantLists.loadedMedicines,
+              mode: Mode.none,
             ),
         LoginRegister.route: (context) => LoginRegister(),
         HomePage.route: (context) => HomePage(),
