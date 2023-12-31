@@ -24,7 +24,11 @@ class _StoreState extends State<Store> {
   @override
   void initState() {
     super.initState();
-    categoriesWidgets = [const Text('null')];
+    categoriesWidgets = [
+      const Center(
+        child: CircularProgressIndicator(),
+      )
+    ];
     loadCategories();
   }
 
@@ -48,8 +52,6 @@ class _StoreState extends State<Store> {
     });
   }
 
-  void _medicinetapped(Medicine medicine) {}
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +67,9 @@ class _StoreState extends State<Store> {
 
 class categoryStore extends StatefulWidget {
   categoryStore({super.key, required this.category});
+
   final String category;
+
   @override
   State<StatefulWidget> createState() =>
       _categoryStoreState(category: category);
@@ -83,26 +87,39 @@ class _categoryStoreState extends State<categoryStore> {
   @override
   void initState() {
     super.initState();
-    emptyPage = const Text('');
+    emptyPage = const Center(
+      child: CircularProgressIndicator(),
+    );
+
     categoryWidgets = [emptyPage];
     _refresh();
   }
 
-  void _medicineTapped(Medicine medicine) {}
+  void _medicinetapped() {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => MedicinePage(medicine: choosedMedicine),
+    ));
+  }
 
   void loadMedicines() async {
     medicines = await ImportantLists.loadCategoryMedicines(this.category);
     loadWidgets();
-
   }
+
+  late Medicine choosedMedicine;
 
   void loadWidgets() => setState(() {
         categoryWidgets = List.generate(
             medicines.length,
-            (index) => ListTile(
-                  title: Text(medicines[index].commercialName),
-                  tileColor: Colors.purple,
-                  onTap: () => _medicineTapped(medicines[index]),
+            (index) => SizedBox(
+                  child: ListTile(
+                    title: Text(medicines[index].commercialName),
+                    // tileColor: Colors.purple,
+                    onTap: () {
+                      choosedMedicine = medicines[index];
+                      _medicinetapped();
+                    },
+                  ),
                 ));
       });
 
@@ -117,8 +134,53 @@ class _categoryStoreState extends State<categoryStore> {
           onPressed: _refresh,
           child: const Icon(Icons.refresh),
         ),
-        body: Column(
-          children: categoryWidgets,
+        body: Card(
+          child: ListView(
+            children: categoryWidgets,
+          ),
         ));
+  }
+}
+
+class MedicinePage extends StatefulWidget {
+  const MedicinePage({super.key, required this.medicine});
+
+  final Medicine medicine;
+
+  @override
+  State<StatefulWidget> createState() {
+    return _MedicinePageState(medicine: medicine);
+  }
+}
+
+class _MedicinePageState extends State<MedicinePage> {
+  _MedicinePageState({required this.medicine});
+
+  final Medicine medicine;
+
+  Widget FormattedRow({required String title, required String value}) {
+    return Card(
+      child: ListTile(
+          title: Row(
+        children: [Text(title), Spacer(), Text(value)],
+      )),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: ListView(
+      children: [
+        FormattedRow(title: 'commercial name', value: medicine.commercialName),
+        FormattedRow(title: 'scientific name', value: medicine.scientificName),
+        FormattedRow(title: 'company', value: medicine.company),
+        FormattedRow(title: 'category', value: medicine.category),
+        FormattedRow(title: 'price ', value: medicine.price.toStringAsFixed(2)),
+        FormattedRow(
+            title: 'available amount',
+            value: medicine.availableAmount.toString()),
+      ],
+    ));
   }
 }
