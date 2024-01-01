@@ -1,12 +1,9 @@
-import 'dart:convert';
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/web/web_add_medicine.dart';
 import 'package:PharmacyApp/web/web_review_and_edit_orders.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-
 import 'package:PharmacyApp/web/web_intro_page.dart';
-import 'package:PharmacyApp/web/current_admin.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 import 'package:PharmacyApp/web/web_search.dart';
 import 'package:intl/intl.dart';
 
@@ -301,31 +298,23 @@ class _HomePageState extends State<HomePage> {
 
   _LogOut() async {
     SnackBar snackBar = SnackBar(content: Text(''));
-    switchLoading(true);
-    http.Response response = await http.get(
-      Uri.parse('http://127.0.0.1:8000/logout'),
-    );
-    switchLoading(false);
-    print(response.statusCode);
-    Map<String, dynamic> body = jsonDecode(response.body);
-    if (response.statusCode == 200) {
+
+    try {
+      switchLoading(true);
+      Map<String, dynamic> rBody = await Connect.logoutAdmin();
+      switchLoading(false);
       snackBar = SnackBar(
-        content: Text(body["message"]),
+        content: Text(rBody["message"]),
         duration: Duration(seconds: 3),
       );
-      if (body["statusNumber"] != 200) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        return;
-      }
-      print(jsonDecode(response.body)["message"]);
+      print(rBody["message"]);
       Navigator.of(context)
           .pushNamedAndRemoveUntil(IntroPage.route, (route) => false);
-    } else if (response.statusCode >= 400) {
+    } catch (e) {
       snackBar = SnackBar(
-        content: Text(body["message"]),
+        content: Text(e.toString()),
         duration: Duration(seconds: 3),
       );
-      print(jsonDecode(response.body)["message"]);
     }
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }

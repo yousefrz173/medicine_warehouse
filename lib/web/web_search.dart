@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:PharmacyApp/web/web_home.dart' as HomePage;
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:http/http.dart' as http;
-import 'package:PharmacyApp/web/current_admin.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 import 'package:intl/intl.dart';
 
 class Search extends StatefulWidget {
@@ -213,7 +213,8 @@ class _SearchState extends State<Search> {
                           ? SizedBox(
                               width: 40,
                               height: 10,
-                              child: CircularProgressIndicator(strokeWidth: 2.0),
+                              child:
+                                  CircularProgressIndicator(strokeWidth: 2.0),
                             )
                           : Center(
                               child: Text(
@@ -230,16 +231,15 @@ class _SearchState extends State<Search> {
   }
 
   _getMedicines() async {
-    _switchLoading(true);
-    http.Response response = await http.get(
-        Uri.parse('http://10.0.2.2:8000/api/getmedicine'),
-        headers: {'Authorization': "Bearer ${userInfo["api_token"]}"});
-    _switchLoading(false);
-    if (jsonDecode(response.body)["statusNumber"] == 200) {
+    try {
+      _switchLoading(true);
+
+      var rBody = await Connect.getmedicineAdmin();
+      _switchLoading(false);
       setState(() {
-        Map<String, dynamic> responseMap =
-            jsonDecode(response.body)["categories"];
+        Map<String, dynamic> responseMap = rBody["categories"];
         _tempList.clear();
+
         for (var key in responseMap.keys) {
           _tempList.add(Medicine(
               id: responseMap[key][0]["id"],
@@ -255,11 +255,10 @@ class _SearchState extends State<Search> {
         }
         _tempList.sort((a, b) => a.scientificName.compareTo(b.scientificName));
         allItems = _tempList;
-
       });
-      print(jsonDecode(response.body)["message"]);
-    } else if (jsonDecode(response.body)["statusNumber"] == 403) {
-      print(jsonDecode(response.body)["message"]);
+      print(rBody["message"]);
+    } catch (e) {
+      print(e.toString());
     }
   }
 }

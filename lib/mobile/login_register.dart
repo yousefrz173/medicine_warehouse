@@ -217,7 +217,7 @@ class _LoginRegisterState extends State<LoginRegister> {
           content: Text(respondBody["message"]),
           duration: Duration(seconds: 3),
         );
-        userInfoPharmacist = {
+        userInfo = {
           "id": respondBody["pharmacist_information"]["id"],
           "phone": respondBody["pharmacist_information"]["phone"],
           "password": respondBody["pharmacist_information"]["password"],
