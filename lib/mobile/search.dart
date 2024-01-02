@@ -1,14 +1,14 @@
 import 'package:PharmacyApp/shared/connect.dart';
-/*
-todo:
-   connect
- */
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'home.dart' as HomePage;
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/shared/connect.dart';
 import 'package:intl/intl.dart';
+
+import 'widget/category_store.dart';
+import 'widget/medicine_page.dart';
 
 class Search extends StatefulWidget {
   static const String route = '/route_search';
@@ -17,43 +17,92 @@ class Search extends StatefulWidget {
   State<Search> createState() => _SearchState();
 }
 
-enum Filter { searchBy, Name, Genre }
+enum Filter { Name, Genre }
 
 class _SearchState extends State<Search> {
-  GlobalKey<ScaffoldState> ScaffoldKey = GlobalKey();
   bool _isLoading = false;
   String? _selectedSearchType = 'search by';
   int itemCount = 0;
   final TextEditingController _searchController =
       TextEditingController(text: '');
-  List<Medicine> allItems = [];
-  final List<Medicine> _tempList = [];
 
-  final List<Medicine> _searchResults = [];
-  Filter? filter = Filter.searchBy;
+  late Widget? _searchResults = null;
 
-  Timer t = Timer(const Duration(seconds: 10), () async {
-    //todo: fix this
-    // http.Response response = await http.get(Uri.parse('url'));
-  });
-
-  void search(String query, Filter filter) {
-    ScaffoldKey.currentState!.setState(() {
-      _searchResults.clear();
-      for (Medicine item in allItems) {
-        if (filter == Filter.searchBy) {
-          _searchResults.add(item);
-        } else if (filter == Filter.Genre) {
-          if (item.category.contains(query)) {
-            _searchResults.add(item);
-          }
-        } else if (filter == Filter.Name) {
-          if (item.scientificName.contains(query)) {
-            _searchResults.add(item);
-          }
-        }
-      }
+  Filter? filter = Filter.Name;
+  final Widget _emptyPage = const Center(
+    child: CircularProgressIndicator(),
+  );
+  void EmptyTheWidget(){
+    setState(() {
+      _searchResults = _emptyPage;
     });
+  }
+
+  Future<void> search(String query, Filter filter) async {
+    EmptyTheWidget();
+    var rBody = await Connect.httpSearchMobile(value: query);
+    print(rBody);
+    var medicines = rBody["medicine"];
+    print(medicines);
+    if (rBody["statusNumber"] == 400) {
+      setState(() {
+        _searchResults = null;
+      });
+      return;
+    }
+    for (Map<String, dynamic> medicine in medicines) {}
+    if (medicines.length > 1) {
+      String category = medicines[0]["category"];
+      setState(() {
+        _searchResults = Card(
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          elevation: 3,
+          child: ListTile(
+              shape:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              title: Text(category),
+              tileColor: Colors.purple,
+              onTap: () =>
+                  setState(() => _categoryTapped(categoryName: category))),
+        );
+      });
+    } else {
+      var medicine = Medicine(
+          id: 0,
+          scientificName: medicines[0]["s_name"],
+          commercialName: medicines[0]["t_name"],
+          category: medicines[0]["category"],
+          company: medicines[0]["company"],
+          expirationDate: DateTime.parse(medicines[0]["end_date"]),
+          price: medicines[0]["price"],
+          availableAmount: medicines[0]["amount"]);
+      setState(() {
+        _searchResults = Card(
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          elevation: 3,
+          child: ListTile(
+              shape:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+              title: Text(medicines[0]["s_name"]),
+              tileColor: Colors.purple,
+              onTap: () =>
+                  setState(() => _medicineTapped(choosedMedicine: medicine))),
+        );
+      });
+    }
+  }
+
+  void _categoryTapped({required String categoryName}) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+          builder: (context) => CategoryStore(category: categoryName)),
+    );
+  }
+
+  void _medicineTapped({required Medicine choosedMedicine}) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => MedicinePage(medicine: choosedMedicine),
+    ));
   }
 
   void sortBy(List<Medicine> sortedList) {
@@ -71,25 +120,32 @@ class _SearchState extends State<Search> {
   @override
   build(BuildContext context) {
     return Scaffold(
-      key: ScaffoldKey,
       backgroundColor: Color.fromRGBO(22, 1, 32, 1),
       appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              search(_searchController.text, filter!);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: () {
+              _searchController.clear();
+            },
+          ),
+
+        ],
         backgroundColor: Color.fromRGBO(153, 153, 153, 1.0),
         title: TextField(
           controller: _searchController,
           decoration: InputDecoration(
             hintText: 'Search...',
             border: InputBorder.none,
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.search),
-              onPressed: () {
-                _getMedicines();
-                search(_searchController.text, filter!);
-              },
-            ),
           ),
           onChanged: (value) {
-            //search(value, filter!);
+            search(value, filter!);
           },
         ),
       ),
@@ -131,84 +187,10 @@ class _SearchState extends State<Search> {
               ),
             ),
             Container(
-              height: 260,
-              child: _searchResults.isNotEmpty
-                  ? ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: _searchResults.length,
-                      itemBuilder: (context, index) {
-                        final currentItem = _searchResults[index];
-                        return ListTile(
-                          style: ListTileStyle.list,
-                          shape: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10)),
-                          title: Row(
-                            children: [
-                              Text(currentItem.scientificName),
-                              SizedBox(
-                                width: 50,
-                              ),
-                              Text(currentItem.category),
-                            ],
-                          ),
-                          tileColor: Colors.purple,
-                          onTap: () {
-                            setState(() {
-                              ImportantLists.RecentList.add(currentItem);
-                            });
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    backgroundColor:
-                                        Color.fromRGBO(153, 153, 153, 1.0),
-                                    title: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text('Medicine Info'),
-                                        IconButton(
-                                            onPressed: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            icon: Icon(Icons.close)),
-                                      ],
-                                    ),
-                                    content: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                            'Scientefic Name : ${currentItem.scientificName}'),
-                                        Text(
-                                            'Commercial Name : ${currentItem.commercialName}'),
-                                        Text(
-                                            'Category : ${currentItem.category}'),
-                                        Text(
-                                            'Company : ${currentItem.company}'),
-                                        Text(
-                                            'Amount : ${currentItem.availableAmount}'),
-                                        Text('Price : ${currentItem.price}'),
-                                        Text(
-                                            'Expiration Date : ${DateFormat('dd/MM/yyyy').format(currentItem.expirationDate).toString()}'),
-                                      ],
-                                    ),
-                                  );
-                                });
-                          },
-                        );
-                      },
-                    )
-                  : _isLoading
-                      ? SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: CircularProgressIndicator(),
-                        )
-                      : Center(
+              height: 80,
+              child: _searchResults != null
+                  ? _searchResults
+                  : Center(
                           child: Text(
                             'No Results',
                             style: TextStyle(fontSize: 30, color: Colors.white),
@@ -219,37 +201,5 @@ class _SearchState extends State<Search> {
         ),
       ),
     );
-  }
-
-  _getMedicines() async {
-    _switchLoading(true);
-    try {
-      // todo : fix this
-      var rBody = await Connect.httpSearchMobile(value: '');
-
-      _switchLoading(false);
-
-      setState(() {
-        Map<String, dynamic> responseMap = rBody["categories"];
-        _tempList.clear();
-        for (var key in responseMap.keys) {
-          _tempList.add(Medicine(
-              id: responseMap[key][0]["id"],
-              scientificName: responseMap[key]![0]["s_name"],
-              commercialName: responseMap[key]![0]["t_name"],
-              category: responseMap[key]![0]["category"],
-              company: responseMap[key]![0]["s_name"],
-              expirationDate: DateTime.parse(responseMap[key]![0]["end_date"]),
-              price: responseMap[key]![0]["price"] is double
-                  ? responseMap[key]![0]["price"]
-                  : double.parse('${responseMap[key]![0]["price"]}.0'),
-              availableAmount: responseMap[key]![0]["id"]));
-        }
-        _tempList.sort((a, b) => a.scientificName.compareTo(b.scientificName));
-        allItems = _tempList;
-      });
-    } catch (e) {
-      print(e.toString());
-    }
   }
 }

@@ -56,7 +56,7 @@ class Connect {
       Uri.parse('http://$usedIPPharmacist:8000/api/getmedicine');
 
   static final _searchUrlMobile =
-      Uri.parse('http://$usedIPPharmacist:8000/api/getmedicine/search?');
+      Uri.parse('http://$usedIPPharmacist:8000/api/search');
 
   static Uri _showDetailsUrlMobile({required int medicineID}) =>
       Uri.parse('http://$usedIPPharmacist:8000/api//showdetails/$medicineID');
@@ -278,7 +278,7 @@ class Connect {
   static Future<Map<String, dynamic>> httpSearchMobile(
       {required String value}) async {
     final response = await http.post(_searchUrlMobile,
-        headers: authorizedHeader, body: {"value": value});
+        headers: authorizedHeader, body: jsonEncode({"value": value}));
     return _convertToMapAndGetBody(response: response);
   }
 }
