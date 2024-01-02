@@ -29,10 +29,14 @@ class _SearchState extends State<Search> {
   late Widget? _searchResults = null;
 
   Filter? filter = Filter.Name;
-  final Widget _emptyPage = const Center(
-    child: CircularProgressIndicator(),
+  final Widget _emptyPage = Center(
+    child: CircleAvatar(
+      radius: 40,
+      backgroundImage: AssetImage('assets/images/dank2.png'),
+    ),
   );
-  void EmptyTheWidget(){
+
+  void EmptyTheWidget() {
     setState(() {
       _searchResults = _emptyPage;
     });
@@ -135,7 +139,6 @@ class _SearchState extends State<Search> {
               _searchController.clear();
             },
           ),
-
         ],
         backgroundColor: Color.fromRGBO(153, 153, 153, 1.0),
         title: TextField(
@@ -191,11 +194,11 @@ class _SearchState extends State<Search> {
               child: _searchResults != null
                   ? _searchResults
                   : Center(
-                          child: Text(
-                            'No Results',
-                            style: TextStyle(fontSize: 30, color: Colors.white),
-                          ),
-                        ),
+                      child: Text(
+                        'No Results',
+                        style: TextStyle(fontSize: 30, color: Colors.white),
+                      ),
+                    ),
             )
           ],
         ),
