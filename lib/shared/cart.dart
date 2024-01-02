@@ -51,7 +51,7 @@ class Cart {
     return -1;
   }
 
-    static void addMedicine(
+  static void addMedicine(
       {required Medicine medicine, required int addedAmount}) {
     if (addedAmount > medicine.availableAmount) {
       throw Exception('There is No Enough Quantity');
@@ -97,11 +97,16 @@ class Cart {
 }
 
 class Order {
+  int id;
   String state;
   String payed;
   double price;
 
-  Order({required this.price, required this.payed, required this.state});
+  Order(
+      {required this.price,
+      required this.payed,
+      required this.state,
+      required this.id});
 
   factory Order.fromJson({required Map<String, dynamic> orderjson}) {
     var price = orderjson["price"];
@@ -111,6 +116,7 @@ class Order {
         : orderjson['price'];
 
     return Order(
+        id: 0,
         price: convertedDoubleValue,
         payed: orderjson["payed"],
         state: orderjson["state"]);

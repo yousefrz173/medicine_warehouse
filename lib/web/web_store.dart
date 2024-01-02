@@ -15,15 +15,22 @@ class Store extends StatefulWidget {
 class _StoreState extends State<Store> {
   late List<String> categories = ['null'];
   late List<Widget> categoriesWidgets;
+  final Widget _emptyPage = const Center(
+    child: CircularProgressIndicator(),
+  );
+
+  void EmptyTheWidget() {
+    setState(() {
+      categoriesWidgets = [
+        _emptyPage,
+      ];
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    categoriesWidgets = [
-      const Center(
-        child: CircularProgressIndicator(),
-      )
-    ];
+    EmptyTheWidget();
     loadCategories();
   }
 
@@ -35,6 +42,7 @@ class _StoreState extends State<Store> {
   }
 
   Future<void> loadCategories() async {
+    EmptyTheWidget();
     categories = await ImportantLists.loadCategories(Mode.Web);
     setState(() {
       categoriesWidgets = List.generate(

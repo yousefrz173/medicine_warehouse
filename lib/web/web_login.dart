@@ -1,7 +1,7 @@
-import 'package:PharmacyApp/shared/connect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:PharmacyApp/web/web_home.dart';
+import 'package:PharmacyApp/shared/connect.dart';
 
 class LoginWeb extends StatefulWidget {
   static final String route = 'route_login_web';
@@ -156,9 +156,9 @@ class _LoginWebState extends State<LoginWeb> {
         duration: const Duration(seconds: 3),
       );
       Navigator.of(context)
-          .pushNamedAndRemoveUntil(HomePage.route, (route) => false);
-      //catch
+          .pushNamedAndRemoveUntil(WebMainPage.route, (route) => false);
     } catch (e) {
+      print(e);
       snackBar = SnackBar(
         content: Text(e.toString()),
         duration: const Duration(seconds: 3),

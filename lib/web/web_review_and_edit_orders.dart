@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:PharmacyApp/shared/Cart.dart';
+import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/web/current_order.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/shared/connect.dart';
@@ -23,6 +25,13 @@ class _Orders extends StatefulWidget {
 class _OrdersState extends State<_Orders> {
   late List Orders = [];
   late List<Widget> OrdersWidgets;
+  final Widget _emptyPage = const Center(child: CircularProgressIndicator());
+
+  void emptyTheWidget(){
+    setState(() {
+      OrdersWidgets = [_emptyPage];
+    });
+  }
 
   Map<String, dynamic> _currentOrder = {
     'state': 'preparation',
@@ -34,11 +43,13 @@ class _OrdersState extends State<_Orders> {
   @override
   void initState() {
     super.initState();
-    OrdersWidgets = [
-      const Center(
-        child: CircularProgressIndicator(),
-      )
-    ];
+    emptyTheWidget();
+    _refresh();
+  }
+
+  Future<void> _refresh() async {
+    emptyTheWidget();
+    _getOrders();
   }
 
   void _getOrders() async {
@@ -46,15 +57,50 @@ class _OrdersState extends State<_Orders> {
       var rBody = await Connect.getOrdersAdmin();
       setState(() {
         Orders = rBody["orders"];
+        _loeadOrders();
       });
     } catch (error) {
       print(error);
     }
   }
 
+  void _loeadOrders() {
+    OrdersWidgets = List.generate(
+        Orders.length,
+        (index) => Card(
+              elevation: 3,
+              margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              child: ListTile(
+                style: ListTileStyle.list,
+                shape:
+                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                tileColor: Colors.purple,
+                title: Text(
+                    'Order for pharmacist ${Orders[index]["pharmacist_id"]}'),
+                leading: CircleAvatar(
+                  // You can customize the leading widget (e.g., an image)
+                  child: Text('${Orders[index]["id"]}'),
+                ),
+                onTap: () async {
+                  _currentOrder = {
+                    'id': Orders[index]["id"],
+                    'state': Orders[index]["state"],
+                    'payed': Orders[index]["payed"],
+                    'medicines': await _getOrderDetails(Orders[index]["id"])
+                  };
+                  CurrentOrder.selecteditem1 = Orders[index]["payed"];
+                  CurrentOrder.selecteditem = Orders[index]["state"];
+                  Navigator.of(context)
+                      .pushNamed(CurrentOrder.route, arguments: _currentOrder);
+                },
+              ),
+            ));
+  }
+
   Future<List> _getOrderDetails(int orderNum) async {
     try {
-      var rBody = await Connect.orderDetails(orderNumber: orderNum);
+      var rBody =
+          await Connect.orderDetails(orderNumber: orderNum, mode: Mode.Web);
       return rBody["medicines"];
     } catch (error) {
       print(error);
@@ -65,58 +111,25 @@ class _OrdersState extends State<_Orders> {
 
   @override
   Widget build(BuildContext context) {
-    Timer(Duration(seconds: 1), () {
-      _getOrders();
-    });
-    print(Orders);
     return Scaffold(
       backgroundColor: Color.fromRGBO(22, 1, 32, 1),
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(253, 232, 223, 1.0),
         title: Text('Review Orders'),
       ),
-      body: Orders == []
-          ? PageIndicator()
-          : ListView.builder(
-              key: key,
-              itemCount: Orders.length,
-              itemBuilder: (BuildContext context, int index) {
-                final item = Orders[index];
-                return Card(
-                  elevation: 3,
-                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: ListTile(
-                    style: ListTileStyle.list,
-                    shape: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    tileColor: Colors.purple,
-                    title:
-                        Text('Order for pharmacist ${item["pharmacist_id"]}'),
-                    leading: CircleAvatar(
-                      // You can customize the leading widget (e.g., an image)
-                      child: Text('${item["id"]}'),
-                    ),
-                    onTap: () async {
-                      togglePageIndicator();
-                      _currentOrder = {
-                        'id': item["id"],
-                        'state': item["state"],
-                        'payed': item["payed"],
-                        'medicines': await _getOrderDetails(item["id"])
-                      };
-                      togglePageIndicator();
-                      CurrentOrder.selecteditem1 = item["payed"];
-                      CurrentOrder.selecteditem = item["state"];
-                      Navigator.of(context).pushNamed(CurrentOrder.route,
-                          arguments: _currentOrder);
-                    },
-                  ),
-                );
-              },
-            ),
-      floatingActionButton: Visibility(
-        visible: showPageIndicator,
-        child: PageIndicator(),
+      body: ListView.builder(
+        key: key,
+        itemCount: OrdersWidgets.length,
+        itemBuilder: (BuildContext context, int index) {
+          final item = OrdersWidgets[index];
+          return item;
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.refresh_sharp),
+        onPressed: () async {
+          _refresh();
+        },
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:PharmacyApp/web/web_search.dart';
 import 'package:PharmacyApp/web/web_home.dart';
 
 import 'current_order.dart';
+import 'web_home_page.dart';
 
 void main() {
   runApp(AdminWebApp());
@@ -23,6 +24,7 @@ class AdminWebApp extends StatelessWidget {
       initialRoute: LoginWeb.route,
       routes: {
         LoginWeb.route: (context) => LoginWeb(),
+        WebMainPage.route:(context) => WebMainPage(),
         HomePage.route: (context) => HomePage(),
         Search.route: (context) => Search(),
         IntroPage.route: (context) => IntroPage(),

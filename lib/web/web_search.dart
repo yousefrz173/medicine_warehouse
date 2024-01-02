@@ -234,7 +234,7 @@ class _SearchState extends State<Search> {
     try {
       _switchLoading(true);
 
-      var rBody = await Connect.getmedicineAdmin();
+      var rBody = await Connect.httpGetAllMedicinesWeb();
       _switchLoading(false);
       setState(() {
         Map<String, dynamic> responseMap = rBody["categories"];

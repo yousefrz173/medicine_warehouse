@@ -1,3 +1,4 @@
+import 'package:PharmacyApp/shared/cart.dart';
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/shared/connect.dart';
 
@@ -70,7 +71,7 @@ class ImportantLists {
   static Future<List<String>> loadCategories(Mode mode) async {
     final Map<String, dynamic> jsonData = mode == Mode.Mobile
         ? await Connect.httpGetAllMedicinesMobile()
-        : await Connect.httpGetAllMedicinesMobile();
+        : await Connect.httpGetAllMedicinesWeb();
     final Map<String, dynamic> categories = jsonData["categories"];
     final List<String> loaded = [];
     for (final String categoryName in categories.keys) {
@@ -84,11 +85,27 @@ class ImportantLists {
     List<Medicine> loaded = [];
     final Map<String, dynamic> jsonData = mode == Mode.Mobile
         ? await Connect.httpGetAllMedicinesMobile()
-        : await Connect.httpGetAllMedicinesMobile();
+        : await Connect.httpGetAllMedicinesWeb();
     final Map<String, dynamic> categories = jsonData["categories"];
     final List categoryMedicines = categories[categoryName]!;
     for (final Map<String, dynamic> MedicineInfo in categoryMedicines) {
       loaded.add(Medicine.fromJson(MedicineInfo));
+    }
+    return loaded;
+  }
+
+  static Future<List<Order>> loadOrders(Mode mode) async {
+    final Map<String, dynamic> jsonData = mode == Mode.Mobile
+        ? await Connect.httpGetOrdersMobile()
+        : await Connect.getOrdersAdmin();
+    final List<dynamic> orders = jsonData["orders"];
+    final List<Order> loaded = [];
+    for (final Map<String, dynamic> order in orders) {
+      loaded.add(Order(
+          price: order["price"],
+          payed: order["payed"],
+          state: order["state"],
+          id: order["id"]));
     }
     return loaded;
   }

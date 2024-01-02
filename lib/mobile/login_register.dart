@@ -224,7 +224,7 @@ class _LoginRegisterState extends State<LoginRegister> {
           "api_token": respondBody["pharmacist_information"]["api_token"],
         };
         Navigator.of(context).pushNamedAndRemoveUntil(
-          HomePage.route,
+          MainPage.route,
           (route) => false,
         );
       }

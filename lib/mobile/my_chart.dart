@@ -3,16 +3,16 @@ import 'package:PharmacyApp/shared/connect.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/shared/medicine.dart';
 
-class MyStock extends StatefulWidget {
-  const MyStock({super.key});
+class MyChart extends StatefulWidget {
+  const MyChart({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return _MyStockState();
+    return _MyChartState();
   }
 }
 
-class _MyStockState extends State<MyStock> {
+class _MyChartState extends State<MyChart> {
   late List<Order>? orders;
   late List<Widget> ordersWidgets;
 

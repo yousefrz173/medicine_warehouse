@@ -64,10 +64,6 @@ class _StoreState extends State<Store> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color.fromRGBO(22, 1, 32, 1),
-        floatingActionButton: FloatingActionButton(
-          onPressed: loadCategories,
-          child: const Icon(Icons.refresh),
-        ),
         floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
         body: RefreshIndicator(
           onRefresh: loadCategories,

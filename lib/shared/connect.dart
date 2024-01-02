@@ -1,3 +1,4 @@
+import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -26,6 +27,8 @@ class Connect {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final respondBody = jsonDecode(response.body);
       if (respondBody["statusNumber"] == 200) {
+        return respondBody;
+      } else if (respondBody["statusNumber"] == 400) {
         return respondBody;
       } else {
         throw Exception(respondBody["message"]);
@@ -62,6 +65,7 @@ class Connect {
 
   static Uri get _getMedicineOrdersUrlMobile =>
       Uri.parse('http://$usedIPPharmacist:8000/api/getorders/$userID');
+
   static final addToFavoriteUrlMobile =
       Uri.parse('http://$usedIPPharmacist:8000/api/add-to-favorite');
 
@@ -79,20 +83,20 @@ class Connect {
 
   static _order_datails({required orderNumber}) =>
       Uri.parse('http://$usedIpAdmin:8000/order-datails/$orderNumber');
-  static final _getmedicine =
-      Uri.parse('http://$usedIpAdmin:8000/api/getmedicine');
 
-  static Future<Map<String, dynamic>> getmedicineAdmin() async {
-    final response = await http.get(_getmedicine,
-        headers: {'Authorization': "Bearer ${userInfo["api_token"]}"});
-    return _convertToMapAndGetBody(response: response);
-  }
+  static _order_datails_mobile({required orderNumber}) =>
+      Uri.parse('http://$usedIpAdmin:8000/order-datails/api/$orderNumber');
+
+  static final _getAllMedicinesUrlWeb =
+      Uri.parse('http://$usedIpAdmin:8000/all-medicine');
 
   static Future<Map<String, dynamic>> orderDetails(
-      {required int orderNumber}) async {
-    var response =
-        await http.get(Connect._order_datails(orderNumber: orderNumber));
-    return {};
+      {required int orderNumber, required Mode mode}) async {
+    var response = mode == Mode.Mobile
+        ? await http
+            .get(Connect._order_datails_mobile(orderNumber: orderNumber))
+        : await http.get(Connect._order_datails(orderNumber: orderNumber));
+    return _convertToMapAndGetBody(response: response);
   }
 
   static Future<Map<String, dynamic>> getOrdersAdmin() async {
@@ -102,7 +106,11 @@ class Connect {
 
   static Future<Map<String, dynamic>> getCsrfToken() async {
     var response = await http.get(Connect._csrf_tokenAdmin);
-    return _convertToMapAndGetBody(response: response);
+    if(response.statusCode >= 200 && response.statusCode < 300){
+      return jsonDecode(response.body);
+    }else{
+      throw Exception('Error : Status Code : ${response.statusCode}');
+    }
   }
 
   static Future<Map<String, dynamic>> loginAdmin(
@@ -111,23 +119,25 @@ class Connect {
     var csrfToken = rBody["csrf_token"];
     var sessionID = rBody["yousef_session"];
     var response = await http.post(
-      Uri.parse('http://$usedIPPharmacist:8000/login'),
+      Uri.parse('http://$usedIpAdmin:8000/login'),
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: {
-        "_token": csrfToken,
-        "username": username,
-        "password": password,
+        "_token": csrfToken.toString(),
+        "username": username.toString(),
+        "password": password.toString(),
       },
     );
+    print(response.statusCode);
+    print(response.statusCode);
     userInfo = {
       "_token": csrfToken,
       "username": username,
       "password": password,
       "yousef_session": sessionID,
     };
-    return {};
+    return _convertToMapAndGetBody(response: response);
   }
 
   static Future<Map<String, dynamic>> logoutAdmin() async {
@@ -216,12 +226,15 @@ class Connect {
         await http.get(_getAllMedicinesUrlMobile, headers: authorizedHeader);
     return _convertToMapAndGetBody(response: response);
   }
+
   //todo: fix this
-  // static Future<Map<String, dynamic>> httpGetAllMedicinesWeb() async {
-  //   final response =
-  //   await http.get(_getAllMedicinesUrlWeb, headers: authorizedHeader);
-  //   return _convertToMap(response: response);
-  // }
+  static Future<Map<String, dynamic>> httpGetAllMedicinesWeb() async {
+    final response = await http.get(
+      _getAllMedicinesUrlWeb,
+    );
+    return _convertToMapAndGetBody(response: response);
+  }
+
   static Future<Map<String, dynamic>> httpShowDetailsMobile(
       {required int medicineID}) async {
     final response = await http.get(
@@ -231,6 +244,12 @@ class Connect {
   }
 
   static Future<Map<String, dynamic>> httpGetOrdersMobile() async {
+    final response =
+        await http.get(_getMedicineOrdersUrlMobile, headers: authorizedHeader);
+    return _convertToMapAndGetBody(response: response);
+  }
+
+  static Future<Map<String, dynamic>> httpGetOrderDetailsMobile() async {
     final response =
         await http.get(_getMedicineOrdersUrlMobile, headers: authorizedHeader);
     return _convertToMapAndGetBody(response: response);
