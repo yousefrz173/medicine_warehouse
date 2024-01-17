@@ -208,8 +208,11 @@ class _AddMedicineState extends State<_AddMedicine> {
                         color: Colors.white),
                     child: TextFormField(
                       onSaved: (value) {
-                        Medicine["price"] = value!;
+                        Medicine["price"] = double.parse(value!);
                       },
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                       decoration:
                           const InputDecoration(label: Text('Enter the Price')),
                       keyboardType: TextInputType.number,
@@ -250,7 +253,7 @@ class _AddMedicineState extends State<_AddMedicine> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime(2000),
+      firstDate: DateTime.now(),
       lastDate: DateTime(2101),
     );
 
@@ -273,8 +276,6 @@ class _AddMedicineState extends State<_AddMedicine> {
     _formKey.currentState!.save();
     _switchLoading(true);
 
-    //don't remove the toString() inside this map
-
     try {
       Map<String, dynamic> responseBody = await Connect.httpAddMedicineAdmin(
           price: Medicine["price"].toString(),
@@ -284,7 +285,6 @@ class _AddMedicineState extends State<_AddMedicine> {
           category: Medicine["category"].toString(),
           commercial_name: Medicine["t_name"].toString(),
           scientific_name: Medicine["s_name"].toString());
-
       _switchLoading(false);
 
       snackbar = SnackBar(
@@ -305,7 +305,7 @@ class _AddMedicineState extends State<_AddMedicine> {
 
   bool isNumericWithDot(String input) {
     // Define a regular expression pattern
-    RegExp regExp = RegExp(r'^\d+\.\d+$');
+    RegExp regExp = RegExp(r'^\d+$');
 
     // Check if the input matches the pattern
     return regExp.hasMatch(input);

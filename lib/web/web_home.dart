@@ -4,7 +4,7 @@ import 'package:PharmacyApp/web/web_review_and_edit_orders.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/web/web_intro_page.dart';
 import 'package:PharmacyApp/shared/connect.dart';
-import 'package:PharmacyApp/web/web_search.dart';
+import 'package:PharmacyApp/web/web_search.dart' as Sea;
 import 'web_home_page.dart';
 import 'package:intl/intl.dart';
 
@@ -113,7 +113,7 @@ class _WebMainPageState extends State<WebMainPage> {
           InkWell(
             borderRadius: BorderRadius.circular(50),
             onTap: () {
-              Navigator.of(context).pushNamed(Search.route);
+              Navigator.of(context).pushNamed(Sea.Search.route);
             },
             child: Icon(
               Icons.search,
@@ -191,6 +191,7 @@ class _WebMainPageState extends State<WebMainPage> {
       Navigator.of(context)
           .pushNamedAndRemoveUntil(IntroPage.route, (route) => false);
     } catch (e) {
+      runApp(Text('jj'));
       snackBar = SnackBar(
         content: Text(e.toString()),
         duration: Duration(seconds: 3),

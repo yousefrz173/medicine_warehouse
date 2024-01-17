@@ -1,11 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/shared/connect.dart';
+import 'package:http/http.dart' as http;
 
 class CurrentOrder extends StatefulWidget {
   static const String route = "route_current_order";
 
   static String? selecteditem = 'preparation';
-  static String? selecteditem1 = 'not-paid';
+  static String? selecteditem1 = 'un-paid';
 
   const CurrentOrder({super.key});
 
@@ -15,7 +18,7 @@ class CurrentOrder extends StatefulWidget {
 
 class _OrdersState extends State<CurrentOrder> {
   List<String?> itemsList = ['preparation', 'send', 'received'];
-  List<String?> itemList = ['not-paid', 'paid'];
+  List<String?> itemList = ['un-paid', 'paid'];
 
   @override
   void initState() {
@@ -174,14 +177,24 @@ class _OrdersState extends State<CurrentOrder> {
 
     try {
       togglePageIndicator();
-      Map<String, dynamic> responseBody = await Connect.httpchangestateAdmin(
-        id: routeArguments['id'].toString(),
-        state: CurrentOrder.selecteditem.toString(),
-        payed: CurrentOrder.selecteditem1.toString(),
-      );
+      var responseBody = await http
+          .post(Uri.parse('http://127.0.0.1:8000/changestate'), body: {
+        "id": routeArguments['id'].toString(),
+        "state": CurrentOrder.selecteditem.toString(),
+        "payed": CurrentOrder.selecteditem1.toString(),
+        "_token": userInfo["_token"]
+      });
+
       togglePageIndicator();
+      print(responseBody.body);
+      String temp = '';
+      if(responseBody.body[0] == '0'){
+        temp = responseBody.body;
+      }else {
+        temp = jsonDecode(responseBody.body)["message"]!;
+      }
       snackBar = SnackBar(
-        content: Text(responseBody["message"]!),
+        content: Text(temp),
         duration: const Duration(seconds: 3),
       );
     } catch (error) {

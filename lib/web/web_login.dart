@@ -155,8 +155,10 @@ class _LoginWebState extends State<LoginWeb> {
         content: Text(rBody["message"]!),
         duration: const Duration(seconds: 3),
       );
-      Navigator.of(context)
-          .pushNamedAndRemoveUntil(WebMainPage.route, (route) => false);
+      if(rBody["statusNumber"] == 200){
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(WebMainPage.route, (route) => false);
+      }
     } catch (e) {
       print(e);
       snackBar = SnackBar(

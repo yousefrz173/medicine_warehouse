@@ -3,11 +3,11 @@ import 'package:PharmacyApp/shared/connect.dart';
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/mobile/intro_page.dart';
 import 'package:PharmacyApp/mobile/search.dart';
-import 'package:PharmacyApp/mobile/widget/store.dart';
+import 'package:PharmacyApp/mobile/store.dart';
 import 'package:PharmacyApp/mobile/favorites.dart';
-import 'package:PharmacyApp/mobile/my_chart.dart';
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'mobile_home_page.dart';
+import 'my_cart.dart';
 
 class MainPage extends StatefulWidget {
   static const String route = '/';
@@ -27,9 +27,9 @@ class _MainPageState extends State<MainPage> {
           Text('Home', style: TextStyle(fontSize: 23, color: Colors.black)),
     },
     {
-      'screen': MyChart(),
+      'screen': MyCart(),
       'title':
-          Text('My Stock', style: TextStyle(fontSize: 23, color: Colors.black)),
+          Text('My Cart', style: TextStyle(fontSize: 23, color: Colors.black)),
     },
     {
       'screen': Store(),
@@ -169,7 +169,7 @@ class _MainPageState extends State<MainPage> {
         items: [
           BottomNavigationBarItem(label: 'Home', icon: Icon(Icons.home)),
           BottomNavigationBarItem(
-              label: 'My Stock', icon: Icon(Icons.warehouse_outlined)),
+              label: 'My Cart', icon: Icon(Icons.warehouse_outlined)),
           BottomNavigationBarItem(label: 'Store', icon: Icon(Icons.store)),
           BottomNavigationBarItem(
               label: 'My Orders', icon: Icon(Icons.pending_actions)),

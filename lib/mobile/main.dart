@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:PharmacyApp/mobile/login_register.dart';
 import 'package:PharmacyApp/mobile/favorites.dart';
 import 'package:PharmacyApp/mobile/intro_page.dart';
-import 'package:PharmacyApp/mobile/widget/store.dart';
+import 'package:PharmacyApp/mobile/store.dart';
 import 'package:PharmacyApp/mobile/search.dart';
 import 'package:PharmacyApp/mobile/home.dart';
 
@@ -22,7 +22,7 @@ class PharmacistApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Our Medicine Whorehouse',
-      initialRoute: LoginRegister.route,
+      initialRoute: IntroPage.route,
       routes: {
         LoginRegister.route: (context) => LoginRegister(),
         HomePage.route: (context) => HomePage(),

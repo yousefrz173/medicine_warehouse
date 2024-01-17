@@ -7,90 +7,111 @@ import 'package:PharmacyApp/shared/connect.dart';
 
 class Cart {
   static int get length {
-    return cartQuantities.length;
+    return medicinesMap.length;
   }
 
-  static List<int> get cartMedicineIDs =>
-      List.generate(cartMedicines.length, (index) => cartMedicines[index].id);
-
-  static List<Medicine> cartMedicines = [];
-
-  static List<int> cartQuantities = [];
-
-  static void order() async {
-    Connect.httpOrderMobile(
-        medicineIDs: cartMedicineIDs, quantities: cartQuantities);
-    reset();
-  }
-
-  static void reset() {
-    cartMedicines = [];
-    cartQuantities = [];
-  }
-
-  static Future<List<Order>?> loadOrders() async {
-    List<Order> loadedOrders = [];
-    final Map<String, dynamic> rBody = await Connect.httpGetOrdersMobile();
-    List<dynamic> orders = rBody["orders"]!;
-    if (orders.isEmpty) {
-      return null;
-    }
-    // List<Map<String, dynamic>> orders = x;
-    for (final Map<String, dynamic> orderJson in orders) {
-      loadedOrders.add(Order.fromJson(orderjson: orderJson));
-    }
-    return loadedOrders;
-  }
-
-  static int getMedicineIndexInCart({required Medicine medicine}) {
-    for (int index = 0; index < cartMedicines.length; index++) {
-      if (cartMedicines[index].medicineInfoMap == medicine.medicineInfoMap) {
-        return index;
+  static List<int> get _cartMedicineIDs {
+    List<int> result = [];
+    if (!medicinesMap.isEmpty) {
+      for (var medicine in medicinesMap.values) {
+        result.add(medicine.id);
       }
     }
-    return -1;
+    return result;
   }
 
-  static void addMedicine(
-      {required Medicine medicine, required int addedAmount}) {
-    if (addedAmount > medicine.availableAmount) {
-      throw Exception('There is No Enough Quantity');
+  static List<int> get cartQuantities {
+    List<int> result = [];
+    if (!medicinesMap.isEmpty) {
+      for (var medicine in medicinesMap.values) {
+        result.add(medicine.orderedAmount);
+      }
+    }
+    return result;
+  }
+
+  static Map<int, OrderedMedicine> medicinesMap = {};
+
+  static List<OrderedMedicine> get medicinesList =>
+      medicinesMap.values.toList();
+
+  static void order() async {
+    try {
+      Connect.orderMobile(
+          medicineIDs: _cartMedicineIDs, quantities: cartQuantities);
+      resetCart();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  static void resetCart() {
+    medicinesMap = {};
+  }
+
+  /*
+   static Future<List<Order>?> loadOrders() async {
+     List<Order> loadedOrders = [];
+     final Map<String, dynamic> rBody = await Connect.httpGetOrdersMobile();
+     List<dynamic> orders = rBody["orders"]!;
+     if (orders.isEmpty) {
+       return null;
+     }
+     // List<Map<String, dynamic>> orders = x;
+     for (final Map<String, dynamic> orderJson in orders) {
+       loadedOrders.add(Order.fromJson(orderjson: orderJson));
+     }
+     return loadedOrders;
+   }
+   */
+
+  static bool addMedicine({required Medicine medicine, required int amount}) {
+    if (amount > medicine.availableAmount) {
+      return false;
     }
     // check if medicine is in cart
-    int medicineIndex = getMedicineIndexInCart(medicine: medicine);
-    // medicine is not in cart
-    if (medicineIndex == -1) {
-      cartQuantities.add(addedAmount);
-      cartMedicines.add(medicine);
-      return;
+    if (medicinesMap[medicine.id] == null) {
+      medicinesMap[medicine.id] = OrderedMedicine.fromMedicine(
+          medicine: medicine, orderedAmount: amount);
+
+      return true;
     }
-    // medicine is inside cart
-    //check if can add more
-    if (medicine.availableAmount >
-        (addedAmount + cartQuantities[medicineIndex])) {
-      throw Exception('There is No Enough Quantity To Add more');
-    }
-    cartQuantities[medicineIndex] += addedAmount;
-    return;
+
+    final int TotalAddedAmount =
+        amount + medicinesMap[medicine.id]!.orderedAmount;
+    if (TotalAddedAmount > medicine.availableAmount) return false;
+
+    medicinesMap[medicine.id]!.orderedAmount = TotalAddedAmount;
+    return true;
   }
 
   static void removeMedicine({required Medicine medicine, int? amount}) {
-    int medicineIndex = getMedicineIndexInCart(medicine: medicine);
     if (amount == null) {
-      cartQuantities.remove(medicineIndex);
-    } else if (amount != 0) {
-      cartQuantities[medicineIndex] -= amount;
-      if (cartQuantities[medicineIndex] <= 0) {
-        cartQuantities.remove(medicineIndex);
-      }
+      Cart.medicinesMap.remove(medicine.id);
+      return;
     }
+    if (amount == 0) {
+      medicinesMap.remove(medicine.id);
+      return;
+    }
+    if (medicinesMap[medicine.id]!.orderedAmount == 0) {
+      medicinesMap.remove(medicine.id);
+      return;
+    }
+    int updatedOrderedAmount =
+        Cart.medicinesMap[medicine.id]!.orderedAmount - amount;
+    if (updatedOrderedAmount < 0) {
+      Cart.medicinesMap.remove(medicine.id);
+      return;
+    }
+    Cart.medicinesMap[medicine.id]!.orderedAmount = updatedOrderedAmount;
   }
 
   static double get cartTotalPrice {
     double price = 0;
-    int length = cartQuantities.length;
-    for (int index = 0; index <= length; ++index) {
-      price += (cartMedicines[index].price * cartQuantities[index]);
+
+    for (OrderedMedicine orderedMedicine in Cart.medicinesMap.values) {
+      price += (orderedMedicine.totalPrice);
     }
     return price;
   }
@@ -104,17 +125,13 @@ class Order {
 
   Order(
       {required this.price,
-      required this.payed,
-      required this.state,
-      required this.id});
+        required this.payed,
+        required this.state,
+        required this.id});
 
   factory Order.fromJson({required Map<String, dynamic> orderjson}) {
-    var price = orderjson["price"];
-
-    double convertedDoubleValue = orderjson['price'] is int
-        ? (orderjson['price'] as int).toDouble()
-        : orderjson['price'];
-
+    dynamic price = orderjson["price"];
+    double convertedDoubleValue = price is int ? price.toDouble() : price;
     return Order(
         id: 0,
         price: convertedDoubleValue,

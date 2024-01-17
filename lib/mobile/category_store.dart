@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:PharmacyApp/shared/medicine.dart';
-import 'package:PharmacyApp/mobile/widget/medicine_page.dart';
+import 'package:PharmacyApp/mobile/medicine_page.dart';
 
 class CategoryStore extends StatefulWidget {
-  const CategoryStore({super.key, required this.category});
+  const CategoryStore({super.key, required this.category, required this.mode});
 
   final String category;
+  final Mode mode;
 
   @override
   State<StatefulWidget> createState() =>
-      _CategoryStoreState(category: category);
+      _CategoryStoreState(category: category, mode: mode);
 }
 
 class _CategoryStoreState extends State<CategoryStore> {
   String category;
+  Mode mode;
   late List<Widget> categoryWidgets;
   late List<Medicine> medicines;
 
-  _CategoryStoreState({required this.category});
+  _CategoryStoreState({required this.category, required this.mode});
 
   late final Widget emptyPage;
 
@@ -34,13 +36,15 @@ class _CategoryStoreState extends State<CategoryStore> {
 
   void _medicinetapped() {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => MedicinePage(medicine: choosedMedicine),
+      builder: (context) => MedicinePage(
+        medicine: choosedMedicine,
+        mode: mode,
+      ),
     ));
   }
 
   void loadMedicines() async {
-    medicines =
-        await ImportantLists.loadCategoryMedicines(category, Mode.Mobile);
+    medicines = await ImportantLists.loadCategoryMedicines(category, mode);
     loadWidgets();
   }
 

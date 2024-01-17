@@ -6,7 +6,7 @@ todo:
 import 'package:PharmacyApp/shared/cart.dart';
 import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:flutter/material.dart';
-import 'package:PharmacyApp/mobile/widget/category_store.dart';
+import 'package:PharmacyApp/mobile/category_store.dart';
 
 class Store extends StatefulWidget {
   const Store({super.key});
@@ -37,7 +37,7 @@ class _StoreState extends State<Store> {
   void _categoryTapped({required String categoryName}) {
     Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (context) => CategoryStore(category: categoryName)),
+          builder: (context) => CategoryStore(category: categoryName, mode: Mode.Mobile,)),
     );
   }
 

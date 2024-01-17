@@ -15,6 +15,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(22, 1, 32, 1),
       body: Center(
         child: Container(
           width: 1350,
@@ -128,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                     maxCrossAxisExtent: 200,
                     mainAxisExtent: 60,
                     mainAxisSpacing: 45,
-                    childAspectRatio: 3.0,
+                    childAspectRatio: 4.0,
                     crossAxisSpacing: 35,
                   ),
                 ),

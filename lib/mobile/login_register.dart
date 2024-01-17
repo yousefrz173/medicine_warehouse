@@ -67,7 +67,7 @@ class _LoginRegisterState extends State<LoginRegister> {
               children: [
                 TextFormField(
                   inputFormatters: [
-                    FilteringTextInputFormatter.singleLineFormatter
+                    FilteringTextInputFormatter.digitsOnly
                   ],
                   style: TextStyle(color: Colors.white),
                   cursorColor: Colors.indigo,

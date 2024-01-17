@@ -1,13 +1,12 @@
 import 'package:PharmacyApp/shared/medicine.dart';
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:html/parser.dart' as htmlParser;
-import 'package:html/dom.dart' as htmlDom;
 import 'dart:async';
 
 const String usedIpAdmin = '127.0.0.1';
 const String usedIPPharmacist = '10.0.2.2';
+
+typedef futureMap = Future<Map<String, dynamic>>;
 
 Map<String, dynamic> userInfo = {
   "id": null,
@@ -24,15 +23,23 @@ Map<String, dynamic> userInfo = {
 class Connect {
   static Map<String, dynamic> _convertToMapAndGetBody(
       {required http.Response response}) {
+    var respondBody =
+        _convertToMapAndGetBodyWithNoCheckForStatuesNumber(response: response);
+    if (respondBody["statusNumber"] == 200) {
+      return respondBody;
+    } else {
+      throw Exception(respondBody["message"]);
+    }
+  }
+
+  static Map<String, dynamic>
+      _convertToMapAndGetBodyWithNoCheckForStatuesNumber(
+          {required http.Response response}) {
+    print(response.body);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final respondBody = jsonDecode(response.body);
-      if (respondBody["statusNumber"] == 200) {
-        return respondBody;
-      } else if (respondBody["statusNumber"] == 400) {
-        return respondBody;
-      } else {
-        throw Exception(respondBody["message"]);
-      }
+      print(respondBody.toString());
+      return respondBody;
     } else {
       throw Exception(
           'Error: ${response.statusCode}, ${response.reasonPhrase}');
@@ -57,6 +64,7 @@ class Connect {
 
   static final _searchUrlMobile =
       Uri.parse('http://$usedIPPharmacist:8000/api/search');
+  static final _searchUrlWeb = Uri.parse('http://$usedIpAdmin:8000/search');
 
   static Uri _showDetailsUrlMobile({required int medicineID}) =>
       Uri.parse('http://$usedIPPharmacist:8000/api//showdetails/$medicineID');
@@ -90,7 +98,7 @@ class Connect {
   static final _getAllMedicinesUrlWeb =
       Uri.parse('http://$usedIpAdmin:8000/all-medicine');
 
-  static Future<Map<String, dynamic>> orderDetails(
+  static futureMap orderDetails(
       {required int orderNumber, required Mode mode}) async {
     var response = mode == Mode.Mobile
         ? await http
@@ -99,21 +107,17 @@ class Connect {
     return _convertToMapAndGetBody(response: response);
   }
 
-  static Future<Map<String, dynamic>> getOrdersAdmin() async {
+  static futureMap getOrdersAdmin() async {
     var response = await http.get(Connect._getOrdersAdmin);
     return _convertToMapAndGetBody(response: response);
   }
 
-  static Future<Map<String, dynamic>> getCsrfToken() async {
+  static futureMap getCsrfToken() async {
     var response = await http.get(Connect._csrf_tokenAdmin);
-    if(response.statusCode >= 200 && response.statusCode < 300){
-      return jsonDecode(response.body);
-    }else{
-      throw Exception('Error : Status Code : ${response.statusCode}');
-    }
+    return _convertToMapAndGetBodyWithNoCheckForStatuesNumber(response: response);
   }
 
-  static Future<Map<String, dynamic>> loginAdmin(
+  static futureMap loginAdmin(
       {required String username, required String password}) async {
     var rBody = await Connect.getCsrfToken();
     var csrfToken = rBody["csrf_token"];
@@ -137,17 +141,17 @@ class Connect {
       "password": password,
       "yousef_session": sessionID,
     };
-    return _convertToMapAndGetBody(response: response);
+    return _convertToMapAndGetBodyWithNoCheckForStatuesNumber(response: response);
   }
 
-  static Future<Map<String, dynamic>> logoutAdmin() async {
+  static futureMap logoutAdmin() async {
     var response = await http.get(
       _logoutAdmin,
     );
     return _convertToMapAndGetBody(response: response);
   }
 
-  static Future<Map<String, dynamic>> httpAddMedicineAdmin(
+  static futureMap httpAddMedicineAdmin(
       {required price,
       required end_state,
       required amount,
@@ -166,10 +170,10 @@ class Connect {
       "_token": userInfo["_token"],
     });
 
-    return _convertToMapAndGetBody(response: response);
+    return _convertToMapAndGetBodyWithNoCheckForStatuesNumber(response: response);
   }
 
-  static Future<Map<String, dynamic>> httpchangestateAdmin({
+  static futureMap httpchangestateAdmin({
     required String id,
     required String state,
     required String payed,
@@ -180,10 +184,11 @@ class Connect {
       "payed": payed,
       "_token": userInfo["_token"]
     });
-    return _convertToMapAndGetBody(response: response);
+    print(response.body);
+    return _convertToMapAndGetBodyWithNoCheckForStatuesNumber(response: response);
   }
 
-  static Future<Map<String, dynamic>> httpLoginMobile(
+  static futureMap httpLoginMobile(
       {required String phone, required String password}) async {
     final response = await http.post(
       _loginUrlMobile,
@@ -198,7 +203,7 @@ class Connect {
     return _convertToMapAndGetBody(response: response);
   }
 
-  static Future<Map<String, dynamic>> httpRegisterMobile(
+  static futureMap httpRegisterMobile(
       {required String phone, required String password}) async {
     final response = await http.post(
       _pharmacistRegisterUrlMobile,
@@ -213,7 +218,7 @@ class Connect {
     return _convertToMapAndGetBody(response: response);
   }
 
-  static Future<Map<String, dynamic>> httpLogoutMobile() async {
+  static futureMap httpLogoutMobile() async {
     final response = await http.post(
       _pharmacistLogoutUrlMobile,
       headers: authorizedHeader,
@@ -221,64 +226,82 @@ class Connect {
     return _convertToMapAndGetBody(response: response);
   }
 
-  static Future<Map<String, dynamic>> httpGetAllMedicinesMobile() async {
+  static futureMap httpGetAllMedicinesMobile() async {
     final response =
         await http.get(_getAllMedicinesUrlMobile, headers: authorizedHeader);
     return _convertToMapAndGetBody(response: response);
   }
 
-  //todo: fix this
-  static Future<Map<String, dynamic>> httpGetAllMedicinesWeb() async {
+  static futureMap httpGetAllMedicinesWeb() async {
     final response = await http.get(
       _getAllMedicinesUrlWeb,
     );
     return _convertToMapAndGetBody(response: response);
   }
 
-  static Future<Map<String, dynamic>> httpShowDetailsMobile(
-      {required int medicineID}) async {
+  static futureMap getMedicineInformationMobile({required int medicineID}) async {
     final response = await http.get(
         _showDetailsUrlMobile(medicineID: medicineID),
         headers: authorizedHeader);
     return _convertToMapAndGetBody(response: response);
   }
 
-  static Future<Map<String, dynamic>> httpGetOrdersMobile() async {
+  static futureMap httpGetOrdersMobile() async {
+    final response =
+        await http.get(_getMedicineOrdersUrlMobile, headers: authorizedHeader);
+    return _convertToMapAndGetBodyWithNoCheckForStatuesNumber(
+        response: response);
+  }
+
+  static futureMap httpGetOrderDetailsMobile() async {
     final response =
         await http.get(_getMedicineOrdersUrlMobile, headers: authorizedHeader);
     return _convertToMapAndGetBody(response: response);
   }
 
-  static Future<Map<String, dynamic>> httpGetOrderDetailsMobile() async {
-    final response =
-        await http.get(_getMedicineOrdersUrlMobile, headers: authorizedHeader);
-    return _convertToMapAndGetBody(response: response);
-  }
-
-  static Future<Map<String, dynamic>> httpOrderMobile(
+  static futureMap orderMobile(
       {required List<int> medicineIDs, required List<int> quantities}) async {
+    List<String> medicineIDsStrings = List.generate(
+        medicineIDs.length, (index) => medicineIDs[index].toString());
+    List<String> quantitiesStrings = List.generate(
+        quantities.length, (index) => quantities[index].toString());
+
+    final body = {
+      "pharmacist_id": userID,
+      "medicine_Ids": medicineIDsStrings,
+      "quan": quantitiesStrings
+    };
     final response = await http.post(_orderMedicinesUrlMobile,
-        headers: authorizedHeader,
-        body: {
-          "pharmacist_id": userID,
-          "medicine_Ids": medicineIDs,
-          "quan": quantities
-        });
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': "Bearer ${userInfo["api_token"]}"
+        },
+        body: jsonEncode(body));
+
     return _convertToMapAndGetBody(response: response);
   }
 
-  static Future<Map<String, dynamic>> httpAddToFavoriteMobile(
-      {required int medicineID}) async {
-    final response = await http.post(addToFavoriteUrlMobile,
-        headers: authorizedHeader,
-        body: {"pharId": userID, "medId": medicineID});
+  static futureMap addToFavoriteMobile({required int medicineID}) async {
+    final response = await http.post(addToFavoriteUrlMobile, headers: {
+      'Content-Type': 'application/json',
+      'Authorization': "Bearer ${userInfo["api_token"]}"
+    }, body: {
+      "pharId": userID,
+      "medId": medicineID
+    });
     return _convertToMapAndGetBody(response: response);
   }
 
-  static Future<Map<String, dynamic>> httpSearchMobile(
-      {required String value}) async {
+  static futureMap httpSearchMobile({required String value}) async {
     final response = await http.post(_searchUrlMobile,
         headers: authorizedHeader, body: jsonEncode({"value": value}));
-    return _convertToMapAndGetBody(response: response);
+    return _convertToMapAndGetBodyWithNoCheckForStatuesNumber(response: response);
+  }
+
+  static futureMap httpSearchWeb({required String value}) async {
+    final response = await http.post(_searchUrlWeb,
+        headers: {'Content-Type': "application/x-www-form-urlencoded"},
+        body: {"_token": userInfo["_token"], "value": value});
+    return _convertToMapAndGetBodyWithNoCheckForStatuesNumber(response: response);
   }
 }

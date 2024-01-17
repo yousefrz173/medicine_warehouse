@@ -1,5 +1,4 @@
 import 'package:PharmacyApp/shared/cart.dart';
-import 'package:PharmacyApp/shared/medicine.dart';
 import 'package:PharmacyApp/shared/connect.dart';
 
 enum Mode { Mobile, Web }
@@ -36,6 +35,21 @@ class Medicine {
         "availableAmount": availableAmount,
       };
 
+  Future<void> syncMedicineInformation() async => updateInformationFromMedicine(
+      medicine: Medicine.fromJson(
+          await Connect.getMedicineInformationMobile(medicineID: id)));
+
+  void updateInformationFromMedicine({required Medicine medicine}) {
+    id = medicine.id;
+    scientificName = medicine.scientificName;
+    commercialName = medicine.commercialName;
+    category = medicine.category;
+    company = medicine.company;
+    expirationDate = medicine.expirationDate;
+    price = medicine.price;
+    availableAmount = medicine.availableAmount;
+  }
+
   factory Medicine.fromJson(Map<String, dynamic> json) {
     return Medicine(
       id: json['id'],
@@ -47,6 +61,41 @@ class Medicine {
       expirationDate: DateTime.parse(json['end_date']),
       price: json['price'].toDouble(),
     );
+  }
+}
+
+class OrderedMedicine extends Medicine {
+  int orderedAmount;
+
+  OrderedMedicine(
+      {required super.id,
+      required super.scientificName,
+      required super.commercialName,
+      required super.category,
+      required super.company,
+      required super.expirationDate,
+      required super.price,
+      required super.availableAmount,
+      required this.orderedAmount});
+
+  void checkForAmountOverFlow() {
+    if (availableAmount < orderedAmount) availableAmount = orderedAmount;
+  }
+
+  double get totalPrice => (price * orderedAmount);
+
+  factory OrderedMedicine.fromMedicine(
+      {required Medicine medicine, required int orderedAmount}) {
+    return OrderedMedicine(
+        id: medicine.id,
+        scientificName: medicine.scientificName,
+        commercialName: medicine.commercialName,
+        category: medicine.category,
+        company: medicine.company,
+        expirationDate: medicine.expirationDate,
+        price: medicine.price,
+        availableAmount: medicine.availableAmount,
+        orderedAmount: orderedAmount);
   }
 }
 
@@ -98,13 +147,24 @@ class ImportantLists {
     final Map<String, dynamic> jsonData = mode == Mode.Mobile
         ? await Connect.httpGetOrdersMobile()
         : await Connect.getOrdersAdmin();
+    if (jsonData["statusNumber"] == 400) {
+      return [];
+    }
     final List<dynamic> orders = jsonData["orders"];
     final List<Order> loaded = [];
     for (final Map<String, dynamic> order in orders) {
+      var price = order["price"];
+      double priceDouble;
+      if (price is int)
+        priceDouble = price.toDouble();
+      else
+        priceDouble = price;
+
       loaded.add(Order(
-          price: order["price"],
+          price: priceDouble,
           payed: order["payed"],
           state: order["state"],
+          // todo: fix this
           id: order["id"]));
     }
     return loaded;

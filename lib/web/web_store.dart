@@ -48,13 +48,19 @@ class _StoreState extends State<Store> {
       categoriesWidgets = List.generate(
           categories.length,
           (index) => Card(
+                color: Colors.purple,
                 elevation: 3,
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                child: ListTile(
-                    shape: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    title: Text(categories[index]),
-                    tileColor: Colors.purple,
+                child: InkWell(
+                    child: Center(
+                      child: Text(
+                        categories[index],
+                        style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                     onTap: () => setState(() =>
                         _categoryTapped(categoryName: categories[index]))),
               ));
@@ -69,15 +75,20 @@ class _StoreState extends State<Store> {
         onPressed: loadCategories,
         child: const Icon(Icons.refresh),
       ),
-      body: RefreshIndicator(
-        onRefresh: loadCategories,
-        child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: categoriesWidgets.length,
-            itemBuilder: (context, index) {
-              final Widget item = categoriesWidgets[index];
-              return item;
-            }),
+      body: GridView.builder(
+        shrinkWrap: true,
+        itemCount: categoriesWidgets.length,
+        itemBuilder: (context, index) {
+          final item = categoriesWidgets[index];
+          return item;
+        },
+        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 250,
+          mainAxisExtent: 160,
+          mainAxisSpacing: 45,
+          childAspectRatio: 1.0,
+          crossAxisSpacing: 35,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
@@ -101,16 +112,19 @@ class _categoryStoreState extends State<categoryStore> {
 
   _categoryStoreState({required this.category});
 
-  late final Widget emptyPage;
+  late final Widget emptyPage = const Center(
+    child: CircularProgressIndicator(),
+  );
 
+  void emptyTheWidget(){
+    setState(() {
+      categoryWidgets = [emptyPage];
+    });
+  }
   @override
   void initState() {
     super.initState();
-    emptyPage = const Center(
-      child: CircularProgressIndicator(),
-    );
-
-    categoryWidgets = [emptyPage];
+    emptyTheWidget();
     _refresh();
   }
 
@@ -132,13 +146,11 @@ class _categoryStoreState extends State<categoryStore> {
         categoryWidgets = List.generate(
             medicines.length,
             (index) => Card(
+                  color: Colors.purple,
                   elevation: 3,
                   margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  child: ListTile(
-                    shape: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    title: Text(medicines[index].commercialName),
-                    tileColor: Colors.purple,
+                  child: InkWell(
+                    child: Center(child: Text(medicines[index].commercialName)),
                     onTap: () {
                       choosedMedicine = medicines[index];
                       _medicinetapped();
@@ -148,6 +160,7 @@ class _categoryStoreState extends State<categoryStore> {
       });
 
   Future<void> _refresh() async {
+    emptyTheWidget();
     loadMedicines();
   }
 
@@ -163,12 +176,18 @@ class _categoryStoreState extends State<categoryStore> {
         onPressed: _refresh,
         child: const Icon(Icons.refresh),
       ),
-      body: RefreshIndicator(
-        onRefresh: _refresh,
-        child: ListView(
+      body:  GridView(
+          gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+            maxCrossAxisExtent: 250,
+            mainAxisExtent: 160,
+            mainAxisSpacing: 45,
+            childAspectRatio: 1.0,
+            crossAxisSpacing: 35,
+          ),
           children: categoryWidgets,
         ),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
+
     );
   }
 }

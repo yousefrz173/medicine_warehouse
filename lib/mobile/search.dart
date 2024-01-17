@@ -1,14 +1,9 @@
 import 'package:PharmacyApp/shared/connect.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'home.dart' as HomePage;
 import 'package:PharmacyApp/shared/medicine.dart';
-import 'package:PharmacyApp/shared/connect.dart';
-import 'package:intl/intl.dart';
-
-import 'widget/category_store.dart';
-import 'widget/medicine_page.dart';
+import 'category_store.dart';
+import 'medicine_page.dart';
 
 class Search extends StatefulWidget {
   static const String route = '/route_search';
@@ -30,10 +25,7 @@ class _SearchState extends State<Search> {
 
   Filter? filter = Filter.Name;
   final Widget _emptyPage = Center(
-    child: CircleAvatar(
-      radius: 40,
-      backgroundImage: AssetImage('assets/images/dank2.png'),
-    ),
+    child: CircularProgressIndicator(),
   );
 
   void EmptyTheWidget() {
@@ -99,13 +91,13 @@ class _SearchState extends State<Search> {
   void _categoryTapped({required String categoryName}) {
     Navigator.of(context).push(
       MaterialPageRoute(
-          builder: (context) => CategoryStore(category: categoryName)),
+          builder: (context) => CategoryStore(category: categoryName,mode: Mode.Mobile,)),
     );
   }
 
   void _medicineTapped({required Medicine choosedMedicine}) {
     Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => MedicinePage(medicine: choosedMedicine),
+      builder: (context) => MedicinePage(medicine: choosedMedicine,mode: Mode.Mobile,),
     ));
   }
 
